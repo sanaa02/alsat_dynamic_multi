@@ -1,0 +1,131 @@
+so this is the output of that command, and i want to fix those warning the correct way not just silence them like i'm actually doing, and this is my current training happening, how to fix the way the cnn isn't working and faling back to gaussian 
+
+ CUDA_VISIBLE_DEVICES=1 python -m scripts.training.train_ppo_smdp_full     --bc --curriculum --eval --explain     --episodes 2000 --event-rate 2.0 --n-envs 4 --seed 123     --action-mask --domain-rand     --cnn-model models/cloud_cnn_real_int8.pt
+Using device: cuda
+Using device: cuda
+============================================================
+  ALSAT-EO-1  Phase 3  Master Training Pipeline
+============================================================
+  Config  : dyn_real_vision  obs=56  acts=24
+  Safety  : ON (default)
+  Episodes: 2000  rate=2.0/hr
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+
+============================================================
+  Stage 1 -- Behavioral Cloning
+============================================================
+  Loaded 7,285 transitions from /home/sanaa/alsat_dynamic_improved/data/demos.npz
+  BC pretraining (50 epochs)...
+  BC: using 4339/7285 non-drift transitions (60% of demos)
+  BC weights: min=0.35  max=2.00  (using 22 distinct actions)
+    BC ep  10/50  loss=2.9813  acc=35.19%
+    BC ep  20/50  loss=2.9806  acc=36.87%
+    BC ep  30/50  loss=2.9601  acc=37.20%
+    BC ep  40/50  loss=2.9448  acc=37.31%
+    BC ep  50/50  loss=2.9371  acc=37.31%
+  BC done.  Best loss=2.9367
+
+============================================================
+  Stage 2 -- Curriculum Warm-up
+============================================================
+Using device: cuda
+Using device: cuda
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+  Ep 1/200  phase=static_clear  r=+0.000
+  Ep 26/200  phase=static_clear  r=+0.000
+  Ep 51/200  phase=static_clear  r=+9.144
+  Ep 76/200  phase=static_clear  r=+10.579
+
+[CURRICULUM] 'static_clear' -> 'static_clouds'  (mean_r=+7.096)
+
+  Ep 101/200  phase=static_clouds  r=+10.417
+  Ep 126/200  phase=static_clouds  r=+10.877
+  Ep 151/200  phase=static_clouds  r=+9.722
+
+[CURRICULUM] 'static_clouds' -> 'dynamic_sparse'  (mean_r=+6.948)
+
+  Ep 176/200  phase=dynamic_sparse  r=+9.530
+Curriculum: phase=dynamic_sparse  idx=2
+  Graduated 'static_clear' ep=92 r=+7.096
+  Graduated 'static_clouds' ep=75 r=+6.948
+
+============================================================
+  Stage 3 -- SMDP-PPO  cfg=dyn_real_vision  obs=56
+============================================================
+RealVisionCloudModel: CNN unavailable (Can't get attribute 'CloudCNN' on <module 'scripts.training.train_ppo_smdp_full' from '/home/sanaa/alsat_dynamic_improved/scripts/training/train_ppo_smdp_full.py'>). Gaussian noise fallback active.
+  Ep   10  r=  +2.789  avg10=  +6.363  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep   20  r=  +9.078  avg10=  +7.032  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep   30  r=  +2.041  avg10=  +7.464  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep   40  r=  +9.556  avg10=  +7.812  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
+  Ep   50  r= +10.717  avg10=  +6.660  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
+  Ep   60  r=  +8.866  avg10=  +8.077  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
+  Ep   70  r=  +8.821  avg10=  +8.493  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
+  Ep   80  r=  +1.818  avg10=  +6.569  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
+  Ep   90  r=  +9.583  avg10=  +5.337  cf=100%(avg=69%)  dyn_suc=0%(avg=0%)
+  Ep  100  r=  +0.960  avg10=  +5.599  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
+  Ep  110  r=  +8.016  avg10=  +6.948  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
+  Ep  120  r=  +0.521  avg10=  +7.695  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep  130  r=  +9.705  avg10=  +7.318  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
+  Ep  140  r= +10.233  avg10=  +6.911  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep  150  r= +11.629  avg10=  +7.262  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
+  Ep  160  r=  +9.221  avg10=  +7.511  cf=100%(avg=78%)  dyn_suc=0%(avg=0%)
+  Ep  170  r=  +9.456  avg10=  +6.474  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
+  Ep  180  r=  +9.735  avg10=  +7.351  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep  190  r=  +0.000  avg10=  +6.090  cf=0%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep  200  r=  +0.000  avg10=  +7.303  cf=0%(avg=86%)  dyn_suc=0%(avg=0%)
+  Ep  210  r=  +0.301  avg10=  +5.889  cf=100%(avg=86%)  dyn_suc=0%(avg=0%)
+  Ep  220  r= +10.288  avg10=  +7.950  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep  230  r=  +9.689  avg10=  +7.526  cf=100%(avg=89%)  dyn_suc=0%(avg=0%)
+  Ep  240  r=  +9.472  avg10=  +8.506  cf=100%(avg=88%)  dyn_suc=0%(avg=0%)
+  Ep  250  r= +10.518  avg10=  +7.309  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
+  Ep  260  r=  +8.936  avg10=  +2.420  cf=100%(avg=50%)  dyn_suc=0%(avg=0%)
+  Ep  270  r=  +3.387  avg10=  +7.414  cf=100%(avg=99%)  dyn_suc=0%(avg=0%)
+  Ep  280  r=  +0.000  avg10=  +5.028  cf=0%(avg=73%)  dyn_suc=0%(avg=0%)
+  Ep  290  r=  +9.822  avg10=  +6.587  cf=100%(avg=98%)  dyn_suc=0%(avg=0%)
+  Ep  300  r=  +9.698  avg10=  +6.254  cf=100%(avg=87%)  dyn_suc=0%(avg=0%)
+  Ep  310  r=  +8.633  avg10=  +6.574  cf=90%(avg=97%)  dyn_suc=0%(avg=0%)
+  Ep  320  r=  +9.254  avg10=  +7.511  cf=100%(avg=97%)  dyn_suc=0%(avg=0%)
+  Ep  330  r=  +8.416  avg10=  +6.660  cf=100%(avg=99%)  dyn_suc=0%(avg=0%)
+  Ep  340  r=  +0.000  avg10=  +4.379  cf=0%(avg=87%)  dyn_suc=0%(avg=0%)
+  Ep  350  r= +10.498  avg10=  +5.579  cf=100%(avg=68%)  dyn_suc=0%(avg=0%)
+  Ep  360  r=  +9.832  avg10=  +6.661  cf=100%(avg=89%)  dyn_suc=0%(avg=0%)
+  Ep  370  r=  +0.000  avg10=  +5.899  cf=0%(avg=80%)  dyn_suc=0%(avg=0%)
+  Ep  380  r= +10.066  avg10=  +8.242  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep  390  r= +10.613  avg10=  +5.522  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+  Ep  400  r= +10.784  avg10=  +8.580  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
+  Ep  410  r=  +1.934  avg10=  +3.738  cf=100%(avg=60%)  dyn_suc=0%(avg=0%)
+  Ep  420  r= +10.253  avg10=  +4.843  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
+Ep  430  r= +10.129  avg10=  +6.808  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
+  Ep  440  r=  +1.986  avg10=  +4.539  cf=100%(avg=60%)  dyn_suc=0%(avg=0%)
+  Ep  450  r= +10.480  avg10=  +6.970  cf=100%(avg=85%)  dyn_suc=0%(avg=0%)
+  Ep  460  r=  +9.244  avg10=  +4.571  cf=95%(avg=99%)  dyn_suc=0%(avg=0%)
+  Ep  470  r= +10.098  avg10=  +6.320  cf=100%(avg=89%)  dyn_suc=0%(avg=0%)
+  Ep  480  r=  +9.996  avg10=  +7.290  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
+  Ep  490  r=  +4.915  avg10=  +7.552  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
+
+
+and fix any issue you think is happening based on my logs and what you know, and make the system fully working perfectly and very optimized and makes sense and follows the state of the art and extends the literature 

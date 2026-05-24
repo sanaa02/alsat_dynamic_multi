@@ -1,0 +1,30 @@
+{
+  "n_episodes": 5,
+  "event_rate": 2.0,
+  "action_counts": {
+    "8": 513,
+    "3": 253,
+    "13": 1,
+    "9": 1,
+    "15": 3,
+    "6": 2
+  },
+  "dyn_action_pct": 0.0,
+  "dyn_detected_mean": 68.6,
+  "dyn_imaged_mean": 0.0,
+  "obs_dyn_active_pct": 100.0,
+  "episode_metrics_keys": [
+    "n_cloud_free",
+    "n_cloudy",
+    "n_dyn_detected",
+    "n_dyn_imaged",
+    "n_imaged",
+    "total_reward",
+    "total_slew_angle_deg",
+    "total_slew_energy_wh"
+  ],
+  "mean_reward": 8.539826982827545,
+  "root_causes_found": [
+    "A"
+  ]
+}

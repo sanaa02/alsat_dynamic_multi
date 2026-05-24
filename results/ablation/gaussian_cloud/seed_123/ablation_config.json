@@ -1,0 +1,13 @@
+{
+  "name": "gaussian_cloud",
+  "description": "DYN_MODIS config \u2014 Gaussian noise cloud model baseline",
+  "use_bc": true,
+  "use_curriculum": true,
+  "use_smdp": true,
+  "use_cnn": "gaussian",
+  "use_mask": true,
+  "use_domrand": true,
+  "ent_coef_start": 0.05,
+  "ent_coef_end": 0.005,
+  "dynamic_bonus": 5.0
+}

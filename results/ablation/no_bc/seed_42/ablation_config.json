@@ -1,0 +1,13 @@
+{
+  "name": "no_bc",
+  "description": "Remove BC pretraining \u2014 isolate BC contribution",
+  "use_bc": false,
+  "use_curriculum": true,
+  "use_smdp": true,
+  "use_cnn": "real",
+  "use_mask": true,
+  "use_domrand": true,
+  "ent_coef_start": 0.05,
+  "ent_coef_end": 0.005,
+  "dynamic_bonus": 5.0
+}

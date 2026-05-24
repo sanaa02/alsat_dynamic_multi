@@ -1,0 +1,13 @@
+{
+  "name": "full_system",
+  "description": "Complete pipeline \u2014 BC + Curriculum + SMDP + real-vision CNN",
+  "use_bc": true,
+  "use_curriculum": true,
+  "use_smdp": true,
+  "use_cnn": "real",
+  "use_mask": true,
+  "use_domrand": true,
+  "ent_coef_start": 0.05,
+  "ent_coef_end": 0.005,
+  "dynamic_bonus": 5.0
+}

@@ -1,0 +1,93 @@
+ CUDA_VISIBLE_DEVICES=1 python scripts/models/cloud_cnn.py \
+    --quantize --model models/cloud_cnn_real.pt --data-dir data/modis_patches
+usage: cloud_cnn.py [-h] [--train] [--samples SAMPLES] [--epochs EPOCHS] [--model MODEL] [--test]
+cloud_cnn.py: error: unrecognized arguments: --quantize --data-dir data/modis_patches
+(thesis) sanaa@lamine-desktop:~/alsat_dynamic_improved$ CUDA_VISIBLE_DEVICES=1 python scripts/models/cloud_cnn.py   --model models/cloud_cnn_real.pt 
+/home/sanaa/anaconda3/envs/thesis/lib/python3.14/site-packages/torch/cuda/__init__.py:384: UserWarning: Found GPU0 NVIDIA GeForce GTX 1080 Ti which is of compute capability (CC) 6.1.
+The following list shows the CCs this version of PyTorch was built for and the hardware CCs it supports:
+- 7.5 which supports hardware CC >=7.5,<8.0
+- 8.0 which supports hardware CC >=8.0,<9.0 except {8.7}
+- 8.6 which supports hardware CC >=8.6,<9.0 except {8.7}
+- 9.0 which supports hardware CC >=9.0,<10.0
+- 10.0 which supports hardware CC >=10.0,<11.0 except {10.1}
+- 12.0 which supports hardware CC >=12.0,<13.0
+Please follow the instructions at https://pytorch.org/get-started/locally/ to install a PyTorch release that supports one of these CUDA versions: 12.6
+  _warn_unsupported_code(d, device_cc, code_ccs)
+/home/sanaa/anaconda3/envs/thesis/lib/python3.14/site-packages/torch/cuda/__init__.py:502: UserWarning: 
+NVIDIA GeForce GTX 1080 Ti with CUDA capability sm_61 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_75 sm_80 sm_86 sm_90 sm_100 sm_120.
+If you want to use the NVIDIA GeForce GTX 1080 Ti GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  queued_call()
+Predictor mode: cnn
+Traceback (most recent call last):
+  File "/home/sanaa/alsat_dynamic_improved/scripts/models/cloud_cnn.py", line 539, in <module>
+    pred = predictor.predict(truth)
+  File "/home/sanaa/alsat_dynamic_improved/scripts/models/cloud_cnn.py", line 380, in predict
+    patch = self._generator.generate(cloud_truth, seed=seed)
+  File "/home/sanaa/alsat_dynamic_improved/scripts/models/cloud_cnn.py", line 122, in generate
+    from scipy.ndimage import gaussian_filter
+ModuleNotFoundError: No module named 'scipy'
+(thesis) sanaa@lamine-desktop:~/alsat_dynamic_improved$ pip install scipy
+Collecting scipy
+  Using cached scipy-1.17.1-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+Requirement already satisfied: numpy<2.7,>=1.26.4 in /home/sanaa/anaconda3/envs/thesis/lib/python3.14/site-packages (from scipy) (2.4.4)
+Downloading scipy-1.17.1-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.2/35.2 MB 3.7 MB/s  0:00:09
+Installing collected packages: scipy
+Successfully installed scipy-1.17.1
+(thesis) sanaa@lamine-desktop:~/alsat_dynamic_improved$ CUDA_VISIBLE_DEVICES=1 python scripts/models/cloud_cnn.py   --model models/cloud_cnn_real.pt 
+/home/sanaa/anaconda3/envs/thesis/lib/python3.14/site-packages/torch/cuda/__init__.py:384: UserWarning: Found GPU0 NVIDIA GeForce GTX 1080 Ti which is of compute capability (CC) 6.1.
+The following list shows the CCs this version of PyTorch was built for and the hardware CCs it supports:
+- 7.5 which supports hardware CC >=7.5,<8.0
+- 8.0 which supports hardware CC >=8.0,<9.0 except {8.7}
+- 8.6 which supports hardware CC >=8.6,<9.0 except {8.7}
+- 9.0 which supports hardware CC >=9.0,<10.0
+- 10.0 which supports hardware CC >=10.0,<11.0 except {10.1}
+- 12.0 which supports hardware CC >=12.0,<13.0
+Please follow the instructions at https://pytorch.org/get-started/locally/ to install a PyTorch release that supports one of these CUDA versions: 12.6
+  _warn_unsupported_code(d, device_cc, code_ccs)
+/home/sanaa/anaconda3/envs/thesis/lib/python3.14/site-packages/torch/cuda/__init__.py:502: UserWarning: 
+NVIDIA GeForce GTX 1080 Ti with CUDA capability sm_61 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_75 sm_80 sm_86 sm_90 sm_100 sm_120.
+If you want to use the NVIDIA GeForce GTX 1080 Ti GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  queued_call()
+Predictor mode: cnn
+  truth=0.1  pred=0.946  diff=0.846
+  truth=0.3  pred=0.804  diff=0.504
+  truth=0.6  pred=0.820  diff=0.220
+  truth=0.8  pred=0.914  diff=0.114
+(thesis) sanaa@lamine-desktop:~/alsat_dynamic_improved$ python scripts/models/cloud_cnn.py   --model models/cloud_cnn_real.pt 
+/home/sanaa/anaconda3/envs/thesis/lib/python3.14/site-packages/torch/cuda/__init__.py:384: UserWarning: Found GPU0 NVIDIA GeForce GTX 1080 Ti which is of compute capability (CC) 6.1.
+The following list shows the CCs this version of PyTorch was built for and the hardware CCs it supports:
+- 7.5 which supports hardware CC >=7.5,<8.0
+- 8.0 which supports hardware CC >=8.0,<9.0 except {8.7}
+- 8.6 which supports hardware CC >=8.6,<9.0 except {8.7}
+- 9.0 which supports hardware CC >=9.0,<10.0
+- 10.0 which supports hardware CC >=10.0,<11.0 except {10.1}
+- 12.0 which supports hardware CC >=12.0,<13.0
+Please follow the instructions at https://pytorch.org/get-started/locally/ to install a PyTorch release that supports one of these CUDA versions: 12.6
+  _warn_unsupported_code(d, device_cc, code_ccs)
+/home/sanaa/anaconda3/envs/thesis/lib/python3.14/site-packages/torch/cuda/__init__.py:384: UserWarning: Found GPU1 NVIDIA GeForce GTX 1080 Ti which is of compute capability (CC) 6.1.
+The following list shows the CCs this version of PyTorch was built for and the hardware CCs it supports:
+- 7.5 which supports hardware CC >=7.5,<8.0
+- 8.0 which supports hardware CC >=8.0,<9.0 except {8.7}
+- 8.6 which supports hardware CC >=8.6,<9.0 except {8.7}
+- 9.0 which supports hardware CC >=9.0,<10.0
+- 10.0 which supports hardware CC >=10.0,<11.0 except {10.1}
+- 12.0 which supports hardware CC >=12.0,<13.0
+Please follow the instructions at https://pytorch.org/get-started/locally/ to install a PyTorch release that supports one of these CUDA versions: 12.6
+  _warn_unsupported_code(d, device_cc, code_ccs)
+/home/sanaa/anaconda3/envs/thesis/lib/python3.14/site-packages/torch/cuda/__init__.py:502: UserWarning: 
+NVIDIA GeForce GTX 1080 Ti with CUDA capability sm_61 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_75 sm_80 sm_86 sm_90 sm_100 sm_120.
+If you want to use the NVIDIA GeForce GTX 1080 Ti GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  queued_call()
+Predictor mode: cnn
+  truth=0.1  pred=0.946  diff=0.846
+  truth=0.3  pred=0.804  diff=0.504
+  truth=0.6  pred=0.820  diff=0.220
+  truth=0.8  pred=0.914  diff=0.114
+(thesis) sanaa@lamine-desktop:~/alsat_dynamic_improved$ 

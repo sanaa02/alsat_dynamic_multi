@@ -1,0 +1,22 @@
+[
+  {"name": "Algiers",      "lat_deg":  36.7538, "lon_deg":  3.0588, "alt_m":  25,  "priority": 1.00},
+  {"name": "Oran",         "lat_deg":  35.6911, "lon_deg": -0.6417, "alt_m":  10,  "priority": 0.95},
+  {"name": "Constantine",  "lat_deg":  36.3650, "lon_deg":  6.6147, "alt_m": 694,  "priority": 0.92},
+  {"name": "Annaba",       "lat_deg":  36.9000, "lon_deg":  7.7667, "alt_m":  10,  "priority": 0.90},
+  {"name": "Setif",        "lat_deg":  35.5547, "lon_deg":  5.1000, "alt_m":1081,  "priority": 0.88},
+  {"name": "Bejaia",       "lat_deg":  36.4650, "lon_deg":  4.6050, "alt_m":   5,  "priority": 0.85},
+  {"name": "Batna",        "lat_deg":  34.8600, "lon_deg":  5.7300, "alt_m":1058,  "priority": 0.82},
+  {"name": "Msila",        "lat_deg":  34.6500, "lon_deg":  3.2500, "alt_m": 440,  "priority": 0.80},
+  {"name": "Mostaganem",   "lat_deg":  35.3700, "lon_deg":  1.3200, "alt_m":  97,  "priority": 0.78},
+  {"name": "Chlef",        "lat_deg":  36.1833, "lon_deg":  1.3167, "alt_m": 131,  "priority": 0.75},
+  {"name": "Blida",        "lat_deg":  36.7200, "lon_deg":  2.4900, "alt_m": 240,  "priority": 0.73},
+  {"name": "Boumerdes",    "lat_deg":  36.8000, "lon_deg":  3.5500, "alt_m":  10,  "priority": 0.70},
+  {"name": "Tizi Ouzou",   "lat_deg":  36.8167, "lon_deg":  4.9000, "alt_m": 178,  "priority": 0.68},
+  {"name": "Souk Ahras",   "lat_deg":  36.2667, "lon_deg":  6.9500, "alt_m": 600,  "priority": 0.65},
+  {"name": "Khenchela",    "lat_deg":  35.4333, "lon_deg":  7.1500, "alt_m":1030,  "priority": 0.63},
+  {"name": "Djelfa",       "lat_deg":  34.6667, "lon_deg":  3.2500, "alt_m": 910,  "priority": 0.60},
+  {"name": "Laghouat",     "lat_deg":  33.8000, "lon_deg":  2.8650, "alt_m": 750,  "priority": 0.58},
+  {"name": "Ghardaia",     "lat_deg":  32.4833, "lon_deg":  3.6667, "alt_m": 460,  "priority": 0.55},
+  {"name": "Bechar",       "lat_deg":  31.6167, "lon_deg": -2.2167, "alt_m": 773,  "priority": 0.52},
+  {"name": "Illizi",       "lat_deg":  26.5000, "lon_deg":  8.4833, "alt_m": 560,  "priority": 0.50}
+]

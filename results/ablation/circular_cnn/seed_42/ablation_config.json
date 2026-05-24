@@ -1,0 +1,13 @@
+{
+  "name": "circular_cnn",
+  "description": "Circular CNN \u2014 synthetic patches encode ground truth (prior work baseline)",
+  "use_bc": true,
+  "use_curriculum": true,
+  "use_smdp": true,
+  "use_cnn": "circular",
+  "use_mask": true,
+  "use_domrand": true,
+  "ent_coef_start": 0.05,
+  "ent_coef_end": 0.005,
+  "dynamic_bonus": 5.0
+}

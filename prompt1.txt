@@ -1,0 +1,369 @@
+so this is an updated version of my system and  i need you to analyze it carefully and give me a full review and report about what is it doing and what are the strengths and weaknesses and is doing what i want generally or not exactly and what's the difference and here are the logs of my current training 
+
+
+ # Terminal 3 — still GPU 1 but sequential (GPU 0 is busy):
+CUDA_VISIBLE_DEVICES=1 python - << 'EOF'
+import subprocess, sys
+for v in ["no_curriculum", "no_smdp", "gaussian_cloud", "circular_cnn"]:
+    print(f"\n{'='*50}\nStarting {v}\n{'='*50}")
+    subprocess.run([
+        sys.executable, "-m", "scripts.training.ablation_runner",
+        "--variant", v, "--seeds", "42", "123", "456",
+        "--episodes", "2000", "--n-envs", "1"
+    ], env={**__import__("os").environ, "CUDA_VISIBLE_DEVICES": "1"})
+EOF
+==================================================
+Starting no_curriculum
+==================================================
+============================================================
+  no_curriculum  seed=42
+============================================================
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py:150: UserWarning: You are trying to run PPO on the GPU, but it is primarily intended to run on the CPU when not using a CNN policy (you are using ActorCriticPolicy which should be a MlpPolicy). See https://github.com/DLR-RM/stable-baselines3/issues/1245 for more info. You can pass `device='cpu'` or `export CUDA_VISIBLE_DEVICES=` to force using the CPU.Note: The model will train, but the GPU utilization will be poor and the training might take longer than on CPU.
+  warnings.warn(
+  Ep    25  r=+44.227  dyn_suc=8.4%  n_dyn_img=0  ent=0.0494
+  Ep    50  r=+51.583  dyn_suc=10.5%  n_dyn_img=10  ent=0.0488
+  Ep    75  r=+55.878  dyn_suc=11.8%  n_dyn_img=6  ent=0.0482
+  Ep   100  r=+60.518  dyn_suc=13.1%  n_dyn_img=19  ent=0.0476
+  Ep   125  r=+68.050  dyn_suc=15.2%  n_dyn_img=11  ent=0.0470
+  Ep   150  r=+74.674  dyn_suc=17.0%  n_dyn_img=26  ent=0.0464
+  Ep   175  r=+78.177  dyn_suc=18.0%  n_dyn_img=14  ent=0.0458
+  Ep   200  r=+84.032  dyn_suc=19.7%  n_dyn_img=8  ent=0.0452
+  Ep   225  r=+86.363  dyn_suc=20.8%  n_dyn_img=18  ent=0.0446
+  Ep   250  r=+87.643  dyn_suc=21.5%  n_dyn_img=32  ent=0.0440
+  Ep   275  r=+89.453  dyn_suc=22.1%  n_dyn_img=18  ent=0.0435
+  Ep   300  r=+84.872  dyn_suc=21.5%  n_dyn_img=15  ent=0.0429
+  Ep   325  r=+81.927  dyn_suc=20.7%  n_dyn_img=16  ent=0.0423
+  Ep   350  r=+80.940  dyn_suc=20.7%  n_dyn_img=21  ent=0.0417
+  Ep   375  r=+87.540  dyn_suc=22.8%  n_dyn_img=30  ent=0.0411
+  Ep   400  r=+91.558  dyn_suc=23.8%  n_dyn_img=18  ent=0.0405
+  Ep   425  r=+95.159  dyn_suc=24.9%  n_dyn_img=18  ent=0.0399
+  Ep   450  r=+98.775  dyn_suc=26.0%  n_dyn_img=27  ent=0.0393
+
+here's my initial research proposal 
+
+
+
+search for what others did in this similar project to compare it with mine
+
+
+ CUDA_VISIBLE_DEVICES=0 python -m scripts.training.train_ppo_smdp_full \
+    --bc --curriculum --eval \
+    --episodes 2000 --event-rate 4.0 \
+    --n-envs 2 --seed 42 \
+    --action-mask --domain-rand \
+    --cnn-model models/cloud_cnn_real.pt \
+    --ent-coef 0.05
+Using device: cuda
+============================================================
+  ALSAT-EO-1  Phase 3  Master Training Pipeline
+============================================================
+  Config  : dyn_real_vision  obs=56  acts=24
+  Safety  : ON (default)
+  Episodes: 2000  rate=4.0/hr
+Using device: cuda
+Using device: cuda
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+
+============================================================
+  Stage 1 -- Behavioral Cloning
+============================================================
+  Loaded 7,285 transitions from /home/sanaa/alsat_dynamic_improved/data/demos.npz
+  BC pretraining (50 epochs)...
+  BC: using 4339/7285 non-drift transitions (60% of demos)
+  BC weights: min=0.35  max=2.00  (using 22 distinct actions)
+    BC ep  10/50  loss=3.0011  acc=35.24%
+    BC ep  20/50  loss=2.9877  acc=36.21%
+    BC ep  30/50  loss=2.9619  acc=37.24%
+    BC ep  40/50  loss=2.9566  acc=37.34%
+    BC ep  50/50  loss=2.9498  acc=37.38%
+  BC done.  Best loss=2.9498
+
+============================================================
+  Stage 2 -- Curriculum Warm-up
+============================================================
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+  Ep 1/200  phase=static_clear  r=+7.906
+  Ep 26/200  phase=static_clear  r=+7.407
+  Ep 51/200  phase=static_clear  r=+1.896
+
+[CURRICULUM] 'static_clear' -> 'static_clouds'  (mean_r=+7.113)
+
+  Ep 76/200  phase=static_clouds  r=+2.963
+  Ep 101/200  phase=static_clouds  r=+2.719
+  Ep 126/200  phase=static_clouds  r=+9.472
+
+[CURRICULUM] 'static_clouds' -> 'dynamic_sparse'  (mean_r=+5.425)
+
+  Ep 151/200  phase=dynamic_sparse  r=+8.544
+  Ep 176/200  phase=dynamic_sparse  r=+3.543
+Curriculum: phase=dynamic_sparse  idx=2
+  Graduated 'static_clear' ep=53 r=+7.113
+  Graduated 'static_clouds' ep=75 r=+5.425
+
+============================================================
+  Stage 3 -- SMDP-PPO  cfg=dyn_real_vision  obs=56
+============================================================
+  Live log  → /home/sanaa/alsat_dynamic_improved/results/training_live.json
+  Checkpoints → /home/sanaa/alsat_dynamic_improved/models/checkpoints/ppo_smdp_epXXXXX.zip
+  Ep   10  r=  +1.263  avg10=+17.421  cf=100%(avg=99%)  dyn_suc=0%(avg=3%)  dyn_act=2.7%(avg=11.4%)  ent=0.0100  
+  Ep   20  r= +10.396  avg10=+45.070  cf=100%(avg=100%)  dyn_suc=2%(avg=9%)  dyn_act=20.1%(avg=30.1%)  ent=0.0100  🎯 DYN!
+  Ep   30  r= +28.290  avg10=+60.649  cf=100%(avg=95%)  dyn_suc=5%(avg=14%)  dyn_act=37.6%(avg=35.9%)  ent=0.0100  🎯 DYN!
+   2% ━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5,108/288,000  [ 0:06:23 < 6:38:26 , 1
+  Ep   40  r= +39.611  avg10=+101.587  cf=93%(avg=98%)  dyn_suc=10%(avg=22%)  dyn_act=45.9%(avg=54.8%)  ent=0.0100  🎯 DYN!
+  Ep   50  r=+131.111  avg10=+109.970  cf=96%(avg=97%)  dyn_suc=28%(avg=25%)  dyn_act=51.0%(avg=62.6%)  ent=0.0100  🎯 DYN!
+         Actions → static=49%  dyn=51%  drift=0%  | n_dyn_detected=89  n_dyn_imaged=25  | slew=2936°
+  Ep   60  r=+159.827  avg10=+116.366  cf=100%(avg=98%)  dyn_suc=34%(avg=26%)  dyn_act=67.1%(avg=63.3%)  ent=0.0100  🎯 DYN!
+  Ep   70  r= +86.718  avg10=+123.098  cf=89%(avg=97%)  dyn_suc=21%(avg=28%)  dyn_act=66.9%(avg=70.0%)  ent=0.0100  🎯 DYN!
+  Ep   80  r=+135.187  avg10=+131.301  cf=100%(avg=97%)  dyn_suc=32%(avg=31%)  dyn_act=97.2%(avg=81.2%)  ent=0.0100  🎯 DYN!
+  Ep   90  r= +65.718  avg10=+110.407  cf=100%(avg=99%)  dyn_suc=14%(avg=24%)  dyn_act=67.3%(avg=70.4%)  ent=0.0100  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/alsat_dynamic_improved/models/checkpoints/ppo_smdp_ep00100.zip
+  Ep  100  r= +57.944  avg10=+108.989  cf=92%(avg=94%)  dyn_suc=14%(avg=26%)  dyn_act=74.7%(avg=78.7%)  ent=0.0100  🎯 DYN!
+         Actions → static=25%  dyn=75%  drift=0%  | n_dyn_detected=84  n_dyn_imaged=12  | slew=1882°
+  Ep  110  r=+143.254  avg10=+128.385  cf=100%(avg=96%)  dyn_suc=31%(avg=29%)  dyn_act=80.0%(avg=82.8%)  ent=0.0100  🎯 DYN!
+  Ep  120  r=+115.478  avg10=+120.600  cf=92%(avg=96%)  dyn_suc=28%(avg=27%)  dyn_act=77.2%(avg=82.5%)  ent=0.0100  🎯 DYN!
+  Ep  130  r=+161.754  avg10=+120.338  cf=100%(avg=98%)  dyn_suc=38%(avg=28%)  dyn_act=95.1%(avg=85.3%)  ent=0.0100  🎯 DYN!
+  Ep  140  r=+126.418  avg10=+125.559  cf=100%(avg=98%)  dyn_suc=26%(avg=27%)  dyn_act=77.8%(avg=80.7%)  ent=0.0100  🎯 DYN!
+  Ep  150  r=+110.293  avg10=+135.746  cf=100%(avg=99%)  dyn_suc=26%(avg=32%)  dyn_act=96.5%(avg=91.9%)  ent=0.0100  🎯 DYN!
+         Actions → static=3%  dyn=97%  drift=0%  | n_dyn_detected=81  n_dyn_imaged=21  | slew=596°
+  Ep  160  r=+184.436  avg10=+120.334  cf=100%(avg=100%)  dyn_suc=40%(avg=27%)  dyn_act=95.9%(avg=94.9%)  ent=0.0100  🎯 DYN!
+  Ep  170  r=+154.484  avg10=+117.419  cf=95%(avg=97%)  dyn_suc=34%(avg=27%)  dyn_act=80.3%(avg=90.6%)  ent=0.0100  🎯 DYN!
+  Ep  180  r=+153.072  avg10=+126.826  cf=100%(avg=99%)  dyn_suc=33%(avg=28%)  dyn_act=71.8%(avg=85.9%)  ent=0.0100  🎯 DYN!
+  Ep  190  r=+110.817  avg10=+111.159  cf=100%(avg=97%)  dyn_suc=23%(avg=25%)  dyn_act=73.7%(avg=82.8%)  ent=0.0100  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/alsat_dynamic_improved/models/checkpoints/ppo_smdp_ep00200.zip
+  Ep  200  r= +77.029  avg10=+110.737  cf=100%(avg=95%)  dyn_suc=16%(avg=26%)  dyn_act=93.9%(avg=82.7%)  ent=0.0100  🎯 DYN!
+         Actions → static=6%  dyn=94%  drift=0%  | n_dyn_detected=87  n_dyn_imaged=14  | slew=902°
+  Ep  210  r=+122.484  avg10=+129.079  cf=92%(avg=96%)  dyn_suc=28%(avg=29%)  dyn_act=89.7%(avg=84.6%)  ent=0.0100  🎯 DYN!
+  Ep  220  r=+126.895  avg10=+116.368  cf=93%(avg=94%)  dyn_suc=32%(avg=28%)  dyn_act=92.5%(avg=84.6%)  ent=0.0100  🎯 DYN!
+  Ep  230  r=  +0.000 ← DRIFT/NO-ACCESS  avg10=+121.291  cf=0%(avg=87%)  dyn_suc=0%(avg=28%)  dyn_act=86.8%(avg=84.7%)  ent=0.0100  
+  Ep  240  r=+218.741  avg10=+148.000  cf=100%(avg=95%)  dyn_suc=48%(avg=33%)  dyn_act=85.1%(avg=86.8%)  ent=0.0100  🎯 DYN!
+  Ep  250  r=+152.963  avg10=+134.625  cf=89%(avg=95%)  dyn_suc=36%(avg=31%)  dyn_act=74.8%(avg=84.2%)  ent=0.0100  🎯 DYN!
+         Actions → static=25%  dyn=75%  drift=0%  | n_dyn_detected=89  n_dyn_imaged=32  | slew=1169°
+  Ep  260  r=+204.445  avg10=+159.582  cf=100%(avg=96%)  dyn_suc=43%(avg=36%)  dyn_act=85.6%(avg=86.7%)  ent=0.0100  🎯 DYN!
+  Ep  270  r=+133.420  avg10=+155.050  cf=100%(avg=98%)  dyn_suc=28%(avg=34%)  dyn_act=77.9%(avg=86.6%)  ent=0.0100  🎯 DYN!
+  Ep  280  r=+112.504  avg10=+144.300  cf=92%(avg=93%)  dyn_suc=27%(avg=33%)  dyn_act=97.9%(avg=87.1%)  ent=0.0100  🎯 DYN!
+  Ep  290  r=+137.851  avg10=+142.028  cf=100%(avg=98%)  dyn_suc=30%(avg=30%)  dyn_act=85.0%(avg=88.5%)  ent=0.0100  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/alsat_dynamic_improved/models/checkpoints/ppo_smdp_ep00300.zip
+  Ep  300  r=+176.429  avg10=+165.410  cf=95%(avg=97%)  dyn_suc=40%(avg=37%)  dyn_act=93.9%(avg=93.0%)  ent=0.0100  🎯 DYN!
+         Actions → static=6%  dyn=94%  drift=0%  | n_dyn_detected=88  n_dyn_imaged=35  | slew=1421°
+  Ep  310  r=+224.084  avg10=+183.817  cf=95%(avg=96%)  dyn_suc=53%(avg=41%)  dyn_act=100.0%(avg=92.9%)  ent=0.0100  🎯 DYN!
+  Ep  320  r=+142.315  avg10=+150.931  cf=100%(avg=96%)  dyn_suc=33%(avg=35%)  dyn_act=99.3%(avg=87.9%)  ent=0.0100  🎯 DYN!
+  Ep  330  r= +88.513  avg10=+130.195  cf=88%(avg=94%)  dyn_suc=24%(avg=30%)  dyn_act=68.5%(avg=77.4%)  ent=0.0100  🎯 DYN!
+  Ep  340  r=+144.186  avg10=+139.464  cf=100%(avg=95%)  dyn_suc=31%(avg=32%)  dyn_act=69.8%(avg=73.3%)  ent=0.0100  🎯 DYN!
+  18% ━━━━━━━━━━━━━━━━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50,946/288,000  [ 0:58:20 < 4:32:02 , 15 it/s ]
+
+
+
+CUDA_VISIBLE_DEVICES=1 python -m scripts.training.ablation_runner \
+    --seeds 42 123 456 --episodes 2000 --n-envs 1 \
+    --variant full_system &
+CUDA_VISIBLE_DEVICES=1 python -m scripts.training.ablation_runner \
+    --seeds 42 123 456 --episodes 2000 --n-envs 1 \
+    --variant no_bc
+[1] 18020
+
+============================================================
+  no_bc  seed=42
+============================================================
+
+============================================================
+  full_system  seed=42
+============================================================
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:84.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py:150: UserWarning: You are trying to run PPO on the GPU, but it is primarily intended to run on the CPU when not using a CNN policy (you are using ActorCriticPolicy which should be a MlpPolicy). See https://github.com/DLR-RM/stable-baselines3/issues/1245 for more info. You can pass `device='cpu'` or `export CUDA_VISIBLE_DEVICES=` to force using the CPU.Note: The model will train, but the GPU utilization will be poor and the training might take longer than on CPU.
+  warnings.warn(
+/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py:150: UserWarning: You are trying to run PPO on the GPU, but it is primarily intended to run on the CPU when not using a CNN policy (you are using ActorCriticPolicy which should be a MlpPolicy). See https://github.com/DLR-RM/stable-baselines3/issues/1245 for more info. You can pass `device='cpu'` or `export CUDA_VISIBLE_DEVICES=` to force using the CPU.Note: The model will train, but the GPU utilization will be poor and the training might take longer than on CPU.
+  warnings.warn(
+2026-05-23 12:01:39,783                                WARNING    Creating logger for new env on PID=18021. Old environments in process may now log times incorrectly.
+WARNING:bsk_rl:Creating logger for new env on PID=18021. Old environments in process may now log times incorrectly.
+2026-05-23 12:04:21,734                                WARNING    Creating logger for new env on PID=18021. Old environments in process may now log times incorrectly.
+WARNING:bsk_rl:Creating logger for new env on PID=18021. Old environments in process may now log times incorrectly.
+2026-05-23 12:06:58,785                                WARNING    Creating logger for new env on PID=18021. Old environments in process may now log times incorrectly.
+WARNING:bsk_rl:Creating logger for new env on PID=18021. Old environments in process may now log times incorrectly.
+2026-05-23 12:09:53,869                                WARNING    Creating logger for new env on PID=18021. Old environments in process may now log times incorrectly.
+
+
+
+On-Board Learning-Based Scheduler with Vision-Based Look-Ahead for Agile Earth
+
+Observation
+
+Student and Host Information
+ Student: Sanaa Bensaid
+ Programme: Master in Artificial Intelligence and Data Science
+ Institution: École Supérieure d’Informatique, Sidi Bel Abbès (ESI-SBA)
+ Academic Year: 2025–2026
+ Project Type: Final-Year Project (FYP) in collaboration with ASAL
+1. Background and Motivation
+Earth observation (EO) satellites play a central role in environmental monitoring, natural hazard assessment, and
+climate research. Nevertheless, their scientific return is constrained by several factors: fixed orbital trajectories,
+limited agility, restricted onboard power, and downlink bandwidth. A substantial fraction of collected images
+can be partially or fully unusable due to cloud cover or suboptimal targeting, while attitude maneuvers and
+sensor operations consume scarce resources.
+Traditional planning approaches typically generate observation schedules on the ground hours in advance. Such
+static plans cannot adequately react to rapidly evolving phenomena, such as cloud dynamics or sudden onset of
+wildfires and floods. Recent work on dynamic targeting has shown that equipping satellites with a look-ahead
+sensor and a learning-based onboard planner can significantly improve the selection of observation
+opportunities, increasing the amount of useful data gathered under resource constraints.
+In this context, Algeria’s ALSAT platforms offer a unique opportunity to explore on-board autonomy tailored
+to national priorities such as wildfire and flood monitoring. This project proposes to design and evaluate an on-
+board learning-based scheduling system that uses a low-resolution forward-looking camera to anticipate
+cloud cover and autonomously choose which targets to image and when, under realistic orbital, attitude, and
+power constraints.
+2. Problem Statement
+The core problem addressed by this project is the following:
+Given a satellite carrying a primary imaging instrument and a forward-looking camera, operating along a known
+orbit and subject to power and attitude constraints, how can an onboard decision-making system select, in real
+time, both (i) which ground targets to image and (ii) when to image them, so as to maximize the number of high-
+quality, high-priority observations?
+Key challenges include:
+ Uncertain environment: Cloud cover and atmospheric conditions evolve on time scales comparable to
+orbital motion.
+ Limited resources: The satellite must respect constraints on battery state, pointing agility, and
+instrument duty cycle.
+ Real-time constraints: Onboard decisions must be made within strict computational and timing
+budgets.
+ Mission priorities: Some geographical regions and phenomena (e.g., active wildfires, floods, critical
+infrastructure) have higher priority than others, and this must be reflected in the scheduling logic.
+The project seeks a learning-based, on-board solution that uses information from a vision-based look-ahead
+module to improve scheduling decisions beyond what static or purely heuristic planners can achieve.
+3. Project Objectives
+The project is structured around the following main objectives:
+1. Formal Modelling of the Scheduling Problem
+o Model the satellite imaging scheduling task as a sequential decision-making problem (e.g.,
+Markov Decision Process or semi-Markov Decision Process), where the state includes:
+ Cloud or visibility information from the forward-looking camera.
+
+ Target priorities on the ground track.
+ Power and battery status.
+ Attitude and orbital context (e.g., current pointing, angular distance to candidate
+targets).
+
+2. Design of a Learning-Based Scheduling Policy
+o Develop an onboard decision policy that maps the current satellite state to imaging actions:
+ Selection of a target (including the possibility of “no imaging”).
+ Optionally, selection of the next decision time within a given look-ahead window.
+o Candidate methods may include reinforcement learning (e.g., actor–critic, Deep Q-Networks),
+imitation learning (e.g., behavioral cloning from expert or heuristic policies), or hybrid
+approaches.
+
+3. Development of a Vision-Based Look-Ahead Module
+o Implement a lightweight vision module for the forward-looking camera to estimate cloud
+presence or visibility conditions ahead of the satellite:
+ Possible techniques include compact convolutional neural networks, lightweight
+vision transformers, or classical image processing enriched with learned components.
+o Emphasis will be placed on low model complexity and low latency compatible with edge or
+flight-like hardware.
+
+4. Integration in a Realistic Simulation Environment
+o Integrate the learning-based scheduler and vision module into a satellite simulation
+environment configured for ALSAT-type orbits and scenarios representative of Algerian
+wildfires and floods.
+o Potential simulation frameworks include spacecraft dynamics and EO mission simulators
+(e.g., Basilisk/BSK-style tools, GMAT-based environments, or ASAL internal frameworks),
+combined with real or realistic EO datasets.
+
+5. Explainability and Operator Trust
+o Design mechanisms to interpret and visualize the scheduler’s decisions, enabling operators to
+understand:
+ Why a specific target was imaged or skipped.
+ How cloud estimates, target priority, and power status influenced the decision.
+o Example techniques include saliency or attribution maps, feature-importance scores, and rule-
+based post-hoc explanations.
+4. Work Plan (Indicative Timeline – 7 Months)
+ December – January
+o Detailed literature review on dynamic targeting, learning-based satellite scheduling, and edge
+vision.
+o Specification of the state–action–reward model and identification of candidate learning and
+vision techniques.
+o Selection and initial configuration of the simulation environment and datasets.
+ February
+o Implementation and validation of the orbital and platform simulation (ALSAT-like orbit,
+simplified attitude, and power models).
+o Integration of a basic forward-looking camera model.
+ March – April
+o Development of the first version of the learning-based scheduler (e.g., an initial reinforcement
+learning or imitation learning approach).
+o Implementation of the initial vision-based cloud/visibility estimator and its coupling to the
+scheduler’s state.
+o Early experiments and exploratory tuning.
+ May
+
+o Systematic experimental campaign on wildfire and flood case studies; comparison with
+baseline planners.
+o Refinement of models, hyperparameters, and reward functions; initial explainability tools.
+ June
+o Consolidation and documentation of the software prototype.
+o Writing of the thesis, preparation of the oral defense, and drafting of a publication-oriented
+manuscript or extended report.
+
+5. Conclusion
+This project proposes a learning-based, vision-informed on-board scheduling system for Earth observation
+satellites, with a specific focus on ALSAT-type platforms and Algerian disaster monitoring needs. By combining
+sequential decision-making, lightweight vision models, and realistic simulation, the work aims to advance the
+state of autonomous EO planning and to contribute concrete tools and insights that can be leveraged by ASAL
+and the wider research community.
+References
+Dynamic targeting and learning-based EO planning
+1. Breitfeld, A., Candela, A., Delfa, J., Kangaslahti, A., Zilberstein, I., Chien, S., &amp; Wettergreen, D.
+(2025). Learning-Based Planning for Improving Science Return of Earth Observation
+Satellites. arXiv:2509.07997.​
+2. Breitfeld, A., Candela, A., Chien, S., et al. (2024). Reinforcement and Imitation Learning for
+Improving Science Return of Earth-Observing Satellites. i-SAIRAS 2024.​
+3. Kangaslahti, A., Candela, A., Chien, S., et al. (2024). Dynamic Targeting of Satellite Observations
+Incorporating Observation Value Decay and Operational Constraints. ICRA 2024 (or similar robotics
+venue).​
+4. Candela, A., Swope, J., &amp; Chien, S. (2024). Search Applications for Integrated Planning and Execution
+of Satellite Observations using Dynamic Targeting. PlanRob / ICAPS workshop.​
+5. NASA JPL AIG (2020–2025). Dynamic Tasking / Dynamic Targeting project page and technical
+notes. NASA JPL AI Group technical documentation.​
+RL and learning for satellite scheduling / agile EO
+6. Herrmann, A., Schaub, H., et al. (2024). Single-Agent Reinforcement Learning for Scalable Earth-
+Observing Scheduling. Acta Astronautica (or related journal).​
+7. Mission Sequence Model and Deep Reinforcement Learning-Based Intelligent Mission Planning for
+Earth Observation Satellites (2025). Remote Sensing or similar open-access journal.​
+8. Deep Reinforcement Learning-Assisted Large Neighborhood Search for Earth-Observing Satellite
+Scheduling (2025). Expert Systems with Applications (in press).​
+9. Deep Reinforcement Learning–Driven Multi-Satellite Collaborative Observation Planning for Natural
+Disasters (2025). International Journal of Digital Earth (or similar).​
+10. Wei, X., et al. (2021). Multi-objective Deep Reinforcement Learning and Parameter Transfer for
+Satellite Task Scheduling. Aerospace Science and Technology.​
+11. Chen, J., et al. (2021). Scheduling Agile Earth Observation Satellites with Recurrent Neural
+Networks. Acta Astronautica.​
+12. Bérignon, T., et al. (2021). Mission Planning for Earth Observation Satellite with Dynamic Targets and
+Cloud Cover Uncertainty. Aerospace Science and Technology.​
+AI for autonomous satellites and on-board edge computing
+13. Thangavel, K., et al. (2024). Artificial Intelligence for Trusted Autonomous Satellite Operations: A
+Survey. Acta Astronautica.​
+14. Fontanesi, G., et al. (2025). Artificial Intelligence for Satellite Communication: A Survey. Digital
+Communications and Networks (or similar).​
+15. Applications of AI in Space Domain (2025). ACM Computing Surveys or Communications of the ACM
+(space AI overview).​
+16. NASA JPL (2025). How NASA Is Testing AI to Make Earth-Observing Satellites Smarter. JPL News
+Feature on Dynamic Targeting flight experiments.​
+17. UN-SPIDER / Wu et al. (2024). AI-Enabled Onboard Edge Computing for Satellite Intelligence in
+Disaster Management. UN-SPIDER technical note / review.​
+18. Small Sat Trends and Cyber Considerations (2025). Space ISAC White Paper – section on autonomy
+and onboard AI.​
+On-board AI &amp; dynamic targeting mission concepts
+
+19. Candela, A., Swope, J., Bosch-Lluis, X., et al. (2021–2023). Dynamic Targeting to Improve Earth
+Science Missions. AIAA / IEEE conference papers and technical reports.​
+20. SMICES / Smart Ice Cloud Sensing mission concept papers (2021–2023). Machine Learning and AI
+for Storm and Cloud Targeting from Spaceborne Radar-Radiometer Systems. NASA ESTO / IIP-19
+publications.​
+21. “Dynamic Targeting on CogniSAT-6 – Flight Report” (2025). ASTRA / i-SAIRAS 2025 slides and
+paper.​
+Optimization and planning for EO missions (useful background)
+22. Quantum Algorithms Applied to Satellite Mission Planning for Earth Observation (2023). Machine
+Learning and Quantum Computing for EO mission optimization.​
+23. Search and Heuristic Planning for Satellite Dynamic Targeting (2023–2024). Workshop papers linked
+to the JPL DT project.

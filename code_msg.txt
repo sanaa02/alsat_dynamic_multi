@@ -1,0 +1,280 @@
+I've hit the CodeWords daily limit for uploads, so I'll give you all the code directly to apply manually. Here's every change organized clearly:
+
+---
+
+## Step 1 — Fix the crash first
+
+In `scripts/training/train_ppo_smdp_full.py`, find and **delete** these 2 lines:
+```python
+        if self._ep_count == 10:
+                print(f"  [DEBUG] episode_metrics keys: {list(m.keys())}")
+```
+
+---
+
+## Step 2 — LOW #3: Event Urgency Decay
+
+**`scripts/core/dynamic_event.py`** — add this method to `DynamicEvent` after `remaining_time()`:
+```python
+    def get_current_priority(self, sim_time: float) -> float:
+        """Urgency: priority ramps +0.2 as event approaches expiration."""
+        total = self.expiration_time - self.appearance_time
+        if total <= 0.0:
+            return self.priority
+        fraction_elapsed = 1.0 - (self.remaining_time(sim_time) / total)
+        return min(1.0, self.priority + 0.2 * float(fraction_elapsed))
+```
+
+In the same file, find `_score` in `EventManager.get_slots()` and change:
+```python
+# FIND:
+        def _score(evt: DynamicEvent) -> float:
+            slew = _slew_angle_safe(satellite, evt)
+            return evt.priority - 0.1 * (slew / MAX_OFFNADIR_RAD)
+# REPLACE WITH:
+        def _score(evt: DynamicEvent) -> float:
+            slew     = _slew_angle_safe(satellite, evt)
+            priority = evt.get_current_priority(sim_time)
+            return priority - 0.1 * (slew / MAX_OFFNADIR_RAD)
+```
+
+**`scripts/core/env_alsat_dynamic.py`** — find the dynamic obs builder and change `evt.priority` to `evt.get_current_priority(now)` (there should be one occurrence inside the dynamic slot feature builder).
+
+---
+
+## Step 3 — LOW #1: Create `scripts/wrappers/action_mask_wrapper.py`
+
+Create this new file:
+
+```python
+#!/usr/bin/env python3
+"""
+action_mask_wrapper.py  --  Constraint-Aware Action Masking
+Masks physically impossible actions (Wang et al. AEOS-Former NeurIPS 2025).
+Install sb3-contrib for training-time masking: pip install sb3-contrib
+"""
+import logging, numpy as np, gymnasium as gym
+logger = logging.getLogger(__name__)
+N_STATIC, N_DYN = 20, 3
+
+
+def compute_action_mask(env: gym.Env) -> np.ndarray:
+    """True = action is feasible right now."""
+    n    = env.action_space.n
+    mask = np.ones(n, dtype=bool)
+    try:
+        obj = env
+        while hasattr(obj, "env"): obj = obj.env
+        base = getattr(obj, "unwrapped", obj)
+        sat  = base.satellites[0]
+        now  = float(sat.simulator.sim_time)
+        opps = getattr(sat, "upcoming_opportunities", [])
+
+        for i, tgt in enumerate(sat.scenario.targets):
+            if i >= N_STATIC: break
+            accessible = False
+            for opp in opps:
+                try:
+                    o = opp.get("object") if isinstance(opp, dict) else getattr(opp, "object", None)
+                    w = opp.get("window", [0,1]) if isinstance(opp, dict) else getattr(opp, "window", [0,1])
+                    t = opp.get("type","") if isinstance(opp, dict) else getattr(opp, "type","")
+                    if o is tgt and t == "target" and w[0] <= now <= w[1]:
+                        accessible = True; break
+                except Exception: pass
+            mask[i] = accessible
+
+        mgr = None
+        obj = env
+        while hasattr(obj, "env"):
+            mgr = getattr(obj, "_mgr", None)
+            if mgr: break
+            obj = obj.env
+        if mgr:
+            slots = mgr.get_slots(sat, now)
+            for j in range(N_DYN):
+                mask[N_STATIC + j] = (j < len(slots) and slots[j] is not None)
+    except Exception as exc:
+        logger.debug(f"mask error: {exc}"); mask[:] = True
+
+    mask[n - 1] = True  # drift always valid
+    return mask
+
+
+class ActionMaskWrapper(gym.Wrapper):
+    def get_action_mask(self): return compute_action_mask(self)
+
+
+class InferenceTimeMaskWrapper(gym.Wrapper):
+    """Fallback for when sb3-contrib not installed."""
+    def step(self, action):
+        mask = compute_action_mask(self)
+        if not mask[int(action)]:
+            valid = np.where(mask)[0]
+            action = int(valid[0]) if len(valid) > 0 else self.action_space.n - 1
+        return self.env.step(action)
+    def get_action_mask(self): return compute_action_mask(self)
+
+
+def make_masked_env(base_env: gym.Env) -> gym.Env:
+    try:
+        from sb3_contrib.common.wrappers import ActionMasker
+        return ActionMasker(ActionMaskWrapper(base_env), lambda e: e.get_action_mask())
+    except ImportError:
+        logger.warning("sb3-contrib not found; inference-only masking. pip install sb3-contrib")
+        return InferenceTimeMaskWrapper(base_env)
+```
+
+---
+
+## Step 4 — MEDIUM #4: Create `scripts/wrappers/domain_randomization_wrapper.py`
+
+```python
+#!/usr/bin/env python3
+"""
+domain_randomization_wrapper.py  --  Domain Randomisation
+Per-episode randomisation of CNN noise, cloud bias, and slew cost
+for fault-tolerant policies (Nagano & Schaub 2025).
+"""
+import logging, numpy as np, gymnasium as gym
+logger = logging.getLogger(__name__)
+
+
+class DomainRandomizationWrapper(gym.Wrapper):
+    def __init__(self, env, noise_range=(0.02, 0.15),
+                 bias_range=(-0.05, 0.05), slew_range=(0.7, 1.3),
+                 enabled=True, seed=None):
+        super().__init__(env)
+        self._rng   = np.random.default_rng(seed)
+        self._noise = noise_range
+        self._bias  = bias_range
+        self._slew  = slew_range
+        self._on    = enabled
+
+    def reset(self, **kwargs):
+        if self._on:
+            noise = float(self._rng.uniform(*self._noise))
+            bias  = float(self._rng.uniform(*self._bias))
+            slew  = float(self._rng.uniform(*self._slew))
+            self._set_cnn(noise, bias)
+            self._set_slew(slew)
+            logger.debug(f"DR: noise={noise:.3f} bias={bias:+.3f} slew={slew:.2f}")
+        return self.env.reset(**kwargs)
+
+    def _find_cm(self):
+        obj = self
+        while hasattr(obj, "env"):
+            for a in ("_cloud_model", "cloud_model"):
+                cm = getattr(obj, a, None)
+                if cm: return cm
+            obj = obj.env
+        base = getattr(obj, "unwrapped", obj)
+        for a in ("_cloud_model", "cloud_model"):
+            cm = getattr(base, a, None)
+            if cm: return cm
+        return None
+
+    def _set_cnn(self, noise, bias):
+        cm = self._find_cm()
+        if not cm: return
+        for a in ("_noise_std", "noise_std"):
+            if hasattr(cm, a): setattr(cm, a, noise); break
+        for a in ("_bias", "bias"):
+            if hasattr(cm, a): setattr(cm, a, bias); break
+
+    def _set_slew(self, mult):
+        try:
+            obj = self
+            while hasattr(obj, "env"): obj = obj.env
+            getattr(obj, "unwrapped", obj).satellites[0]._slew_energy_multiplier = mult
+        except Exception: pass
+```
+
+---
+
+## Step 5 — LOW #2: Add quantization to `scripts/models/cloud_cnn.py`
+
+Add this function before the `if __name__ == "__main__":` block:
+
+```python
+def quantize_cloud_cnn(model_path, patches_dir=None, out_path=None, n_calib=200):
+    """INT8 quantization for deployment-ready CNN (CogniSAT-6 style)."""
+    if not TORCH_AVAILABLE:
+        raise ImportError("PyTorch required.")
+    import os as _os
+    from torch.quantization import quantize_dynamic
+
+    out_path = out_path or model_path.replace(".pt", "_int8.pt")
+    model = CloudCNN()
+    model.load_state_dict(torch.load(model_path, map_location="cpu", weights_only=True))
+    model.eval()
+    fp32_kb = _os.path.getsize(model_path) / 1024
+
+    model_int8 = quantize_dynamic(model, {nn.Conv2d, nn.Linear}, dtype=torch.qint8)
+
+    if patches_dir and _os.path.isdir(patches_dir):
+        cal_p, cal_l = [], []
+        for f in sorted(x for x in _os.listdir(patches_dir) if x.endswith(".npy"))[:n_calib]:
+            try:
+                p = np.load(_os.path.join(patches_dir, f))
+                if p.shape == (3, PATCH_SIZE, PATCH_SIZE):
+                    cal_p.append(p.astype(np.float32))
+                    cal_l.append(float(f.split("cf", 1)[1].split("_")[0]))
+            except Exception: pass
+        if cal_p:
+            t_p = torch.FloatTensor(np.array(cal_p))
+            t_l = torch.FloatTensor(cal_l)
+            with torch.no_grad():
+                p32 = model(t_p).squeeze(1); p8 = model_int8(t_p).squeeze(1)
+            print(f"  FP32: RMSE={torch.sqrt(torch.mean((p32-t_l)**2)):.4f}  acc={((p32>0.5)==(t_l>0.5)).float().mean():.2%}")
+            print(f"  INT8: RMSE={torch.sqrt(torch.mean((p8 -t_l)**2)):.4f}  acc={((p8 >0.5)==(t_l>0.5)).float().mean():.2%}")
+
+    torch.save(model_int8, out_path)
+    int8_kb = _os.path.getsize(out_path) / 1024
+    print(f"  {fp32_kb:.0f} KB → {int8_kb:.0f} KB  ({100*(1-int8_kb/fp32_kb):.0f}% smaller)  →  {out_path}")
+    return out_path
+```
+
+---
+
+## Step 6 — Wire into `env_dynamic_factory.py` and `train_ppo_smdp_full.py`
+
+**`env_dynamic_factory.py`** — add `with_action_mask=False, with_domain_rand=False, domain_rand_seed=None` to `make_env()` signature, and before `return env`:
+```python
+    if with_domain_rand:
+        try:
+            from wrappers.domain_randomization_wrapper import DomainRandomizationWrapper
+            env = DomainRandomizationWrapper(env, seed=domain_rand_seed)
+        except ImportError: pass
+    if with_action_mask:
+        try:
+            from wrappers.action_mask_wrapper import make_masked_env
+            env = make_masked_env(env)
+        except ImportError: pass
+```
+
+**`train_ppo_smdp_full.py`** — add to argparse and `stage_ppo`/`_build_model` as shown above in Steps 3-5 of the report.
+
+---
+
+## Commands after applying all changes
+
+```bash
+# Install sb3-contrib for MaskablePPO:
+pip install sb3-contrib
+
+# Quantize your CNN:
+CUDA_VISIBLE_DEVICES=1 python scripts/models/cloud_cnn.py \
+    --quantize --model models/cloud_cnn_real.pt --data-dir data/modis_patches
+
+# Sanity check with all improvements:
+CUDA_VISIBLE_DEVICES=1 python -m scripts.training.train_ppo_smdp_full \
+    --bc --curriculum --eval \
+    --episodes 80 --event-rate 2.0 --n-envs 4 --seed 42 \
+    --action-mask --domain-rand
+
+# Full training (3 seeds, all improvements):
+CUDA_VISIBLE_DEVICES=1 python -m scripts.training.train_ppo_smdp_full \
+    --bc --curriculum --eval --explain \
+    --episodes 2000 --event-rate 2.0 --n-envs 4 --seed 42 \
+    --action-mask --domain-rand
+```

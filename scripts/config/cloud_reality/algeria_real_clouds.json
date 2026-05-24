@@ -1,0 +1,1022 @@
+[
+  {
+    "target_id": 0,
+    "target_name": "Algiers",
+    "lat_deg": 36.754,
+    "lon_deg": 3.059,
+    "priority": 1.0,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 52.3,
+        "cloud_fraction": 0.5235,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 68.3,
+        "cloud_fraction": 0.6835,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 73.6,
+        "cloud_fraction": 0.736,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 51.8,
+        "cloud_fraction": 0.5184,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 31.6,
+        "cloud_fraction": 0.3158,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 34.9,
+        "cloud_fraction": 0.3491,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 46.8,
+        "cloud_fraction": 0.4677,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 1,
+    "target_name": "Oran",
+    "lat_deg": 35.691,
+    "lon_deg": -0.642,
+    "priority": 0.9,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 43.6,
+        "cloud_fraction": 0.436,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 61.8,
+        "cloud_fraction": 0.6183,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 62.9,
+        "cloud_fraction": 0.6294,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 62.5,
+        "cloud_fraction": 0.625,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 47.1,
+        "cloud_fraction": 0.471,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 32.2,
+        "cloud_fraction": 0.3219,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 50.3,
+        "cloud_fraction": 0.5026,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 2,
+    "target_name": "Constantine",
+    "lat_deg": 36.365,
+    "lon_deg": 6.615,
+    "priority": 0.9,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 35.5,
+        "cloud_fraction": 0.3549,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 43.5,
+        "cloud_fraction": 0.4346,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 27.2,
+        "cloud_fraction": 0.2716,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 25.1,
+        "cloud_fraction": 0.2515,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 15.2,
+        "cloud_fraction": 0.1519,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 13.4,
+        "cloud_fraction": 0.1338,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 28.9,
+        "cloud_fraction": 0.2889,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 3,
+    "target_name": "Annaba",
+    "lat_deg": 36.9,
+    "lon_deg": 7.767,
+    "priority": 0.9,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 19.7,
+        "cloud_fraction": 0.1971,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 18.7,
+        "cloud_fraction": 0.1872,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 25.7,
+        "cloud_fraction": 0.2571,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 21.4,
+        "cloud_fraction": 0.2144,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 23.0,
+        "cloud_fraction": 0.2303,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 24.5,
+        "cloud_fraction": 0.2448,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 32.5,
+        "cloud_fraction": 0.3254,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 4,
+    "target_name": "Setif",
+    "lat_deg": 35.555,
+    "lon_deg": 5.1,
+    "priority": 0.9,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 27.7,
+        "cloud_fraction": 0.2769,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 31.7,
+        "cloud_fraction": 0.317,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 32.4,
+        "cloud_fraction": 0.3236,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 36.5,
+        "cloud_fraction": 0.365,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 37.4,
+        "cloud_fraction": 0.374,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 52.4,
+        "cloud_fraction": 0.5236,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 39.6,
+        "cloud_fraction": 0.3961,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 5,
+    "target_name": "Bejaia",
+    "lat_deg": 36.465,
+    "lon_deg": 4.605,
+    "priority": 0.8,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 57.6,
+        "cloud_fraction": 0.5759,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 47.7,
+        "cloud_fraction": 0.4768,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 33.5,
+        "cloud_fraction": 0.3352,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 51.8,
+        "cloud_fraction": 0.5181,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 43.2,
+        "cloud_fraction": 0.4315,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 37.8,
+        "cloud_fraction": 0.3777,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 21.0,
+        "cloud_fraction": 0.2099,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 6,
+    "target_name": "Batna",
+    "lat_deg": 34.86,
+    "lon_deg": 5.73,
+    "priority": 0.8,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 9.0,
+        "cloud_fraction": 0.0902,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 21.7,
+        "cloud_fraction": 0.2166,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 12.5,
+        "cloud_fraction": 0.1251,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 25.5,
+        "cloud_fraction": 0.2554,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 45.4,
+        "cloud_fraction": 0.4536,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 39.6,
+        "cloud_fraction": 0.396,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 25.5,
+        "cloud_fraction": 0.2546,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 7,
+    "target_name": "Msila",
+    "lat_deg": 34.65,
+    "lon_deg": 3.25,
+    "priority": 0.8,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 31.5,
+        "cloud_fraction": 0.3155,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 37.3,
+        "cloud_fraction": 0.3734,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 32.2,
+        "cloud_fraction": 0.3218,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 31.1,
+        "cloud_fraction": 0.3108,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 42.2,
+        "cloud_fraction": 0.4218,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 49.3,
+        "cloud_fraction": 0.4931,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 49.3,
+        "cloud_fraction": 0.4931,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 8,
+    "target_name": "Mostaganem",
+    "lat_deg": 35.37,
+    "lon_deg": 1.32,
+    "priority": 0.8,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 27.5,
+        "cloud_fraction": 0.2747,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 29.7,
+        "cloud_fraction": 0.2974,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 38.5,
+        "cloud_fraction": 0.3855,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 35.8,
+        "cloud_fraction": 0.3575,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 29.4,
+        "cloud_fraction": 0.2942,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 23.3,
+        "cloud_fraction": 0.2327,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 20.4,
+        "cloud_fraction": 0.2044,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 9,
+    "target_name": "Chlef",
+    "lat_deg": 36.183,
+    "lon_deg": 1.317,
+    "priority": 0.8,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 30.9,
+        "cloud_fraction": 0.3094,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 27.9,
+        "cloud_fraction": 0.2795,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 45.0,
+        "cloud_fraction": 0.4501,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 33.6,
+        "cloud_fraction": 0.336,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 45.9,
+        "cloud_fraction": 0.4586,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 48.8,
+        "cloud_fraction": 0.4881,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 47.5,
+        "cloud_fraction": 0.4755,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 10,
+    "target_name": "Blida",
+    "lat_deg": 36.72,
+    "lon_deg": 2.49,
+    "priority": 0.7,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 31.1,
+        "cloud_fraction": 0.3107,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 28.6,
+        "cloud_fraction": 0.2857,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 56.0,
+        "cloud_fraction": 0.5598,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 52.7,
+        "cloud_fraction": 0.5268,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 55.6,
+        "cloud_fraction": 0.5563,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 59.2,
+        "cloud_fraction": 0.592,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 66.4,
+        "cloud_fraction": 0.6641,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 11,
+    "target_name": "Boumerdes",
+    "lat_deg": 36.8,
+    "lon_deg": 3.55,
+    "priority": 0.7,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 39.9,
+        "cloud_fraction": 0.3991,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 32.9,
+        "cloud_fraction": 0.3291,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 35.2,
+        "cloud_fraction": 0.3516,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 34.1,
+        "cloud_fraction": 0.3412,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 47.1,
+        "cloud_fraction": 0.4706,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 48.3,
+        "cloud_fraction": 0.4831,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 49.8,
+        "cloud_fraction": 0.4983,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 12,
+    "target_name": "Tizi Ouzou",
+    "lat_deg": 36.817,
+    "lon_deg": 4.9,
+    "priority": 0.7,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 45.9,
+        "cloud_fraction": 0.4589,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 61.3,
+        "cloud_fraction": 0.6129,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 49.0,
+        "cloud_fraction": 0.4905,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 41.3,
+        "cloud_fraction": 0.4131,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 53.6,
+        "cloud_fraction": 0.5363,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 49.4,
+        "cloud_fraction": 0.4936,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 52.4,
+        "cloud_fraction": 0.5244,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 13,
+    "target_name": "Souk Ahras",
+    "lat_deg": 36.267,
+    "lon_deg": 6.95,
+    "priority": 0.7,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 27.0,
+        "cloud_fraction": 0.2698,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 29.6,
+        "cloud_fraction": 0.2964,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 36.0,
+        "cloud_fraction": 0.36,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 21.1,
+        "cloud_fraction": 0.211,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 17.6,
+        "cloud_fraction": 0.1762,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 27.5,
+        "cloud_fraction": 0.2749,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 54.5,
+        "cloud_fraction": 0.5448,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 14,
+    "target_name": "Khenchela",
+    "lat_deg": 35.433,
+    "lon_deg": 7.15,
+    "priority": 0.6,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 33.2,
+        "cloud_fraction": 0.3316,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 31.4,
+        "cloud_fraction": 0.3138,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 23.1,
+        "cloud_fraction": 0.2306,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 28.4,
+        "cloud_fraction": 0.2837,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 6.0,
+        "cloud_fraction": 0.0604,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 12.5,
+        "cloud_fraction": 0.1249,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 14.5,
+        "cloud_fraction": 0.1447,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 15,
+    "target_name": "Djelfa",
+    "lat_deg": 34.667,
+    "lon_deg": 3.25,
+    "priority": 0.6,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 17.8,
+        "cloud_fraction": 0.1784,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 37.7,
+        "cloud_fraction": 0.3765,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 13.2,
+        "cloud_fraction": 0.1317,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 15.6,
+        "cloud_fraction": 0.1564,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 18.1,
+        "cloud_fraction": 0.181,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 23.0,
+        "cloud_fraction": 0.2301,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 9.9,
+        "cloud_fraction": 0.0989,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 16,
+    "target_name": "Laghouat",
+    "lat_deg": 33.8,
+    "lon_deg": 2.865,
+    "priority": 0.6,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 14.7,
+        "cloud_fraction": 0.1473,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 5.2,
+        "cloud_fraction": 0.0525,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 8.2,
+        "cloud_fraction": 0.0818,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 12.5,
+        "cloud_fraction": 0.125,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 15.3,
+        "cloud_fraction": 0.153,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 14.7,
+        "cloud_fraction": 0.1472,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 17.0,
+        "cloud_fraction": 0.1701,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 17,
+    "target_name": "Ghardaia",
+    "lat_deg": 32.483,
+    "lon_deg": 3.667,
+    "priority": 0.6,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 15.1,
+        "cloud_fraction": 0.1506,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 17.2,
+        "cloud_fraction": 0.1718,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 16.4,
+        "cloud_fraction": 0.1637,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 5.0,
+        "cloud_fraction": 0.0496,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 2.8,
+        "cloud_fraction": 0.0279,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 8.2,
+        "cloud_fraction": 0.0822,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 4.5,
+        "cloud_fraction": 0.045,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 18,
+    "target_name": "Bechar",
+    "lat_deg": 31.617,
+    "lon_deg": -2.217,
+    "priority": 0.5,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 8.0,
+        "cloud_fraction": 0.0801,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 9.8,
+        "cloud_fraction": 0.0977,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 10.2,
+        "cloud_fraction": 0.1021,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 15.2,
+        "cloud_fraction": 0.1522,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 16.8,
+        "cloud_fraction": 0.1681,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 13.2,
+        "cloud_fraction": 0.1319,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 13.4,
+        "cloud_fraction": 0.1341,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  },
+  {
+    "target_id": 19,
+    "target_name": "Illizi",
+    "lat_deg": 26.5,
+    "lon_deg": 8.483,
+    "priority": 0.5,
+    "cloud_data": [
+      {
+        "date": "2024-03-17",
+        "cloud_percent": 2.0,
+        "cloud_fraction": 0.02,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-18",
+        "cloud_percent": 2.0,
+        "cloud_fraction": 0.02,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-19",
+        "cloud_percent": 2.0,
+        "cloud_fraction": 0.02,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-20",
+        "cloud_percent": 2.0,
+        "cloud_fraction": 0.02,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-21",
+        "cloud_percent": 2.0,
+        "cloud_fraction": 0.02,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-22",
+        "cloud_percent": 2.0,
+        "cloud_fraction": 0.02,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      },
+      {
+        "date": "2024-03-23",
+        "cloud_percent": 6.9,
+        "cloud_fraction": 0.0691,
+        "source": "MODIS_MOD09GA_synthetic_climatology"
+      }
+    ]
+  }
+]

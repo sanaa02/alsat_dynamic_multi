@@ -1,0 +1,13 @@
+{
+  "name": "no_curriculum",
+  "description": "Remove curriculum warm-up \u2014 direct PPO from random init",
+  "use_bc": true,
+  "use_curriculum": false,
+  "use_smdp": true,
+  "use_cnn": "real",
+  "use_mask": true,
+  "use_domrand": true,
+  "ent_coef_start": 0.05,
+  "ent_coef_end": 0.005,
+  "dynamic_bonus": 5.0
+}
