@@ -32,5 +32,22 @@
     "ent_coef_end": 0.01,
     "use_attention": false,
     "dynamic_bonus": 3.0
+  },
+  {
+    "step": 150000,
+    "path": "/home/sanaa/Documents/alsat_dynamic_multi/results/ablation/no_bc/seed_123/checkpoints/ckpt_no_bc_s123_step150000.zip",
+    "mean_reward_100ep": 40.4455,
+    "name": "no_bc",
+    "description": "Remove BC pretraining \u2014 isolate BC contribution",
+    "use_bc": false,
+    "use_curriculum": true,
+    "use_smdp": true,
+    "use_cnn": "real",
+    "use_mask": true,
+    "use_domrand": true,
+    "ent_coef_start": 0.15,
+    "ent_coef_end": 0.01,
+    "use_attention": false,
+    "dynamic_bonus": 3.0
   }
 ]
