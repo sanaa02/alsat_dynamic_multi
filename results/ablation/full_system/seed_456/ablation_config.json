@@ -7,7 +7,8 @@
   "use_cnn": "real",
   "use_mask": true,
   "use_domrand": true,
-  "ent_coef_start": 0.05,
-  "ent_coef_end": 0.005,
-  "dynamic_bonus": 5.0
+  "ent_coef_start": 0.15,
+  "ent_coef_end": 0.01,
+  "use_attention": false,
+  "dynamic_bonus": 3.0
 }

@@ -25,3 +25,484 @@ Info: (n_steps=2048 and n_envs=1)
   warnings.warn(
 /home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py:150: UserWarning: You are trying to run PPO on the GPU, but it is primarily intended to run on the CPU when not using a CNN policy (you are using ActorCriticPolicy which should be a MlpPolicy). See https://github.com/DLR-RM/stable-baselines3/issues/1245 for more info. You can pass `device='cpu'` or `export CUDA_VISIBLE_DEVICES=` to force using the CPU.Note: The model will train, but the GPU utilization will be poor and the training might take longer than on CPU.
   warnings.warn(
+ [INFO] Using SchedulerAttentionExtractor (attention policy)
+  AttentionPolicy: 240,409 parameters  (d_model=64, n_heads=4, features_dim=256)
+
+============================================================
+  Stage 1 -- Behavioral Cloning
+============================================================
+  Loaded 7,843 transitions from /home/sanaa/Documents/alsat_dynamic_multi/data/demos.npz
+  BC pretraining (50 epochs)...
+  BC: using 6271/7843 non-drift transitions (80% of demos)
+  BC weights: min=0.34  max=2.00  (using 23 distinct actions)
+    BC ep  10/50  loss=3.0094  acc=38.02%
+    BC ep  20/50  loss=2.9988  acc=37.63%
+    BC ep  30/50  loss=2.9734  acc=37.76%
+    BC ep  40/50  loss=2.9585  acc=37.84%
+    BC ep  50/50  loss=2.9538  acc=37.87%
+  BC done.  Best loss=2.9528
+
+============================================================
+  Stage 2 -- Curriculum Warm-up
+============================================================
+ [INFO] Using SchedulerAttentionExtractor (attention policy)
+  AttentionPolicy: 240,409 parameters  (d_model=64, n_heads=4, features_dim=256)
+  Ep 1/200  phase=static_clear  r=+0.000
+  Ep 26/200  phase=static_clear  r=+0.484
+  Ep 51/200  phase=static_clear  r=+0.000
+  Ep 76/200  phase=static_clear  r=+0.000
+  Ep 101/200  phase=static_clear  r=+9.229
+  Ep 126/200  phase=static_clear  r=+10.438
+  Ep 151/200  phase=static_clear  r=+9.083
+  Ep 176/200  phase=static_clear  r=+0.000
+Curriculum: phase=static_clear  idx=0
+
+============================================================
+  Stage 3 -- SMDP-PPO  cfg=dyn_real_vision  obs=56
+============================================================
+  Live log  → /home/sanaa/Documents/alsat_dynamic_multi/results/training_live.json
+  Checkpoints → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_epXXXXX.zip
+  Ep   10  r= +26.606  avg10=+16.693  cf=100%(avg=100%)  dyn_suc=8%(avg=4%)  dyn_act=11.5%(avg=10.8%)  ent=0.1500  🎯 DYN!
+  Ep   20  r= +20.946  avg10=+18.063  cf=100%(avg=100%)  dyn_suc=5%(avg=4%)  dyn_act=15.6%(avg=11.2%)  ent=0.1500  🎯 DYN!
+  Ep   30  r= +20.359  avg10=+21.088  cf=100%(avg=90%)  dyn_suc=8%(avg=6%)  dyn_act=11.7%(avg=12.4%)  ent=0.1500  🎯 DYN!
+  Ep   40  r= +22.508  avg10=+19.779  cf=100%(avg=99%)  dyn_suc=5%(avg=5%)  dyn_act=11.9%(avg=14.0%)  ent=0.1500  🎯 DYN!
+  Ep   50  r= +26.535  avg10=+20.480  cf=100%(avg=89%)  dyn_suc=11%(avg=7%)  dyn_act=15.3%(avg=16.2%)  ent=0.1500  🎯 DYN!
+         Actions → static=83%  dyn=15%  drift=1%  | n_dyn_detected=76  n_dyn_imaged=8  | slew=147°
+  Ep   60  r= +26.536  avg10=+19.644  cf=100%(avg=100%)  dyn_suc=9%(avg=5%)  dyn_act=22.6%(avg=16.7%)  ent=0.1500  🎯 DYN!
+  Ep   70  r= +17.633  avg10=+31.464  cf=100%(avg=100%)  dyn_suc=2%(avg=9%)  dyn_act=18.1%(avg=19.0%)  ent=0.1500  🎯 DYN!
+  Ep   80  r= +20.037  avg10=+23.407  cf=100%(avg=95%)  dyn_suc=7%(avg=7%)  dyn_act=21.4%(avg=19.7%)  ent=0.1500  🎯 DYN!
+  Ep   90  r= +20.576  avg10=+28.329  cf=80%(avg=97%)  dyn_suc=10%(avg=10%)  dyn_act=14.5%(avg=23.0%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep00100.zip
+  Ep  100  r= +16.828  avg10=+21.404  cf=100%(avg=97%)  dyn_suc=7%(avg=7%)  dyn_act=28.1%(avg=24.4%)  ent=0.1500  🎯 DYN!
+         Actions → static=70%  dyn=28%  drift=2%  | n_dyn_detected=75  n_dyn_imaged=5  | slew=338°
+  Ep  110  r= +40.378  avg10=+27.776  cf=100%(avg=98%)  dyn_suc=14%(avg=9%)  dyn_act=23.1%(avg=23.1%)  ent=0.1500  🎯 DYN!
+  Ep  120  r= +16.777  avg10=+22.763  cf=100%(avg=97%)  dyn_suc=2%(avg=7%)  dyn_act=21.5%(avg=22.8%)  ent=0.1500  🎯 DYN!
+  Ep  130  r= +41.947  avg10=+22.054  cf=100%(avg=78%)  dyn_suc=12%(avg=7%)  dyn_act=21.3%(avg=23.5%)  ent=0.1500  🎯 DYN!
+  Ep  140  r= +44.204  avg10=+31.813  cf=100%(avg=97%)  dyn_suc=15%(avg=10%)  dyn_act=25.8%(avg=24.9%)  ent=0.1500  🎯 DYN!
+  Ep  150  r= +29.981  avg10=+34.301  cf=100%(avg=99%)  dyn_suc=9%(avg=11%)  dyn_act=25.3%(avg=27.1%)  ent=0.1500  🎯 DYN!
+         Actions → static=71%  dyn=25%  drift=4%  | n_dyn_detected=89  n_dyn_imaged=8  | slew=539°
+  Ep  160  r= +36.257  avg10=+29.217  cf=100%(avg=98%)  dyn_suc=12%(avg=10%)  dyn_act=24.2%(avg=25.1%)  ent=0.1500  🎯 DYN!
+  Ep  170  r= +40.683  avg10=+32.461  cf=100%(avg=95%)  dyn_suc=15%(avg=12%)  dyn_act=31.9%(avg=28.8%)  ent=0.1500  🎯 DYN!
+  Ep  180  r= +49.128  avg10=+40.926  cf=100%(avg=98%)  dyn_suc=17%(avg=14%)  dyn_act=22.4%(avg=28.9%)  ent=0.1500  🎯 DYN!
+  Ep  190  r= +57.369  avg10=+35.342  cf=100%(avg=98%)  dyn_suc=20%(avg=11%)  dyn_act=39.5%(avg=30.8%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep00200.zip
+  Ep  200  r= +27.204  avg10=+39.779  cf=100%(avg=100%)  dyn_suc=7%(avg=12%)  dyn_act=37.3%(avg=31.0%)  ent=0.1500  🎯 DYN!
+         Actions → static=60%  dyn=37%  drift=3%  | n_dyn_detected=81  n_dyn_imaged=6  | slew=1326°
+  Ep  210  r= +31.125  avg10=+36.135  cf=100%(avg=96%)  dyn_suc=10%(avg=12%)  dyn_act=38.8%(avg=31.7%)  ent=0.1500  🎯 DYN!
+  Ep  220  r= +38.418  avg10=+38.160  cf=91%(avg=98%)  dyn_suc=14%(avg=12%)  dyn_act=26.5%(avg=30.8%)  ent=0.1500  🎯 DYN!
+  Ep  230  r= +59.496  avg10=+38.100  cf=92%(avg=96%)  dyn_suc=22%(avg=13%)  dyn_act=33.1%(avg=32.1%)  ent=0.1500  🎯 DYN!
+  Ep  240  r= +37.134  avg10=+32.443  cf=100%(avg=100%)  dyn_suc=12%(avg=9%)  dyn_act=31.3%(avg=26.9%)  ent=0.1500  🎯 DYN!
+  Ep  250  r= +22.842  avg10=+43.351  cf=100%(avg=100%)  dyn_suc=5%(avg=14%)  dyn_act=26.6%(avg=31.7%)  ent=0.1500  🎯 DYN!
+         Actions → static=72%  dyn=27%  drift=2%  | n_dyn_detected=83  n_dyn_imaged=4  | slew=2050°
+  Ep  260  r= +34.587  avg10=+34.018  cf=100%(avg=96%)  dyn_suc=13%(avg=11%)  dyn_act=31.0%(avg=33.7%)  ent=0.1500  🎯 DYN!
+  Ep  270  r= +17.348  avg10=+44.305  cf=100%(avg=96%)  dyn_suc=5%(avg=15%)  dyn_act=27.2%(avg=33.4%)  ent=0.1500  🎯 DYN!
+  Ep  280  r= +28.082  avg10=+38.431  cf=100%(avg=98%)  dyn_suc=10%(avg=13%)  dyn_act=35.4%(avg=32.1%)  ent=0.1500  🎯 DYN!
+  Ep  290  r= +27.158  avg10=+35.172  cf=100%(avg=98%)  dyn_suc=10%(avg=12%)  dyn_act=35.9%(avg=32.5%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep00300.zip
+  Ep  300  r= +31.056  avg10=+45.608  cf=100%(avg=96%)  dyn_suc=11%(avg=17%)  dyn_act=38.9%(avg=32.3%)  ent=0.1500  🎯 DYN!
+         Actions → static=58%  dyn=39%  drift=3%  | n_dyn_detected=80  n_dyn_imaged=9  | slew=295°
+  Ep  310  r=  +8.877  avg10=+39.104  cf=95%(avg=95%)  dyn_suc=0%(avg=13%)  dyn_act=37.3%(avg=34.1%)  ent=0.1500  
+  Ep  320  r= +32.477  avg10=+31.641  cf=100%(avg=95%)  dyn_suc=12%(avg=10%)  dyn_act=37.2%(avg=35.0%)  ent=0.1500  🎯 DYN!
+  Ep  330  r= +57.867  avg10=+39.640  cf=100%(avg=99%)  dyn_suc=20%(avg=14%)  dyn_act=35.1%(avg=34.4%)  ent=0.1500  🎯 DYN!
+  Ep  340  r= +33.448  avg10=+36.480  cf=100%(avg=95%)  dyn_suc=13%(avg=13%)  dyn_act=34.9%(avg=37.0%)  ent=0.1500  🎯 DYN!
+  Ep  350  r= +37.829  avg10=+34.512  cf=100%(avg=98%)  dyn_suc=12%(avg=11%)  dyn_act=26.2%(avg=32.0%)  ent=0.1500  🎯 DYN!
+         Actions → static=73%  dyn=26%  drift=1%  | n_dyn_detected=83  n_dyn_imaged=10  | slew=956°
+  Ep  360  r= +73.250  avg10=+36.530  cf=100%(avg=99%)  dyn_suc=24%(avg=12%)  dyn_act=38.6%(avg=32.9%)  ent=0.1500  🎯 DYN!
+  Ep  370  r= +37.829  avg10=+46.372  cf=90%(avg=96%)  dyn_suc=15%(avg=15%)  dyn_act=28.2%(avg=33.2%)  ent=0.1500  🎯 DYN!
+  Ep  380  r= +40.413  avg10=+37.568  cf=100%(avg=97%)  dyn_suc=14%(avg=12%)  dyn_act=35.6%(avg=32.4%)  ent=0.1500  🎯 DYN!
+  Ep  390  r= +48.423  avg10=+42.024  cf=93%(avg=97%)  dyn_suc=18%(avg=15%)  dyn_act=32.3%(avg=31.5%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep00400.zip
+  Ep  400  r= +22.863  avg10=+29.506  cf=92%(avg=99%)  dyn_suc=7%(avg=8%)  dyn_act=25.9%(avg=31.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=72%  dyn=26%  drift=2%  | n_dyn_detected=85  n_dyn_imaged=6  | slew=2127°
+  Ep  410  r= +20.698  avg10=+36.346  cf=75%(avg=95%)  dyn_suc=10%(avg=13%)  dyn_act=29.0%(avg=33.0%)  ent=0.1500  🎯 DYN!
+  Ep  420  r= +44.485  avg10=+45.149  cf=91%(avg=98%)  dyn_suc=16%(avg=15%)  dyn_act=30.6%(avg=32.9%)  ent=0.1500  🎯 DYN!
+  Ep  430  r= +16.429  avg10=+42.983  cf=91%(avg=97%)  dyn_suc=5%(avg=15%)  dyn_act=32.0%(avg=34.8%)  ent=0.1500  🎯 DYN!
+  Ep  440  r= +61.114  avg10=+48.226  cf=100%(avg=97%)  dyn_suc=20%(avg=16%)  dyn_act=37.4%(avg=38.1%)  ent=0.1500  🎯 DYN!
+  Ep  450  r= +26.653  avg10=+46.907  cf=100%(avg=98%)  dyn_suc=10%(avg=16%)  dyn_act=36.6%(avg=38.1%)  ent=0.1500  🎯 DYN!
+         Actions → static=63%  dyn=37%  drift=1%  | n_dyn_detected=84  n_dyn_imaged=8  | slew=315°
+  Ep  460  r= +28.501  avg10=+50.887  cf=96%(avg=99%)  dyn_suc=8%(avg=17%)  dyn_act=30.6%(avg=36.4%)  ent=0.1500  🎯 DYN!
+  Ep  470  r= +36.648  avg10=+47.858  cf=93%(avg=98%)  dyn_suc=12%(avg=16%)  dyn_act=35.6%(avg=36.9%)  ent=0.1500  🎯 DYN!
+  Ep  480  r= +40.618  avg10=+40.524  cf=86%(avg=95%)  dyn_suc=17%(avg=14%)  dyn_act=47.4%(avg=39.2%)  ent=0.1500  🎯 DYN!
+  Ep  490  r= +48.136  avg10=+38.637  cf=100%(avg=93%)  dyn_suc=16%(avg=14%)  dyn_act=33.1%(avg=37.3%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep00500.zip
+  Ep  500  r= +81.658  avg10=+48.315  cf=93%(avg=99%)  dyn_suc=31%(avg=15%)  dyn_act=40.1%(avg=36.0%)  ent=0.1500  🎯 DYN!
+         Actions → static=54%  dyn=40%  drift=5%  | n_dyn_detected=85  n_dyn_imaged=26  | slew=951°
+  Ep  510  r= +64.327  avg10=+36.403  cf=100%(avg=92%)  dyn_suc=20%(avg=13%)  dyn_act=36.2%(avg=35.9%)  ent=0.1500  🎯 DYN!
+  Ep  520  r= +35.734  avg10=+37.066  cf=100%(avg=97%)  dyn_suc=10%(avg=13%)  dyn_act=39.2%(avg=33.6%)  ent=0.1500  🎯 DYN!
+  Ep  530  r= +42.445  avg10=+44.602  cf=100%(avg=97%)  dyn_suc=12%(avg=16%)  dyn_act=38.0%(avg=35.5%)  ent=0.1500  🎯 DYN!
+  Ep  540  r= +63.174  avg10=+39.868  cf=100%(avg=96%)  dyn_suc=21%(avg=14%)  dyn_act=37.0%(avg=36.4%)  ent=0.1500  🎯 DYN!
+  Ep  550  r= +47.438  avg10=+54.192  cf=93%(avg=98%)  dyn_suc=18%(avg=19%)  dyn_act=34.2%(avg=37.7%)  ent=0.1500  🎯 DYN!
+         Actions → static=63%  dyn=34%  drift=3%  | n_dyn_detected=78  n_dyn_imaged=14  | slew=1961°
+  Ep  560  r= +69.652  avg10=+44.265  cf=100%(avg=98%)  dyn_suc=24%(avg=15%)  dyn_act=39.2%(avg=34.1%)  ent=0.1500  🎯 DYN!
+  Ep  570  r= +15.441  avg10=+43.158  cf=100%(avg=98%)  dyn_suc=2%(avg=15%)  dyn_act=38.6%(avg=34.3%)  ent=0.1500  🎯 DYN!
+  Ep  580  r= +38.979  avg10=+41.541  cf=91%(avg=94%)  dyn_suc=15%(avg=14%)  dyn_act=45.1%(avg=39.8%)  ent=0.1500  🎯 DYN!
+  Ep  590  r= +28.094  avg10=+43.805  cf=88%(avg=96%)  dyn_suc=10%(avg=15%)  dyn_act=36.5%(avg=35.9%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep00600.zip
+  Ep  600  r= +39.510  avg10=+41.388  cf=86%(avg=94%)  dyn_suc=17%(avg=15%)  dyn_act=31.2%(avg=35.2%)  ent=0.1500  🎯 DYN!
+         Actions → static=67%  dyn=31%  drift=1%  | n_dyn_detected=81  n_dyn_imaged=14  | slew=329°
+  Ep  610  r= +52.495  avg10=+39.761  cf=93%(avg=94%)  dyn_suc=18%(avg=14%)  dyn_act=46.1%(avg=36.6%)  ent=0.1500  🎯 DYN!
+  Ep  620  r= +36.145  avg10=+47.690  cf=100%(avg=99%)  dyn_suc=9%(avg=16%)  dyn_act=32.5%(avg=35.0%)  ent=0.1500  🎯 DYN!
+  Ep  630  r= +58.201  avg10=+46.469  cf=100%(avg=99%)  dyn_suc=20%(avg=16%)  dyn_act=37.3%(avg=37.2%)  ent=0.1500  🎯 DYN!
+  Ep  640  r= +26.736  avg10=+46.792  cf=100%(avg=98%)  dyn_suc=10%(avg=16%)  dyn_act=33.1%(avg=36.2%)  ent=0.1500  🎯 DYN!
+  Ep  650  r= +16.774  avg10=+34.610  cf=100%(avg=99%)  dyn_suc=2%(avg=11%)  dyn_act=31.4%(avg=35.3%)  ent=0.1500  🎯 DYN!
+         Actions → static=65%  dyn=31%  drift=3%  | n_dyn_detected=82  n_dyn_imaged=2  | slew=2000°
+  Ep  660  r= +15.713  avg10=+54.609  cf=100%(avg=98%)  dyn_suc=3%(avg=19%)  dyn_act=33.3%(avg=40.4%)  ent=0.1500  🎯 DYN!
+  Ep  670  r= +33.177  avg10=+46.839  cf=100%(avg=99%)  dyn_suc=12%(avg=16%)  dyn_act=27.8%(avg=35.8%)  ent=0.1500  🎯 DYN!
+  Ep  680  r= +30.086  avg10=+42.573  cf=100%(avg=99%)  dyn_suc=8%(avg=14%)  dyn_act=40.3%(avg=35.7%)  ent=0.1500  🎯 DYN!
+  Ep  690  r= +41.238  avg10=+34.262  cf=94%(avg=89%)  dyn_suc=15%(avg=14%)  dyn_act=39.4%(avg=36.9%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep00700.zip
+  Ep  700  r= +55.636  avg10=+47.376  cf=100%(avg=99%)  dyn_suc=16%(avg=15%)  dyn_act=38.1%(avg=37.0%)  ent=0.1500  🎯 DYN!
+         Actions → static=59%  dyn=38%  drift=3%  | n_dyn_detected=87  n_dyn_imaged=14  | slew=1994°
+  Ep  710  r= +57.343  avg10=+40.316  cf=100%(avg=98%)  dyn_suc=19%(avg=14%)  dyn_act=32.2%(avg=34.3%)  ent=0.1500  🎯 DYN!
+  Ep  720  r= +58.737  avg10=+33.664  cf=93%(avg=99%)  dyn_suc=22%(avg=11%)  dyn_act=23.8%(avg=29.4%)  ent=0.1500  🎯 DYN!
+  Ep  730  r= +30.276  avg10=+36.056  cf=100%(avg=97%)  dyn_suc=8%(avg=11%)  dyn_act=37.5%(avg=34.2%)  ent=0.1500  🎯 DYN!
+  Ep  740  r= +46.490  avg10=+38.646  cf=100%(avg=98%)  dyn_suc=16%(avg=13%)  dyn_act=21.4%(avg=28.5%)  ent=0.1500  🎯 DYN!
+  Ep  750  r= +45.276  avg10=+35.139  cf=100%(avg=98%)  dyn_suc=15%(avg=11%)  dyn_act=32.5%(avg=32.4%)  ent=0.1500  🎯 DYN!
+         Actions → static=66%  dyn=32%  drift=2%  | n_dyn_detected=82  n_dyn_imaged=12  | slew=1411°
+  Ep  760  r= +15.863  avg10=+35.809  cf=100%(avg=100%)  dyn_suc=3%(avg=11%)  dyn_act=23.4%(avg=31.1%)  ent=0.1500  🎯 DYN!
+  Ep  770  r= +30.261  avg10=+38.108  cf=100%(avg=99%)  dyn_suc=7%(avg=12%)  dyn_act=30.6%(avg=29.4%)  ent=0.1500  🎯 DYN!
+  Ep  780  r= +23.895  avg10=+34.942  cf=92%(avg=98%)  dyn_suc=8%(avg=11%)  dyn_act=29.6%(avg=31.8%)  ent=0.1500  🎯 DYN!
+  Ep  790  r= +55.770  avg10=+43.232  cf=100%(avg=98%)  dyn_suc=16%(avg=14%)  dyn_act=34.6%(avg=31.8%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep00800.zip
+  Ep  800  r= +54.108  avg10=+41.870  cf=100%(avg=100%)  dyn_suc=19%(avg=14%)  dyn_act=36.3%(avg=29.3%)  ent=0.1500  🎯 DYN!
+         Actions → static=62%  dyn=36%  drift=1%  | n_dyn_detected=84  n_dyn_imaged=16  | slew=584°
+  Ep  810  r= +36.952  avg10=+46.274  cf=100%(avg=99%)  dyn_suc=13%(avg=16%)  dyn_act=24.3%(avg=29.3%)  ent=0.1500  🎯 DYN!
+  Ep  820  r= +27.306  avg10=+41.005  cf=100%(avg=100%)  dyn_suc=7%(avg=13%)  dyn_act=23.1%(avg=31.6%)  ent=0.1500  🎯 DYN!
+  Ep  830  r= +50.992  avg10=+27.392  cf=100%(avg=100%)  dyn_suc=17%(avg=8%)  dyn_act=33.6%(avg=29.3%)  ent=0.1500  🎯 DYN!
+  Ep  840  r= +30.656  avg10=+43.277  cf=100%(avg=98%)  dyn_suc=8%(avg=15%)  dyn_act=36.8%(avg=31.8%)  ent=0.1500  🎯 DYN!
+  Ep  850  r= +38.551  avg10=+36.430  cf=100%(avg=89%)  dyn_suc=11%(avg=12%)  dyn_act=31.5%(avg=31.2%)  ent=0.1500  🎯 DYN!
+         Actions → static=66%  dyn=32%  drift=3%  | n_dyn_detected=89  n_dyn_imaged=10  | slew=946°
+  Ep  860  r= +66.399  avg10=+36.740  cf=100%(avg=95%)  dyn_suc=22%(avg=13%)  dyn_act=36.6%(avg=31.5%)  ent=0.1500  🎯 DYN!
+  Ep  870  r= +47.061  avg10=+38.681  cf=94%(avg=92%)  dyn_suc=17%(avg=13%)  dyn_act=37.0%(avg=29.9%)  ent=0.1500  🎯 DYN!
+  Ep  880  r= +26.232  avg10=+32.383  cf=80%(avg=96%)  dyn_suc=12%(avg=11%)  dyn_act=27.6%(avg=30.0%)  ent=0.1500  🎯 DYN!
+  Ep  890  r= +31.229  avg10=+36.500  cf=100%(avg=98%)  dyn_suc=10%(avg=12%)  dyn_act=39.3%(avg=31.1%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep00900.zip
+  Ep  900  r= +43.190  avg10=+40.154  cf=100%(avg=98%)  dyn_suc=12%(avg=13%)  dyn_act=29.7%(avg=30.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=66%  dyn=30%  drift=4%  | n_dyn_detected=84  n_dyn_imaged=10  | slew=1993°
+  Ep  910  r= +24.808  avg10=+33.670  cf=100%(avg=96%)  dyn_suc=8%(avg=11%)  dyn_act=29.3%(avg=30.4%)  ent=0.1500  🎯 DYN!
+  Ep  920  r= +38.594  avg10=+35.981  cf=100%(avg=95%)  dyn_suc=14%(avg=13%)  dyn_act=29.5%(avg=31.3%)  ent=0.1500  🎯 DYN!
+  Ep  930  r= +20.069  avg10=+29.537  cf=100%(avg=96%)  dyn_suc=5%(avg=10%)  dyn_act=20.4%(avg=28.3%)  ent=0.1500  🎯 DYN!
+  Ep  940  r= +50.126  avg10=+38.474  cf=100%(avg=99%)  dyn_suc=18%(avg=12%)  dyn_act=32.2%(avg=28.4%)  ent=0.1500  🎯 DYN!
+  Ep  950  r= +63.263  avg10=+35.872  cf=90%(avg=98%)  dyn_suc=24%(avg=12%)  dyn_act=36.8%(avg=29.2%)  ent=0.1500  🎯 DYN!
+         Actions → static=62%  dyn=37%  drift=1%  | n_dyn_detected=86  n_dyn_imaged=21  | slew=649°
+  Ep  960  r= +36.961  avg10=+34.882  cf=90%(avg=98%)  dyn_suc=13%(avg=11%)  dyn_act=29.7%(avg=28.3%)  ent=0.1500  🎯 DYN!
+  Ep  970  r= +44.828  avg10=+37.633  cf=100%(avg=97%)  dyn_suc=14%(avg=12%)  dyn_act=30.5%(avg=29.6%)  ent=0.1500  🎯 DYN!
+  Ep  980  r= +36.069  avg10=+37.163  cf=100%(avg=100%)  dyn_suc=10%(avg=11%)  dyn_act=31.4%(avg=32.4%)  ent=0.1500  🎯 DYN!
+  Ep  990  r= +24.198  avg10=+35.108  cf=100%(avg=100%)  dyn_suc=5%(avg=11%)  dyn_act=35.6%(avg=32.9%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01000.zip
+  Ep 1000  r=  +6.444  avg10=+42.908  cf=100%(avg=99%)  dyn_suc=3%(avg=14%)  dyn_act=35.9%(avg=31.3%)  ent=0.1500  🎯 DYN!
+         Actions → static=62%  dyn=36%  drift=2%  | n_dyn_detected=76  n_dyn_imaged=2  | slew=48°
+  Ep 1010  r= +29.093  avg10=+41.630  cf=80%(avg=97%)  dyn_suc=15%(avg=14%)  dyn_act=30.9%(avg=31.0%)  ent=0.1500  🎯 DYN!
+  Ep 1020  r= +22.815  avg10=+33.326  cf=100%(avg=99%)  dyn_suc=5%(avg=10%)  dyn_act=27.0%(avg=29.8%)  ent=0.1500  🎯 DYN!
+  Ep 1030  r= +35.142  avg10=+52.052  cf=100%(avg=97%)  dyn_suc=12%(avg=18%)  dyn_act=33.3%(avg=31.8%)  ent=0.1500  🎯 DYN!
+  Ep 1040  r= +74.821  avg10=+37.830  cf=100%(avg=98%)  dyn_suc=24%(avg=12%)  dyn_act=37.3%(avg=33.2%)  ent=0.1500  🎯 DYN!
+  Ep 1050  r= +43.615  avg10=+32.569  cf=94%(avg=99%)  dyn_suc=14%(avg=11%)  dyn_act=28.7%(avg=30.5%)  ent=0.1500  🎯 DYN!
+         Actions → static=66%  dyn=29%  drift=5%  | n_dyn_detected=83  n_dyn_imaged=12  | slew=2205°
+  Ep 1060  r= +54.721  avg10=+36.706  cf=100%(avg=92%)  dyn_suc=17%(avg=13%)  dyn_act=34.4%(avg=34.4%)  ent=0.1500  🎯 DYN!
+  Ep 1070  r= +39.497  avg10=+35.933  cf=100%(avg=100%)  dyn_suc=16%(avg=12%)  dyn_act=39.0%(avg=33.6%)  ent=0.1500  🎯 DYN!
+  Ep 1080  r= +46.753  avg10=+47.761  cf=100%(avg=98%)  dyn_suc=15%(avg=17%)  dyn_act=38.3%(avg=37.1%)  ent=0.1500  🎯 DYN!
+  Ep 1090  r= +41.133  avg10=+44.497  cf=100%(avg=99%)  dyn_suc=12%(avg=14%)  dyn_act=33.8%(avg=35.5%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01100.zip
+  Ep 1100  r= +20.123  avg10=+30.092  cf=100%(avg=98%)  dyn_suc=5%(avg=10%)  dyn_act=32.2%(avg=32.1%)  ent=0.1500  🎯 DYN!
+         Actions → static=64%  dyn=32%  drift=4%  | n_dyn_detected=87  n_dyn_imaged=4  | slew=1386°
+  Ep 1110  r= +36.414  avg10=+32.003  cf=89%(avg=98%)  dyn_suc=15%(avg=11%)  dyn_act=31.3%(avg=30.5%)  ent=0.1500  🎯 DYN!
+  Ep 1120  r= +31.250  avg10=+38.014  cf=100%(avg=95%)  dyn_suc=10%(avg=14%)  dyn_act=28.2%(avg=30.1%)  ent=0.1500  🎯 DYN!
+  Ep 1130  r= +52.266  avg10=+35.616  cf=100%(avg=98%)  dyn_suc=17%(avg=11%)  dyn_act=26.3%(avg=28.8%)  ent=0.1500  🎯 DYN!
+  Ep 1140  r= +29.644  avg10=+37.994  cf=100%(avg=99%)  dyn_suc=8%(avg=12%)  dyn_act=31.7%(avg=31.4%)  ent=0.1500  🎯 DYN!
+  Ep 1150  r= +54.473  avg10=+45.551  cf=93%(avg=98%)  dyn_suc=20%(avg=15%)  dyn_act=38.7%(avg=32.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=60%  dyn=39%  drift=1%  | n_dyn_detected=81  n_dyn_imaged=16  | slew=1522°
+  Ep 1160  r= +55.897  avg10=+38.614  cf=100%(avg=98%)  dyn_suc=17%(avg=13%)  dyn_act=36.9%(avg=31.6%)  ent=0.1500  🎯 DYN!
+  Ep 1170  r= +32.085  avg10=+37.221  cf=100%(avg=97%)  dyn_suc=12%(avg=12%)  dyn_act=34.5%(avg=31.2%)  ent=0.1500  🎯 DYN!
+  Ep 1180  r= +56.446  avg10=+44.211  cf=94%(avg=99%)  dyn_suc=20%(avg=15%)  dyn_act=31.4%(avg=31.4%)  ent=0.1500  🎯 DYN!
+  Ep 1190  r= +39.760  avg10=+36.247  cf=100%(avg=97%)  dyn_suc=15%(avg=12%)  dyn_act=29.9%(avg=29.9%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01200.zip
+  Ep 1200  r= +81.592  avg10=+43.951  cf=95%(avg=96%)  dyn_suc=27%(avg=15%)  dyn_act=41.9%(avg=32.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=55%  dyn=42%  drift=3%  | n_dyn_detected=88  n_dyn_imaged=24  | slew=2120°
+  Ep 1210  r= +49.524  avg10=+39.999  cf=100%(avg=100%)  dyn_suc=14%(avg=13%)  dyn_act=39.5%(avg=32.8%)  ent=0.1500  🎯 DYN!
+  Ep 1220  r= +33.510  avg10=+33.362  cf=100%(avg=88%)  dyn_suc=12%(avg=11%)  dyn_act=31.7%(avg=31.9%)  ent=0.1500  🎯 DYN!
+  Ep 1230  r= +56.889  avg10=+34.593  cf=100%(avg=100%)  dyn_suc=20%(avg=11%)  dyn_act=38.4%(avg=32.7%)  ent=0.1500  🎯 DYN!
+  Ep 1240  r= +21.755  avg10=+47.224  cf=92%(avg=98%)  dyn_suc=8%(avg=16%)  dyn_act=32.9%(avg=32.7%)  ent=0.1500  🎯 DYN!
+  Ep 1250  r= +53.423  avg10=+42.824  cf=100%(avg=95%)  dyn_suc=19%(avg=15%)  dyn_act=36.6%(avg=35.1%)  ent=0.1500  🎯 DYN!
+         Actions → static=62%  dyn=37%  drift=1%  | n_dyn_detected=86  n_dyn_imaged=16  | slew=419°
+  Ep 1260  r= +50.127  avg10=+43.959  cf=100%(avg=98%)  dyn_suc=14%(avg=15%)  dyn_act=27.8%(avg=31.5%)  ent=0.1500  🎯 DYN!
+  Ep 1270  r= +27.034  avg10=+41.260  cf=80%(avg=97%)  dyn_suc=12%(avg=14%)  dyn_act=24.3%(avg=31.9%)  ent=0.1500  🎯 DYN!
+  Ep 1280  r= +42.466  avg10=+41.843  cf=100%(avg=99%)  dyn_suc=12%(avg=14%)  dyn_act=32.7%(avg=31.0%)  ent=0.1500  🎯 DYN!
+  Ep 1290  r= +30.277  avg10=+27.166  cf=100%(avg=95%)  dyn_suc=7%(avg=8%)  dyn_act=28.0%(avg=29.4%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01300.zip
+  Ep 1300  r= +37.914  avg10=+40.947  cf=100%(avg=98%)  dyn_suc=10%(avg=13%)  dyn_act=31.6%(avg=28.6%)  ent=0.1500  🎯 DYN!
+         Actions → static=65%  dyn=32%  drift=3%  | n_dyn_detected=81  n_dyn_imaged=8  | slew=2117°
+  Ep 1310  r= +55.114  avg10=+35.270  cf=100%(avg=95%)  dyn_suc=19%(avg=12%)  dyn_act=27.0%(avg=30.0%)  ent=0.1500  🎯 DYN!
+  Ep 1320  r= +45.315  avg10=+34.726  cf=100%(avg=99%)  dyn_suc=15%(avg=12%)  dyn_act=41.2%(avg=32.2%)  ent=0.1500  🎯 DYN!
+  Ep 1330  r= +18.779  avg10=+33.346  cf=100%(avg=99%)  dyn_suc=5%(avg=11%)  dyn_act=25.7%(avg=31.1%)  ent=0.1500  🎯 DYN!
+  Ep 1340  r= +37.928  avg10=+38.201  cf=100%(avg=97%)  dyn_suc=12%(avg=13%)  dyn_act=33.3%(avg=33.9%)  ent=0.1500  🎯 DYN!
+  Ep 1350  r= +33.438  avg10=+46.362  cf=100%(avg=100%)  dyn_suc=12%(avg=15%)  dyn_act=25.0%(avg=31.0%)  ent=0.1500  🎯 DYN!
+         Actions → static=69%  dyn=25%  drift=6%  | n_dyn_detected=83  n_dyn_imaged=10  | slew=331°
+  Ep 1360  r= +28.524  avg10=+35.551  cf=100%(avg=99%)  dyn_suc=9%(avg=11%)  dyn_act=32.4%(avg=29.1%)  ent=0.1500  🎯 DYN!
+  Ep 1370  r= +18.978  avg10=+39.209  cf=100%(avg=95%)  dyn_suc=5%(avg=13%)  dyn_act=30.5%(avg=31.4%)  ent=0.1500  🎯 DYN!
+  Ep 1380  r= +36.319  avg10=+43.403  cf=100%(avg=100%)  dyn_suc=13%(avg=14%)  dyn_act=31.1%(avg=34.6%)  ent=0.1500  🎯 DYN!
+  Ep 1390  r= +31.131  avg10=+50.151  cf=100%(avg=99%)  dyn_suc=10%(avg=16%)  dyn_act=34.9%(avg=35.9%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01400.zip
+  Ep 1400  r= +38.757  avg10=+36.635  cf=85%(avg=94%)  dyn_suc=17%(avg=13%)  dyn_act=38.7%(avg=33.2%)  ent=0.1500  🎯 DYN!
+         Actions → static=61%  dyn=39%  drift=0%  | n_dyn_detected=81  n_dyn_imaged=14  | slew=1830°
+  Ep 1410  r= +34.027  avg10=+30.981  cf=100%(avg=90%)  dyn_suc=12%(avg=10%)  dyn_act=29.9%(avg=31.2%)  ent=0.1500  🎯 DYN!
+  Ep 1420  r= +39.188  avg10=+41.463  cf=100%(avg=98%)  dyn_suc=14%(avg=13%)  dyn_act=35.6%(avg=35.3%)  ent=0.1500  🎯 DYN!
+  Ep 1430  r= +50.795  avg10=+43.180  cf=100%(avg=98%)  dyn_suc=18%(avg=14%)  dyn_act=36.0%(avg=37.0%)  ent=0.1500  🎯 DYN!
+  Ep 1440  r= +38.582  avg10=+40.745  cf=100%(avg=100%)  dyn_suc=13%(avg=13%)  dyn_act=37.1%(avg=35.6%)  ent=0.1500  🎯 DYN!
+  Ep 1450  r= +66.898  avg10=+43.982  cf=100%(avg=100%)  dyn_suc=24%(avg=15%)  dyn_act=36.1%(avg=37.6%)  ent=0.1500  🎯 DYN!
+         Actions → static=63%  dyn=36%  drift=1%  | n_dyn_detected=85  n_dyn_imaged=20  | slew=559°
+  Ep 1460  r= +22.056  avg10=+40.336  cf=100%(avg=100%)  dyn_suc=8%(avg=13%)  dyn_act=39.9%(avg=38.1%)  ent=0.1500  🎯 DYN!
+  Ep 1470  r= +48.982  avg10=+50.318  cf=100%(avg=100%)  dyn_suc=16%(avg=17%)  dyn_act=32.4%(avg=35.5%)  ent=0.1500  🎯 DYN!
+  Ep 1480  r= +63.059  avg10=+44.836  cf=95%(avg=80%)  dyn_suc=22%(avg=16%)  dyn_act=36.3%(avg=34.2%)  ent=0.1500  🎯 DYN!
+  Ep 1490  r= +66.874  avg10=+35.655  cf=94%(avg=97%)  dyn_suc=24%(avg=12%)  dyn_act=29.9%(avg=32.5%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01500.zip
+  Ep 1500  r= +75.514  avg10=+47.666  cf=100%(avg=95%)  dyn_suc=25%(avg=16%)  dyn_act=40.1%(avg=34.3%)  ent=0.1500  🎯 DYN!
+         Actions → static=56%  dyn=40%  drift=4%  | n_dyn_detected=88  n_dyn_imaged=22  | slew=910°
+  Ep 1510  r= +44.451  avg10=+38.107  cf=91%(avg=97%)  dyn_suc=18%(avg=12%)  dyn_act=34.2%(avg=35.4%)  ent=0.1500  🎯 DYN!
+  Ep 1520  r= +38.823  avg10=+38.541  cf=92%(avg=99%)  dyn_suc=15%(avg=13%)  dyn_act=32.0%(avg=33.5%)  ent=0.1500  🎯 DYN!
+  Ep 1530  r= +23.600  avg10=+38.079  cf=100%(avg=97%)  dyn_suc=7%(avg=13%)  dyn_act=26.7%(avg=34.2%)  ent=0.1500  🎯 DYN!
+  Ep 1540  r= +64.084  avg10=+41.368  cf=100%(avg=98%)  dyn_suc=21%(avg=13%)  dyn_act=34.2%(avg=31.5%)  ent=0.1500  🎯 DYN!
+  Ep 1550  r= +26.908  avg10=+48.366  cf=100%(avg=98%)  dyn_suc=10%(avg=17%)  dyn_act=37.7%(avg=32.5%)  ent=0.1500  🎯 DYN!
+         Actions → static=60%  dyn=38%  drift=3%  | n_dyn_detected=83  n_dyn_imaged=8  | slew=390°
+  Ep 1560  r= +41.980  avg10=+35.046  cf=100%(avg=100%)  dyn_suc=15%(avg=11%)  dyn_act=32.9%(avg=29.6%)  ent=0.1500  🎯 DYN!
+  Ep 1570  r= +42.369  avg10=+42.131  cf=100%(avg=96%)  dyn_suc=13%(avg=14%)  dyn_act=31.6%(avg=30.9%)  ent=0.1500  🎯 DYN!
+  Ep 1580  r= +59.037  avg10=+45.503  cf=95%(avg=98%)  dyn_suc=19%(avg=15%)  dyn_act=25.6%(avg=31.0%)  ent=0.1500  🎯 DYN!
+  Ep 1590  r= +71.931  avg10=+39.935  cf=100%(avg=96%)  dyn_suc=24%(avg=14%)  dyn_act=37.7%(avg=33.9%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01600.zip
+  Ep 1600  r=  +8.619  avg10=+37.099  cf=90%(avg=99%)  dyn_suc=2%(avg=12%)  dyn_act=25.9%(avg=31.0%)  ent=0.1500  🎯 DYN!
+         Actions → static=72%  dyn=26%  drift=3%  | n_dyn_detected=80  n_dyn_imaged=2  | slew=1667°
+  Ep 1610  r= +58.721  avg10=+42.939  cf=100%(avg=96%)  dyn_suc=19%(avg=15%)  dyn_act=30.5%(avg=30.3%)  ent=0.1500  🎯 DYN!
+  Ep 1620  r= +16.372  avg10=+35.519  cf=100%(avg=100%)  dyn_suc=3%(avg=11%)  dyn_act=34.2%(avg=32.6%)  ent=0.1500  🎯 DYN!
+  Ep 1630  r= +14.722  avg10=+38.530  cf=100%(avg=99%)  dyn_suc=5%(avg=13%)  dyn_act=30.8%(avg=30.6%)  ent=0.1500  🎯 DYN!
+  Ep 1640  r= +24.723  avg10=+26.366  cf=100%(avg=93%)  dyn_suc=7%(avg=9%)  dyn_act=27.6%(avg=29.7%)  ent=0.1500  🎯 DYN!
+  Ep 1650  r= +32.044  avg10=+35.429  cf=91%(avg=99%)  dyn_suc=11%(avg=12%)  dyn_act=31.4%(avg=27.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=65%  dyn=31%  drift=3%  | n_dyn_detected=87  n_dyn_imaged=10  | slew=1429°
+  Ep 1660  r= +33.531  avg10=+28.315  cf=100%(avg=96%)  dyn_suc=10%(avg=9%)  dyn_act=19.4%(avg=24.3%)  ent=0.1500  🎯 DYN!
+  Ep 1670  r= +24.970  avg10=+35.690  cf=100%(avg=97%)  dyn_suc=7%(avg=12%)  dyn_act=21.9%(avg=28.1%)  ent=0.1500  🎯 DYN!
+  Ep 1680  r= +27.893  avg10=+25.291  cf=100%(avg=96%)  dyn_suc=10%(avg=8%)  dyn_act=29.0%(avg=25.5%)  ent=0.1500  🎯 DYN!
+  Ep 1690  r= +29.576  avg10=+31.805  cf=100%(avg=99%)  dyn_suc=7%(avg=10%)  dyn_act=29.8%(avg=27.8%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01700.zip
+  Ep 1700  r= +22.949  avg10=+31.365  cf=100%(avg=100%)  dyn_suc=5%(avg=10%)  dyn_act=22.6%(avg=27.3%)  ent=0.1500  🎯 DYN!
+         Actions → static=72%  dyn=23%  drift=6%  | n_dyn_detected=77  n_dyn_imaged=4  | slew=2084°
+  Ep 1710  r= +27.032  avg10=+29.849  cf=100%(avg=98%)  dyn_suc=10%(avg=9%)  dyn_act=31.7%(avg=29.4%)  ent=0.1500  🎯 DYN!
+  Ep 1720  r= +35.210  avg10=+40.217  cf=100%(avg=97%)  dyn_suc=10%(avg=13%)  dyn_act=26.1%(avg=30.2%)  ent=0.1500  🎯 DYN!
+  Ep 1730  r= +12.943  avg10=+31.080  cf=100%(avg=99%)  dyn_suc=5%(avg=10%)  dyn_act=34.0%(avg=29.9%)  ent=0.1500  🎯 DYN!
+  Ep 1740  r= +26.868  avg10=+31.702  cf=91%(avg=97%)  dyn_suc=10%(avg=10%)  dyn_act=23.2%(avg=24.8%)  ent=0.1500  🎯 DYN!
+  Ep 1750  r= +15.968  avg10=+33.279  cf=100%(avg=100%)  dyn_suc=2%(avg=11%)  dyn_act=23.0%(avg=26.2%)  ent=0.1500  🎯 DYN!
+         Actions → static=73%  dyn=23%  drift=4%  | n_dyn_detected=80  n_dyn_imaged=2  | slew=1679°
+  Ep 1760  r= +27.183  avg10=+29.841  cf=91%(avg=96%)  dyn_suc=10%(avg=10%)  dyn_act=16.1%(avg=24.2%)  ent=0.1500  🎯 DYN!
+  Ep 1770  r= +62.468  avg10=+32.935  cf=100%(avg=100%)  dyn_suc=19%(avg=10%)  dyn_act=22.0%(avg=26.6%)  ent=0.1500  🎯 DYN!
+  Ep 1780  r= +16.076  avg10=+27.804  cf=100%(avg=99%)  dyn_suc=2%(avg=8%)  dyn_act=21.9%(avg=24.5%)  ent=0.1500  🎯 DYN!
+  Ep 1790  r= +30.643  avg10=+36.394  cf=100%(avg=97%)  dyn_suc=7%(avg=12%)  dyn_act=26.4%(avg=25.8%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01800.zip
+  Ep 1800  r=  +8.526  avg10=+26.086  cf=100%(avg=94%)  dyn_suc=2%(avg=9%)  dyn_act=17.6%(avg=24.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=76%  dyn=18%  drift=7%  | n_dyn_detected=84  n_dyn_imaged=2  | slew=572°
+  Ep 1810  r= +25.944  avg10=+29.123  cf=80%(avg=87%)  dyn_suc=12%(avg=10%)  dyn_act=30.6%(avg=26.7%)  ent=0.1500  🎯 DYN!
+  Ep 1820  r= +34.928  avg10=+35.501  cf=92%(avg=98%)  dyn_suc=12%(avg=11%)  dyn_act=25.8%(avg=26.2%)  ent=0.1500  🎯 DYN!
+  Ep 1830  r= +27.820  avg10=+36.507  cf=100%(avg=98%)  dyn_suc=10%(avg=13%)  dyn_act=34.5%(avg=29.5%)  ent=0.1500  🎯 DYN!
+  Ep 1840  r= +42.152  avg10=+45.229  cf=100%(avg=99%)  dyn_suc=14%(avg=15%)  dyn_act=34.0%(avg=31.7%)  ent=0.1500  🎯 DYN!
+  Ep 1850  r= +27.454  avg10=+39.997  cf=82%(avg=97%)  dyn_suc=12%(avg=13%)  dyn_act=33.3%(avg=33.6%)  ent=0.1500  🎯 DYN!
+         Actions → static=64%  dyn=33%  drift=3%  | n_dyn_detected=81  n_dyn_imaged=10  | slew=444°
+  Ep 1860  r= +66.081  avg10=+48.674  cf=95%(avg=99%)  dyn_suc=22%(avg=16%)  dyn_act=27.2%(avg=32.6%)  ent=0.1500  🎯 DYN!
+  Ep 1870  r= +34.799  avg10=+39.383  cf=93%(avg=96%)  dyn_suc=10%(avg=13%)  dyn_act=32.9%(avg=34.3%)  ent=0.1500  🎯 DYN!
+  Ep 1880  r= +47.365  avg10=+48.574  cf=100%(avg=96%)  dyn_suc=16%(avg=17%)  dyn_act=39.3%(avg=34.2%)  ent=0.1500  🎯 DYN!
+  Ep 1890  r= +53.870  avg10=+44.360  cf=94%(avg=94%)  dyn_suc=21%(avg=17%)  dyn_act=36.5%(avg=32.7%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep01900.zip
+  Ep 1900  r= +31.320  avg10=+38.273  cf=100%(avg=97%)  dyn_suc=10%(avg=13%)  dyn_act=32.2%(avg=28.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=64%  dyn=32%  drift=3%  | n_dyn_detected=80  n_dyn_imaged=8  | slew=1040°
+  Ep 1910  r= +37.016  avg10=+39.034  cf=100%(avg=98%)  dyn_suc=9%(avg=13%)  dyn_act=26.3%(avg=29.6%)  ent=0.1500  🎯 DYN!
+  Ep 1920  r= +55.333  avg10=+35.847  cf=100%(avg=98%)  dyn_suc=20%(avg=12%)  dyn_act=24.0%(avg=26.8%)  ent=0.1500  🎯 DYN!
+  Ep 1930  r= +33.083  avg10=+31.059  cf=100%(avg=97%)  dyn_suc=12%(avg=11%)  dyn_act=29.2%(avg=28.2%)  ent=0.1500  🎯 DYN!
+  Ep 1940  r= +58.411  avg10=+40.110  cf=100%(avg=97%)  dyn_suc=18%(avg=14%)  dyn_act=29.1%(avg=28.4%)  ent=0.1500  🎯 DYN!
+  Ep 1950  r= +39.656  avg10=+43.020  cf=100%(avg=89%)  dyn_suc=11%(avg=14%)  dyn_act=32.9%(avg=29.5%)  ent=0.1500  🎯 DYN!
+         Actions → static=65%  dyn=33%  drift=2%  | n_dyn_detected=87  n_dyn_imaged=10  | slew=1229°
+  Ep 1960  r= +44.072  avg10=+27.076  cf=100%(avg=100%)  dyn_suc=11%(avg=9%)  dyn_act=22.9%(avg=28.3%)  ent=0.1500  🎯 DYN!
+  Ep 1970  r= +41.154  avg10=+29.233  cf=100%(avg=96%)  dyn_suc=12%(avg=10%)  dyn_act=26.1%(avg=27.5%)  ent=0.1500  🎯 DYN!
+  Ep 1980  r=  +9.208  avg10=+19.783  cf=95%(avg=94%)  dyn_suc=0%(avg=6%)  dyn_act=15.7%(avg=23.9%)  ent=0.1500  
+  Ep 1990  r= +28.770  avg10=+29.593  cf=100%(avg=100%)  dyn_suc=7%(avg=9%)  dyn_act=28.8%(avg=25.6%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep02000.zip
+  Ep 2000  r= +61.288  avg10=+39.990  cf=100%(avg=99%)  dyn_suc=22%(avg=13%)  dyn_act=32.6%(avg=28.9%)  ent=0.1500  🎯 DYN!
+         Actions → static=65%  dyn=33%  drift=3%  | n_dyn_detected=82  n_dyn_imaged=18  | slew=597°
+  Ep 2010  r= +62.503  avg10=+44.047  cf=95%(avg=96%)  dyn_suc=22%(avg=15%)  dyn_act=34.0%(avg=30.0%)  ent=0.1500  🎯 DYN!
+  Ep 2020  r= +43.608  avg10=+37.274  cf=100%(avg=95%)  dyn_suc=12%(avg=12%)  dyn_act=30.8%(avg=29.2%)  ent=0.1500  🎯 DYN!
+  Ep 2030  r= +29.489  avg10=+36.721  cf=100%(avg=96%)  dyn_suc=7%(avg=13%)  dyn_act=37.7%(avg=28.6%)  ent=0.1500  🎯 DYN!
+  Ep 2040  r= +26.158  avg10=+26.180  cf=100%(avg=98%)  dyn_suc=10%(avg=9%)  dyn_act=29.5%(avg=28.4%)  ent=0.1500  🎯 DYN!
+  Ep 2050  r= +47.276  avg10=+41.710  cf=100%(avg=98%)  dyn_suc=16%(avg=14%)  dyn_act=34.9%(avg=29.2%)  ent=0.1500  🎯 DYN!
+         Actions → static=62%  dyn=35%  drift=3%  | n_dyn_detected=79  n_dyn_imaged=13  | slew=1512°
+  Ep 2060  r= +24.062  avg10=+36.873  cf=100%(avg=100%)  dyn_suc=5%(avg=12%)  dyn_act=23.6%(avg=28.7%)  ent=0.1500  🎯 DYN!
+  Ep 2070  r= +27.241  avg10=+36.239  cf=80%(avg=94%)  dyn_suc=12%(avg=13%)  dyn_act=26.9%(avg=29.7%)  ent=0.1500  🎯 DYN!
+  Ep 2080  r= +62.029  avg10=+37.534  cf=100%(avg=97%)  dyn_suc=22%(avg=13%)  dyn_act=27.2%(avg=29.8%)  ent=0.1500  🎯 DYN!
+  Ep 2090  r= +23.020  avg10=+28.476  cf=88%(avg=99%)  dyn_suc=10%(avg=9%)  dyn_act=32.5%(avg=30.7%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep02100.zip
+  Ep 2100  r= +16.161  avg10=+28.610  cf=100%(avg=100%)  dyn_suc=2%(avg=9%)  dyn_act=19.4%(avg=27.7%)  ent=0.1500  🎯 DYN!
+         Actions → static=78%  dyn=19%  drift=3%  | n_dyn_detected=81  n_dyn_imaged=2  | slew=1639°
+  Ep 2110  r= +45.367  avg10=+38.796  cf=100%(avg=89%)  dyn_suc=15%(avg=13%)  dyn_act=28.7%(avg=31.4%)  ent=0.1500  🎯 DYN!
+  Ep 2120  r= +42.477  avg10=+33.468  cf=100%(avg=99%)  dyn_suc=12%(avg=11%)  dyn_act=34.6%(avg=29.8%)  ent=0.1500  🎯 DYN!
+  Ep 2130  r= +18.748  avg10=+43.983  cf=100%(avg=98%)  dyn_suc=8%(avg=15%)  dyn_act=29.9%(avg=34.7%)  ent=0.1500  🎯 DYN!
+  Ep 2140  r= +21.759  avg10=+45.324  cf=100%(avg=99%)  dyn_suc=5%(avg=15%)  dyn_act=28.8%(avg=35.2%)  ent=0.1500  🎯 DYN!
+  Ep 2150  r= +64.229  avg10=+42.568  cf=100%(avg=99%)  dyn_suc=20%(avg=13%)  dyn_act=37.2%(avg=35.1%)  ent=0.1500  🎯 DYN!
+         Actions → static=59%  dyn=37%  drift=4%  | n_dyn_detected=81  n_dyn_imaged=16  | slew=2498°
+  Ep 2160  r= +35.362  avg10=+35.028  cf=100%(avg=96%)  dyn_suc=13%(avg=12%)  dyn_act=35.6%(avg=34.6%)  ent=0.1500  🎯 DYN!
+  Ep 2170  r= +22.535  avg10=+41.257  cf=92%(avg=98%)  dyn_suc=7%(avg=13%)  dyn_act=36.5%(avg=34.0%)  ent=0.1500  🎯 DYN!
+  Ep 2180  r= +38.472  avg10=+44.691  cf=86%(avg=98%)  dyn_suc=17%(avg=16%)  dyn_act=33.1%(avg=35.9%)  ent=0.1500  🎯 DYN!
+  Ep 2190  r= +52.820  avg10=+46.273  cf=100%(avg=98%)  dyn_suc=20%(avg=16%)  dyn_act=33.3%(avg=32.6%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep02200.zip
+  Ep 2200  r= +47.992  avg10=+42.618  cf=100%(avg=100%)  dyn_suc=15%(avg=13%)  dyn_act=33.5%(avg=32.7%)  ent=0.1500  🎯 DYN!
+         Actions → static=66%  dyn=34%  drift=1%  | n_dyn_detected=80  n_dyn_imaged=12  | slew=2160°
+  Ep 2210  r= +39.545  avg10=+38.656  cf=100%(avg=98%)  dyn_suc=14%(avg=13%)  dyn_act=34.5%(avg=30.8%)  ent=0.1500  🎯 DYN!
+  Ep 2220  r= +13.859  avg10=+36.622  cf=73%(avg=92%)  dyn_suc=10%(avg=14%)  dyn_act=40.5%(avg=33.5%)  ent=0.1500  🎯 DYN!
+  Ep 2230  r= +63.204  avg10=+43.053  cf=100%(avg=99%)  dyn_suc=21%(avg=14%)  dyn_act=35.4%(avg=35.3%)  ent=0.1500  🎯 DYN!
+  Ep 2240  r= +50.596  avg10=+28.835  cf=100%(avg=89%)  dyn_suc=19%(avg=9%)  dyn_act=34.0%(avg=32.0%)  ent=0.1500  🎯 DYN!
+  Ep 2250  r= +41.301  avg10=+41.952  cf=92%(avg=97%)  dyn_suc=14%(avg=14%)  dyn_act=36.1%(avg=32.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=62%  dyn=36%  drift=2%  | n_dyn_detected=83  n_dyn_imaged=12  | slew=1617°
+  Ep 2260  r= +47.774  avg10=+40.024  cf=100%(avg=99%)  dyn_suc=16%(avg=13%)  dyn_act=37.2%(avg=30.2%)  ent=0.1500  🎯 DYN!
+  Ep 2270  r= +13.179  avg10=+38.918  cf=100%(avg=100%)  dyn_suc=5%(avg=13%)  dyn_act=35.4%(avg=34.3%)  ent=0.1500  🎯 DYN!
+  Ep 2280  r= +40.774  avg10=+44.824  cf=100%(avg=98%)  dyn_suc=12%(avg=15%)  dyn_act=29.9%(avg=32.3%)  ent=0.1500  🎯 DYN!
+  Ep 2290  r= +36.984  avg10=+35.592  cf=100%(avg=100%)  dyn_suc=10%(avg=12%)  dyn_act=32.9%(avg=29.9%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep02300.zip
+  Ep 2300  r= +34.412  avg10=+39.065  cf=100%(avg=97%)  dyn_suc=12%(avg=14%)  dyn_act=29.9%(avg=28.9%)  ent=0.1500  🎯 DYN!
+         Actions → static=67%  dyn=30%  drift=3%  | n_dyn_detected=83  n_dyn_imaged=10  | slew=261°
+  Ep 2310  r= +59.464  avg10=+30.955  cf=100%(avg=96%)  dyn_suc=20%(avg=10%)  dyn_act=28.6%(avg=29.6%)  ent=0.1500  🎯 DYN!
+  Ep 2320  r= +32.600  avg10=+41.120  cf=100%(avg=99%)  dyn_suc=12%(avg=13%)  dyn_act=36.6%(avg=31.3%)  ent=0.1500  🎯 DYN!
+  Ep 2330  r= +50.148  avg10=+39.156  cf=100%(avg=99%)  dyn_suc=14%(avg=12%)  dyn_act=24.2%(avg=28.5%)  ent=0.1500  🎯 DYN!
+  Ep 2340  r= +29.665  avg10=+36.147  cf=71%(avg=95%)  dyn_suc=17%(avg=12%)  dyn_act=30.0%(avg=27.9%)  ent=0.1500  🎯 DYN!
+  Ep 2350  r= +46.034  avg10=+33.638  cf=86%(avg=95%)  dyn_suc=20%(avg=11%)  dyn_act=31.6%(avg=27.9%)  ent=0.1500  🎯 DYN!
+         Actions → static=61%  dyn=32%  drift=7%  | n_dyn_detected=82  n_dyn_imaged=16  | slew=1676°
+  Ep 2360  r= +54.972  avg10=+38.828  cf=100%(avg=98%)  dyn_suc=18%(avg=13%)  dyn_act=29.6%(avg=28.8%)  ent=0.1500  🎯 DYN!
+  Ep 2370  r= +18.404  avg10=+34.177  cf=92%(avg=99%)  dyn_suc=6%(avg=11%)  dyn_act=27.2%(avg=27.8%)  ent=0.1500  🎯 DYN!
+  Ep 2380  r= +15.546  avg10=+28.104  cf=95%(avg=97%)  dyn_suc=3%(avg=9%)  dyn_act=23.1%(avg=26.2%)  ent=0.1500  🎯 DYN!
+  Ep 2390  r= +16.294  avg10=+35.215  cf=100%(avg=98%)  dyn_suc=2%(avg=11%)  dyn_act=28.5%(avg=27.2%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep02400.zip
+  Ep 2400  r= +20.945  avg10=+40.074  cf=100%(avg=99%)  dyn_suc=7%(avg=13%)  dyn_act=37.5%(avg=29.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=59%  dyn=38%  drift=3%  | n_dyn_detected=84  n_dyn_imaged=6  | slew=214°
+  Ep 2410  r=  +9.942  avg10=+29.982  cf=100%(avg=95%)  dyn_suc=0%(avg=10%)  dyn_act=28.6%(avg=27.3%)  ent=0.1500  
+  Ep 2420  r= +30.426  avg10=+28.898  cf=100%(avg=97%)  dyn_suc=10%(avg=9%)  dyn_act=24.3%(avg=24.5%)  ent=0.1500  🎯 DYN!
+  Ep 2430  r=  +8.110  avg10=+37.207  cf=100%(avg=96%)  dyn_suc=2%(avg=12%)  dyn_act=37.8%(avg=28.7%)  ent=0.1500  🎯 DYN!
+  Ep 2440  r= +28.571  avg10=+29.353  cf=100%(avg=97%)  dyn_suc=10%(avg=10%)  dyn_act=26.0%(avg=27.0%)  ent=0.1500  🎯 DYN!
+  Ep 2450  r= +30.502  avg10=+40.745  cf=93%(avg=98%)  dyn_suc=10%(avg=14%)  dyn_act=21.0%(avg=25.5%)  ent=0.1500  🎯 DYN!
+         Actions → static=76%  dyn=21%  drift=3%  | n_dyn_detected=84  n_dyn_imaged=8  | slew=2226°
+  Ep 2460  r= +61.941  avg10=+38.451  cf=100%(avg=99%)  dyn_suc=23%(avg=12%)  dyn_act=31.0%(avg=28.7%)  ent=0.1500  🎯 DYN!
+  Ep 2470  r= +68.430  avg10=+33.843  cf=100%(avg=98%)  dyn_suc=19%(avg=11%)  dyn_act=37.8%(avg=29.6%)  ent=0.1500  🎯 DYN!
+  Ep 2480  r= +23.931  avg10=+27.586  cf=100%(avg=96%)  dyn_suc=8%(avg=10%)  dyn_act=33.3%(avg=32.8%)  ent=0.1500  🎯 DYN!
+  Ep 2490  r=  +9.748  avg10=+36.877  cf=100%(avg=99%)  dyn_suc=0%(avg=12%)  dyn_act=26.8%(avg=28.0%)  ent=0.1500  
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep02500.zip
+  Ep 2500  r= +53.825  avg10=+38.735  cf=100%(avg=97%)  dyn_suc=21%(avg=14%)  dyn_act=34.5%(avg=31.9%)  ent=0.1500  🎯 DYN!
+         Actions → static=63%  dyn=34%  drift=2%  | n_dyn_detected=77  n_dyn_imaged=16  | slew=513°
+  Ep 2510  r= +19.825  avg10=+40.215  cf=100%(avg=99%)  dyn_suc=8%(avg=14%)  dyn_act=33.1%(avg=32.2%)  ent=0.1500  🎯 DYN!
+  Ep 2520  r= +23.703  avg10=+33.480  cf=100%(avg=95%)  dyn_suc=5%(avg=11%)  dyn_act=27.8%(avg=30.1%)  ent=0.1500  🎯 DYN!
+  Ep 2530  r= +48.085  avg10=+40.262  cf=89%(avg=90%)  dyn_suc=19%(avg=15%)  dyn_act=34.2%(avg=32.9%)  ent=0.1500  🎯 DYN!
+  Ep 2540  r= +53.839  avg10=+32.125  cf=89%(avg=88%)  dyn_suc=21%(avg=10%)  dyn_act=30.3%(avg=30.1%)  ent=0.1500  🎯 DYN!
+  Ep 2550  r= +34.287  avg10=+36.101  cf=100%(avg=99%)  dyn_suc=10%(avg=12%)  dyn_act=29.0%(avg=30.8%)  ent=0.1500  🎯 DYN!
+         Actions → static=66%  dyn=29%  drift=5%  | n_dyn_detected=82  n_dyn_imaged=8  | slew=1808°
+  Ep 2560  r= +26.725  avg10=+43.834  cf=100%(avg=100%)  dyn_suc=8%(avg=14%)  dyn_act=33.1%(avg=34.2%)  ent=0.1500  🎯 DYN!
+  Ep 2570  r= +62.740  avg10=+38.301  cf=92%(avg=98%)  dyn_suc=23%(avg=13%)  dyn_act=41.6%(avg=32.7%)  ent=0.1500  🎯 DYN!
+  Ep 2580  r= +27.117  avg10=+38.301  cf=100%(avg=97%)  dyn_suc=10%(avg=13%)  dyn_act=26.2%(avg=31.2%)  ent=0.1500  🎯 DYN!
+  Ep 2590  r= +36.352  avg10=+46.040  cf=100%(avg=100%)  dyn_suc=12%(avg=15%)  dyn_act=41.6%(avg=31.5%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep02600.zip
+  Ep 2600  r=  +6.937  avg10=+35.293  cf=50%(avg=90%)  dyn_suc=5%(avg=13%)  dyn_act=26.9%(avg=30.5%)  ent=0.1500  🎯 DYN!
+         Actions → static=70%  dyn=27%  drift=3%  | n_dyn_detected=81  n_dyn_imaged=4  | slew=98°
+  Ep 2610  r= +47.082  avg10=+34.430  cf=86%(avg=94%)  dyn_suc=19%(avg=12%)  dyn_act=29.2%(avg=31.5%)  ent=0.1500  🎯 DYN!
+  Ep 2620  r= +51.647  avg10=+38.923  cf=100%(avg=97%)  dyn_suc=17%(avg=13%)  dyn_act=35.8%(avg=30.5%)  ent=0.1500  🎯 DYN!
+  Ep 2630  r= +21.756  avg10=+30.240  cf=100%(avg=100%)  dyn_suc=8%(avg=10%)  dyn_act=36.5%(avg=31.9%)  ent=0.1500  🎯 DYN!
+  Ep 2640  r= +42.039  avg10=+31.298  cf=94%(avg=98%)  dyn_suc=15%(avg=10%)  dyn_act=27.7%(avg=31.1%)  ent=0.1500  🎯 DYN!
+  Ep 2650  r= +27.567  avg10=+41.595  cf=100%(avg=96%)  dyn_suc=10%(avg=15%)  dyn_act=27.2%(avg=31.1%)  ent=0.1500  🎯 DYN!
+         Actions → static=69%  dyn=27%  drift=4%  | n_dyn_detected=80  n_dyn_imaged=8  | slew=677°
+  Ep 2660  r= +38.942  avg10=+43.375  cf=92%(avg=98%)  dyn_suc=14%(avg=15%)  dyn_act=38.2%(avg=32.9%)  ent=0.1500  🎯 DYN!
+  Ep 2670  r= +34.217  avg10=+33.091  cf=100%(avg=100%)  dyn_suc=12%(avg=11%)  dyn_act=27.6%(avg=32.0%)  ent=0.1500  🎯 DYN!
+  Ep 2680  r= +40.362  avg10=+37.644  cf=100%(avg=98%)  dyn_suc=14%(avg=12%)  dyn_act=28.3%(avg=31.0%)  ent=0.1500  🎯 DYN!
+  Ep 2690  r= +33.022  avg10=+34.535  cf=100%(avg=98%)  dyn_suc=12%(avg=11%)  dyn_act=34.5%(avg=30.7%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep02700.zip
+  Ep 2700  r=  +6.467  avg10=+34.796  cf=100%(avg=99%)  dyn_suc=0%(avg=12%)  dyn_act=31.8%(avg=30.7%)  ent=0.1500  
+         Actions → static=68%  dyn=32%  drift=0%  | n_dyn_detected=77  n_dyn_imaged=0  | slew=1371°
+  Ep 2710  r= +27.076  avg10=+39.211  cf=83%(avg=98%)  dyn_suc=12%(avg=13%)  dyn_act=17.4%(avg=27.8%)  ent=0.1500  🎯 DYN!
+  Ep 2720  r= +43.060  avg10=+40.230  cf=100%(avg=98%)  dyn_suc=12%(avg=13%)  dyn_act=32.7%(avg=33.3%)  ent=0.1500  🎯 DYN!
+  Ep 2730  r= +45.401  avg10=+40.176  cf=100%(avg=98%)  dyn_suc=14%(avg=13%)  dyn_act=29.3%(avg=32.2%)  ent=0.1500  🎯 DYN!
+  Ep 2740  r= +52.292  avg10=+37.866  cf=100%(avg=100%)  dyn_suc=20%(avg=13%)  dyn_act=35.9%(avg=34.2%)  ent=0.1500  🎯 DYN!
+  Ep 2750  r= +19.316  avg10=+32.863  cf=100%(avg=100%)  dyn_suc=8%(avg=10%)  dyn_act=28.5%(avg=30.2%)  ent=0.1500  🎯 DYN!
+         Actions → static=70%  dyn=28%  drift=1%  | n_dyn_detected=78  n_dyn_imaged=6  | slew=173°
+  Ep 2760  r= +60.432  avg10=+36.896  cf=90%(avg=98%)  dyn_suc=23%(avg=13%)  dyn_act=34.9%(avg=29.3%)  ent=0.1500  🎯 DYN!
+  Ep 2770  r= +26.864  avg10=+30.528  cf=100%(avg=89%)  dyn_suc=10%(avg=10%)  dyn_act=31.2%(avg=32.4%)  ent=0.1500  🎯 DYN!
+  Ep 2780  r= +16.202  avg10=+39.966  cf=100%(avg=99%)  dyn_suc=2%(avg=12%)  dyn_act=31.4%(avg=32.8%)  ent=0.1500  🎯 DYN!
+  Ep 2790  r= +49.190  avg10=+39.445  cf=91%(avg=98%)  dyn_suc=17%(avg=13%)  dyn_act=39.7%(avg=33.9%)  ent=0.1500  🎯 DYN!
+  [CKPT] Saved → /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints/ppo_smdp_ep02800.zip
+  Ep 2800  r= +45.886  avg10=+39.597  cf=100%(avg=100%)  dyn_suc=17%(avg=13%)  dyn_act=37.0%(avg=32.0%)  ent=0.1500  🎯 DYN!
+         Actions → static=62%  dyn=37%  drift=1%  | n_dyn_detected=84  n_dyn_imaged=14  | slew=361°
+  Ep 2810  r= +35.683  avg10=+43.327  cf=96%(avg=98%)  dyn_suc=10%(avg=15%)  dyn_act=31.4%(avg=32.0%)  ent=0.1500  🎯 DYN!
+  Ep 2820  r= +50.127  avg10=+39.396  cf=100%(avg=98%)  dyn_suc=17%(avg=12%)  dyn_act=35.8%(avg=32.1%)  ent=0.1500  🎯 DYN!
+  Ep 2830  r= +61.382  avg10=+50.692  cf=92%(avg=99%)  dyn_suc=24%(avg=16%)  dyn_act=33.8%(avg=34.5%)  ent=0.1500  🎯 DYN!
+  Ep 2840  r= +19.693  avg10=+36.992  cf=78%(avg=95%)  dyn_suc=10%(avg=13%)  dyn_act=28.8%(avg=32.7%)  ent=0.1500  🎯 DYN!
+  Ep 2850  r= +64.341  avg10=+53.486  cf=95%(avg=96%)  dyn_suc=22%(avg=18%)  dyn_act=29.7%(avg=34.7%)  ent=0.1500  🎯 DYN!
+         Actions → static=67%  dyn=30%  drift=3%  | n_dyn_detected=83  n_dyn_imaged=18  | slew=2516°
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 432,128/432,000  [ 7:40:24 < 0:00:00 , 17 it/s ]
+  Done 460.6 min  model -> /home/sanaa/Documents/alsat_dynamic_multi/models/ppo_smdp_full.zip
+  [RL] Loaded model from /home/sanaa/Documents/alsat_dynamic_multi/models/ppo_smdp_full.zip
+
+──────────────────────────────────────────────────────────────────────
+  SCENARIO: No events (baseline)
+──────────────────────────────────────────────────────────────────────
+    ep  1  greedy_dyn=+14.919  ignore=+14.919  det=0  suc=0%
+    ep  2  greedy_dyn=+13.190  ignore=+13.190  det=0  suc=0%
+    ep  3  greedy_dyn=+13.596  ignore=+13.596  det=0  suc=0%
+    ep  4  greedy_dyn=+13.797  ignore=+13.797  det=0  suc=0%
+    ep  5  greedy_dyn=-5.000  ignore=-5.000  det=0  suc=0%
+
+
+================================================================================
+  DYNAMIC TARGETING COMPARISON  (event_rate=0.0/hr)
+================================================================================
+  Policy                        Reward      ±    CF%   DynDet   DynImg   Suc%   Delay(s)
+  ------------------------------------------------------------------------------
+  greedy_dynamic_scout         +10.100  7.572    80%      0.0      0.0     0%          0
+  greedy_ignore_dynamic        +10.100  7.572    80%      0.0      0.0     0%          0
+  RL-PPO-dynamic                -5.000  0.000     0%      0.0      0.0     0%          0
+================================================================================
+  Dynamic targeting value (greedy_dynamic - ignore_dynamic): +0.000
+
+
+──────────────────────────────────────────────────────────────────────
+  SCENARIO: Sparse events (0.5/hr)
+──────────────────────────────────────────────────────────────────────
+    ep  1  greedy_dyn=+58.669  ignore=+14.919  det=23  suc=61%
+    ep  2  greedy_dyn=+51.489  ignore=+13.190  det=18  suc=61%
+    ep  3  greedy_dyn=+92.789  ignore=+13.596  det=31  suc=74%
+    ep  4  greedy_dyn=+82.523  ignore=+13.797  det=28  suc=75%
+    ep  5  greedy_dyn=+78.374  ignore=-5.000  det=19  suc=126%
+
+
+================================================================================
+  DYNAMIC TARGETING COMPARISON  (event_rate=0.5/hr)
+================================================================================
+  Policy                        Reward      ±    CF%   DynDet   DynImg   Suc%   Delay(s)
+  ------------------------------------------------------------------------------
+  greedy_dynamic_scout         +72.769  15.356    99%     23.8     18.6    79%       5092
+  greedy_ignore_dynamic        +10.100  7.572    80%     23.8      0.0     0%          0
+  RL-PPO-dynamic               +46.036  22.259   100%     23.8     16.4    73%      80423
+================================================================================
+  Dynamic targeting value (greedy_dynamic - ignore_dynamic): +62.668
+
+
+──────────────────────────────────────────────────────────────────────
+  SCENARIO: Dense events (2.0/hr)
+──────────────────────────────────────────────────────────────────────
+    ep  1  greedy_dyn=+149.177  ignore=+14.919  det=71  suc=55%
+    ep  2  greedy_dyn=+86.416  ignore=+13.190  det=61  suc=36%
+    ep  3  greedy_dyn=+90.338  ignore=+13.596  det=69  suc=33%
+    ep  4  greedy_dyn=+137.551  ignore=+13.797  det=67  suc=54%
+    ep  5  greedy_dyn=+114.647  ignore=-5.000  det=70  suc=50%
+
+
+================================================================================
+  DYNAMIC TARGETING COMPARISON  (event_rate=2.0/hr)
+================================================================================
+  Policy                        Reward      ±    CF%   DynDet   DynImg   Suc%   Delay(s)
+  ------------------------------------------------------------------------------
+  greedy_dynamic_scout        +115.626  24.900   100%     67.6     31.0    46%       5960
+  greedy_ignore_dynamic        +10.100  7.572    80%     61.2      0.0     0%          0
+  RL-PPO-dynamic               +55.531  17.237   100%     61.6     19.4    32%      80066
+================================================================================
+  Dynamic targeting value (greedy_dynamic - ignore_dynamic): +105.525
+
+  Additional science value (dense, dynamic-scout vs ignore): +105.525
+  Plot saved → /home/sanaa/Documents/alsat_dynamic_multi/data/outputs/plots/dynamic_eval_comparison.png
+  [WARN] explain: SMDP_VISION
+
+  All done.
