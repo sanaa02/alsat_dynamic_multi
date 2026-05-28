@@ -219,9 +219,9 @@ def _build_model(vec_env, args, steps_per_ep):
     # ── Attention policy path ─────────────────────────────────────
     if getattr(args, 'attention', False):
         try:
-            
+            import sys, os as _os
             sys.path.insert(0, _os.path.join(_os.path.dirname(__file__), '..', 'models'))
-            
+            from attention_policy import make_attention_ppo
             print(" [INFO] Using SchedulerAttentionExtractor (attention policy)")
             return make_attention_ppo(
                 vec_env, ent_coef=start_ent,
@@ -384,12 +384,12 @@ def main():
                     help="PPO entropy coef start (anneals to 0.005). "
                          "Higher = more dynamic-event exploration.")
     ap.add_argument("--cnn-model", type=str, default=None, help="Path to a custom cloud CNN model")
-    ap.add_argument("--attention", action="store_true",    
+    ap.add_argument("--attention", action="store_true",
                 help="Use SchedulerAttentionExtractor cross-attention policy "
                      "(scripts/models/attention_policy.py) instead of MLP")
     ap.add_argument("--init-model", type=str, default=None,
-                    help="Path to a pre-trained model (.zip) to warm-start from "
-                         "(e.g., ppo_smdp_full.zip from a previous run)")
+                help="Path to a pre-trained model (.zip) to warm-start from "
+                     "(e.g., ppo_smdp_full.zip from a previous run)")
     
     args = ap.parse_args()
 
@@ -420,12 +420,13 @@ def main():
     if args.curriculum: model = stage_curriculum(args, cfg)
 
     # ── Warm-start from a previous model (optional) ─────────────────
+
+    # ── Warm-start from a previous model (optional) ─────────────────
     if getattr(args, 'init_model', None) and os.path.exists(args.init_model):
         try:
             from stable_baselines3 import PPO as _PPO
             _init = _PPO.load(args.init_model)
             print(f" [INFO] Warm-starting policy weights from {args.init_model}")
-            # model will be set_env'd after vec is created in stage_ppo
             model = _init
         except Exception as _e:
             print(f" [WARN] Could not load init model: {_e}")
