@@ -600,3 +600,1188 @@ WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in pr
 WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
 [90;3m2026-05-26 08:55:21,018 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
 WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 08:57:12,664 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 08:59:00,876 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:00:51,605 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:02:42,378 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:04:31,673 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:06:22,623 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:08:12,772 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:10:01,932 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:12:00,079 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:13:52,769 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:15:42,702 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:17:35,396 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 09:19:27,573 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+ERROR:__main__:Variant no_bc seed 42 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+[90;3m2026-05-26 11:04:25,852 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:04:26,404 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:06:21,892 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:08:17,236 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:10:10,155 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:12:02,606 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:13:50,902 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:15:42,825 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:17:28,759 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:19:19,041 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:21:14,276 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:23:01,326 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:24:52,196 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:26:44,779 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:28:34,835 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:30:23,128 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:32:15,053 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:34:07,759 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:35:58,144 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:37:52,642 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:39:48,746 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:41:41,914 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:43:29,769 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:45:20,960 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:47:14,418 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:49:03,699 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:50:51,795 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:52:40,129 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:54:30,260 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:56:23,098 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 11:58:14,844 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:00:03,107 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:01:53,397 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:03:48,079 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:05:37,425 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:07:30,491 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:09:18,667 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:11:09,776 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:12:59,020 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:14:53,535 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:16:46,337 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:18:41,814 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:20:30,864 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:22:20,764 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:24:10,351 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:26:01,547 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:27:56,112 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:29:47,638 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:31:38,455 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:33:32,238 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:35:26,947 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:37:19,166 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:39:08,788 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:40:56,772 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:42:46,298 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:44:37,538 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:46:32,729 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:48:26,494 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:50:21,802 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:52:11,632 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:54:00,942 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:55:49,487 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:57:41,600 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 12:59:33,794 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:01:24,702 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:03:15,711 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:05:10,471 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:07:01,594 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:08:50,735 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:10:41,447 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:12:28,745 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:14:21,332 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:16:08,554 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:18:02,844 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:19:56,955 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:21:49,155 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:23:39,965 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:25:30,467 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:27:18,753 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:29:07,790 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:30:56,513 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:32:45,225 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:34:38,693 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:36:29,118 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:38:19,695 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:40:13,578 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:42:04,817 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:43:55,686 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:45:47,245 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:47:40,112 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:49:33,045 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:51:24,267 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:53:16,186 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:55:08,496 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:57:02,432 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 13:58:52,090 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:00:39,081 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:02:34,328 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:04:26,235 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:06:20,783 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:08:12,306 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:09:58,455 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:11:48,172 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:13:37,387 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:15:29,930 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:17:23,636 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:19:19,117 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:21:08,706 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:22:58,344 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:24:48,561 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:26:40,441 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:28:30,812 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:30:20,398 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:32:12,557 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:34:00,315 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:35:48,767 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:37:45,081 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:39:33,098 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:41:22,534 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:43:13,809 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:45:03,436 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:46:54,616 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:48:45,691 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:50:39,582 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:52:28,141 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:54:15,312 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:56:03,519 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:57:52,618 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 14:59:43,370 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:01:31,918 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:03:23,373 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:05:09,221 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:06:57,990 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:08:47,461 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:10:35,583 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:12:25,528 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:14:17,378 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:16:03,215 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:17:50,346 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:19:39,981 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:21:29,388 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:23:19,854 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:25:10,001 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:26:58,135 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:28:44,761 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:30:31,239 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:32:22,517 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:34:12,362 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:36:01,966 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:37:50,639 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:39:45,751 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:41:33,739 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:43:21,753 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:45:14,178 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:47:01,554 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:48:58,214 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:50:47,473 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:52:34,961 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:54:28,041 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:56:17,972 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:58:09,185 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 15:59:56,650 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:01:46,726 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:03:38,954 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:05:30,230 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:07:19,124 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:09:13,427 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:10:59,710 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:12:56,119 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:14:45,803 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:16:40,216 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:18:30,355 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:20:20,204 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:22:08,113 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:23:54,687 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:25:42,179 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:27:33,098 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:29:25,364 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:31:16,073 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:33:09,377 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:35:05,356 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:36:55,551 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:38:45,056 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:40:39,468 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:42:31,485 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:44:21,704 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:46:16,000 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:48:11,872 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:50:05,716 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:52:02,083 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:53:54,478 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:55:48,841 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:57:38,425 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 16:59:26,450 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 17:01:15,635 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 17:03:07,469 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 17:04:59,218 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 17:06:52,400 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 17:08:47,461 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 17:10:37,793 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+[90;3m2026-05-26 17:12:23,944 [0m[m                               [0m[93mWARNING    [0m[93mCreating logger for new env on PID=305444. Old environments in process may now log times incorrectly.[0m
+WARNING:bsk_rl:Creating logger for new env on PID=305444. Old environments in process may now log times incorrectly.
+ERROR:__main__:Variant no_bc seed 456 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+
+============================================================
+  no_bc  seed=42
+============================================================
+  Ep    25  r=+30.491  dyn_suc=11.5%  n_dyn_img=10  ent=0.1482
+  Ep    50  r=+32.822  dyn_suc=12.2%  n_dyn_img=8  ent=0.1463
+  Ep    75  r=+32.657  dyn_suc=12.3%  n_dyn_img=6  ent=0.1444
+  Ep   100  r=+34.320  dyn_suc=13.3%  n_dyn_img=19  ent=0.1426
+  Ep   125  r=+35.946  dyn_suc=14.2%  n_dyn_img=4  ent=0.1408
+  Ep   150  r=+34.780  dyn_suc=13.8%  n_dyn_img=10  ent=0.1389
+  Ep   175  r=+35.310  dyn_suc=14.1%  n_dyn_img=8  ent=0.1371
+  Ep   200  r=+31.485  dyn_suc=12.5%  n_dyn_img=9  ent=0.1353
+  Ep   225  r=+31.090  dyn_suc=12.3%  n_dyn_img=12  ent=0.1335
+  Ep   250  r=+33.025  dyn_suc=13.4%  n_dyn_img=10  ent=0.1316
+  Ep   275  r=+32.173  dyn_suc=12.9%  n_dyn_img=10  ent=0.1298
+  Ep   300  r=+35.416  dyn_suc=13.9%  n_dyn_img=10  ent=0.1280
+  Ep   325  r=+36.116  dyn_suc=14.1%  n_dyn_img=14  ent=0.1261
+  Ep   350  r=+35.453  dyn_suc=14.0%  n_dyn_img=8  ent=0.1243
+  Ep   375  r=+37.583  dyn_suc=15.1%  n_dyn_img=16  ent=0.1225
+  Ep   400  r=+38.047  dyn_suc=15.7%  n_dyn_img=10  ent=0.1207
+  Ep   425  r=+37.408  dyn_suc=15.3%  n_dyn_img=14  ent=0.1188
+  Ep   450  r=+37.697  dyn_suc=15.1%  n_dyn_img=11  ent=0.1170
+  Ep   475  r=+36.493  dyn_suc=14.4%  n_dyn_img=6  ent=0.1151
+  Ep   500  r=+35.017  dyn_suc=13.8%  n_dyn_img=4  ent=0.1133
+  Ep   525  r=+35.190  dyn_suc=14.0%  n_dyn_img=4  ent=0.1115
+  Ep   550  r=+36.146  dyn_suc=14.5%  n_dyn_img=6  ent=0.1097
+  Ep   575  r=+36.234  dyn_suc=14.8%  n_dyn_img=8  ent=0.1079
+  Ep   600  r=+36.596  dyn_suc=14.9%  n_dyn_img=4  ent=0.1061
+  Ep   625  r=+38.075  dyn_suc=15.4%  n_dyn_img=8  ent=0.1042
+  Ep   650  r=+36.856  dyn_suc=14.9%  n_dyn_img=12  ent=0.1024
+  Ep   675  r=+38.629  dyn_suc=15.4%  n_dyn_img=14  ent=0.1006
+  Ep   700  r=+40.233  dyn_suc=16.1%  n_dyn_img=14  ent=0.0987
+  Ep   725  r=+38.586  dyn_suc=15.6%  n_dyn_img=12  ent=0.0969
+  Ep   750  r=+38.946  dyn_suc=16.1%  n_dyn_img=15  ent=0.0951
+  Ep   775  r=+39.689  dyn_suc=16.2%  n_dyn_img=8  ent=0.0933
+  Ep   800  r=+40.862  dyn_suc=16.5%  n_dyn_img=12  ent=0.0914
+  Skip no_bc seed=123 (already done)
+
+============================================================
+  no_bc  seed=456
+============================================================
+  Ep    25  r=+31.385  dyn_suc=11.3%  n_dyn_img=4  ent=0.1481
+  Ep    50  r=+32.941  dyn_suc=12.7%  n_dyn_img=14  ent=0.1463
+  Ep    75  r=+31.744  dyn_suc=12.2%  n_dyn_img=2  ent=0.1445
+  Ep   100  r=+32.869  dyn_suc=12.7%  n_dyn_img=4  ent=0.1426
+  Ep   125  r=+33.703  dyn_suc=13.1%  n_dyn_img=8  ent=0.1407
+  Ep   150  r=+34.552  dyn_suc=13.3%  n_dyn_img=2  ent=0.1389
+  Ep   175  r=+34.699  dyn_suc=13.3%  n_dyn_img=7  ent=0.1370
+  Ep   200  r=+32.965  dyn_suc=12.6%  n_dyn_img=2  ent=0.1352
+  Ep   225  r=+31.776  dyn_suc=12.3%  n_dyn_img=14  ent=0.1334
+  Ep   250  r=+30.568  dyn_suc=11.8%  n_dyn_img=12  ent=0.1315
+  Ep   275  r=+31.178  dyn_suc=12.0%  n_dyn_img=4  ent=0.1297
+  Ep   300  r=+32.318  dyn_suc=12.5%  n_dyn_img=4  ent=0.1278
+  Ep   325  r=+32.729  dyn_suc=12.6%  n_dyn_img=8  ent=0.1260
+  Ep   350  r=+32.854  dyn_suc=12.8%  n_dyn_img=16  ent=0.1241
+  Ep   375  r=+32.825  dyn_suc=12.7%  n_dyn_img=4  ent=0.1223
+  Ep   400  r=+32.981  dyn_suc=12.8%  n_dyn_img=6  ent=0.1204
+  Ep   425  r=+32.365  dyn_suc=12.4%  n_dyn_img=10  ent=0.1186
+  Ep   450  r=+31.447  dyn_suc=11.8%  n_dyn_img=2  ent=0.1167
+  Ep   475  r=+32.134  dyn_suc=12.3%  n_dyn_img=6  ent=0.1149
+  Ep   500  r=+30.458  dyn_suc=11.7%  n_dyn_img=12  ent=0.1131
+  Ep   525  r=+31.412  dyn_suc=12.2%  n_dyn_img=10  ent=0.1112
+  Ep   550  r=+31.572  dyn_suc=12.4%  n_dyn_img=6  ent=0.1094
+  Ep   575  r=+32.155  dyn_suc=12.8%  n_dyn_img=12  ent=0.1075
+  Ep   600  r=+35.843  dyn_suc=14.4%  n_dyn_img=10  ent=0.1057
+  Ep   625  r=+36.618  dyn_suc=14.8%  n_dyn_img=4  ent=0.1038
+  Ep   650  r=+39.504  dyn_suc=16.0%  n_dyn_img=8  ent=0.1020
+  Ep   675  r=+39.248  dyn_suc=15.8%  n_dyn_img=9  ent=0.1002
+  Ep   700  r=+39.985  dyn_suc=16.2%  n_dyn_img=12  ent=0.0984
+  Ep   725  r=+40.878  dyn_suc=16.7%  n_dyn_img=22  ent=0.0965
+  Ep   750  r=+39.550  dyn_suc=16.6%  n_dyn_img=14  ent=0.0947
+  Ep   775  r=+40.303  dyn_suc=16.9%  n_dyn_img=12  ent=0.0929
+  Ep   800  r=+38.671  dyn_suc=16.2%  n_dyn_img=24  ent=0.0911
+  Ep   825  r=+38.040  dyn_suc=15.8%  n_dyn_img=12  ent=0.0892
+  Ep   850  r=+39.414  dyn_suc=16.1%  n_dyn_img=14  ent=0.0874
+  Ep   875  r=+39.229  dyn_suc=15.9%  n_dyn_img=25  ent=0.0855
+  Ep   900  r=+40.065  dyn_suc=16.2%  n_dyn_img=23  ent=0.0837
+  Ep   925  r=+41.970  dyn_suc=17.1%  n_dyn_img=12  ent=0.0819
+  Ep   950  r=+40.540  dyn_suc=16.5%  n_dyn_img=10  ent=0.0800
+  Ep   975  r=+42.238  dyn_suc=17.4%  n_dyn_img=8  ent=0.0782
+  Ep  1000  r=+43.273  dyn_suc=17.9%  n_dyn_img=20  ent=0.0764
+  Ep  1025  r=+43.831  dyn_suc=18.1%  n_dyn_img=20  ent=0.0746
+  Ep  1050  r=+45.602  dyn_suc=18.8%  n_dyn_img=4  ent=0.0728
+  Ep  1075  r=+46.168  dyn_suc=19.1%  n_dyn_img=22  ent=0.0709
+  Ep  1100  r=+46.271  dyn_suc=19.1%  n_dyn_img=14  ent=0.0691
+  Ep  1125  r=+47.198  dyn_suc=19.8%  n_dyn_img=12  ent=0.0673
+  Ep  1150  r=+47.354  dyn_suc=19.8%  n_dyn_img=6  ent=0.0655
+  Ep  1175  r=+45.922  dyn_suc=19.3%  n_dyn_img=10  ent=0.0637
+  Ep  1200  r=+45.476  dyn_suc=18.8%  n_dyn_img=12  ent=0.0618
+  Ep  1225  r=+45.264  dyn_suc=18.5%  n_dyn_img=20  ent=0.0600
+  Ep  1250  r=+46.778  dyn_suc=19.3%  n_dyn_img=16  ent=0.0582
+  Ep  1275  r=+48.425  dyn_suc=20.0%  n_dyn_img=4  ent=0.0564
+  Ep  1300  r=+49.276  dyn_suc=20.8%  n_dyn_img=18  ent=0.0546
+  Ep  1325  r=+51.049  dyn_suc=21.6%  n_dyn_img=16  ent=0.0527
+  Ep  1350  r=+50.837  dyn_suc=21.7%  n_dyn_img=5  ent=0.0509
+  Ep  1375  r=+50.546  dyn_suc=21.5%  n_dyn_img=16  ent=0.0491
+  Ep  1400  r=+51.754  dyn_suc=21.9%  n_dyn_img=18  ent=0.0473
+  Ep  1425  r=+51.343  dyn_suc=21.6%  n_dyn_img=24  ent=0.0455
+  Ep  1450  r=+51.427  dyn_suc=21.7%  n_dyn_img=16  ent=0.0436
+  Ep  1475  r=+53.687  dyn_suc=22.6%  n_dyn_img=14  ent=0.0418
+  Ep  1500  r=+53.218  dyn_suc=22.3%  n_dyn_img=18  ent=0.0400
+  Ep  1525  r=+52.229  dyn_suc=21.8%  n_dyn_img=16  ent=0.0382
+  Ep  1550  r=+56.770  dyn_suc=23.7%  n_dyn_img=17  ent=0.0364
+  Ep  1575  r=+59.864  dyn_suc=25.0%  n_dyn_img=16  ent=0.0345
+  Ep  1600  r=+61.572  dyn_suc=26.2%  n_dyn_img=19  ent=0.0327
+  Ep  1625  r=+65.597  dyn_suc=28.1%  n_dyn_img=38  ent=0.0309
+  Ep  1650  r=+64.171  dyn_suc=27.4%  n_dyn_img=18  ent=0.0291
+  Ep  1675  r=+63.237  dyn_suc=27.2%  n_dyn_img=18  ent=0.0273
+  Ep  1700  r=+64.097  dyn_suc=27.1%  n_dyn_img=17  ent=0.0255
+  Ep  1725  r=+64.061  dyn_suc=27.2%  n_dyn_img=15  ent=0.0237
+  Ep  1750  r=+63.992  dyn_suc=27.3%  n_dyn_img=32  ent=0.0219
+  Ep  1775  r=+61.608  dyn_suc=26.2%  n_dyn_img=23  ent=0.0201
+  Ep  1800  r=+60.910  dyn_suc=26.4%  n_dyn_img=28  ent=0.0183
+  Ep  1825  r=+62.487  dyn_suc=26.9%  n_dyn_img=16  ent=0.0165
+  Ep  1850  r=+65.537  dyn_suc=28.5%  n_dyn_img=14  ent=0.0147
+  Ep  1875  r=+67.876  dyn_suc=29.4%  n_dyn_img=27  ent=0.0129
+  Ep  1900  r=+68.842  dyn_suc=30.1%  n_dyn_img=26  ent=0.0111
+
+✓ Ablation table → /home/sanaa/Documents/alsat_dynamic_multi/results/ablation/ablation_table.csv
+
+Variant                Reward    CF rate     DynSuc
+------------------------------------------------------
+  full_system       60.008±0.00   1.000±0.000   0.314±0.000
+  no_bc             86.554±0.00   0.968±0.000   0.423±0.000
+swig/python detected a memory leak of type 'BSKLogger *', no destructor found.
+swig/python detected a memory leak of type 'BSKLogger *', no destructor found.
+DONE: no_bc
+======== STARTING: no_curriculum ========
+ERROR:__main__:Variant no_curriculum seed 42 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+ERROR:__main__:Variant no_curriculum seed 456 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+
+============================================================
+  no_curriculum  seed=42
+============================================================
+  Ep    25  r=+31.654  dyn_suc=8.4%  n_dyn_img=4  ent=0.1482
+  Ep    50  r=+34.953  dyn_suc=10.0%  n_dyn_img=20  ent=0.1463
+  Ep    75  r=+38.320  dyn_suc=11.6%  n_dyn_img=14  ent=0.1445
+  Ep   100  r=+39.287  dyn_suc=12.5%  n_dyn_img=8  ent=0.1426
+  Ep   125  r=+43.832  dyn_suc=14.9%  n_dyn_img=8  ent=0.1408
+  Ep   150  r=+45.986  dyn_suc=16.3%  n_dyn_img=13  ent=0.1389
+  Ep   175  r=+45.625  dyn_suc=16.5%  n_dyn_img=22  ent=0.1371
+  Ep   200  r=+46.011  dyn_suc=17.0%  n_dyn_img=10  ent=0.1353
+  Ep   225  r=+42.557  dyn_suc=15.9%  n_dyn_img=2  ent=0.1334
+  Ep   250  r=+41.406  dyn_suc=15.8%  n_dyn_img=12  ent=0.1316
+  Ep   275  r=+41.038  dyn_suc=16.2%  n_dyn_img=10  ent=0.1298
+  Ep   300  r=+40.459  dyn_suc=16.0%  n_dyn_img=12  ent=0.1280
+  Ep   325  r=+41.076  dyn_suc=16.3%  n_dyn_img=8  ent=0.1262
+  Ep   350  r=+38.029  dyn_suc=14.9%  n_dyn_img=0  ent=0.1243
+  Ep   375  r=+35.738  dyn_suc=13.9%  n_dyn_img=6  ent=0.1225
+  Ep   400  r=+34.228  dyn_suc=13.1%  n_dyn_img=15  ent=0.1206
+  Ep   425  r=+33.272  dyn_suc=12.8%  n_dyn_img=6  ent=0.1187
+  Ep   450  r=+36.115  dyn_suc=14.5%  n_dyn_img=14  ent=0.1169
+  Ep   475  r=+36.476  dyn_suc=14.6%  n_dyn_img=4  ent=0.1151
+  Ep   500  r=+37.677  dyn_suc=15.2%  n_dyn_img=8  ent=0.1133
+  Ep   525  r=+39.569  dyn_suc=16.2%  n_dyn_img=8  ent=0.1114
+  Ep   550  r=+39.522  dyn_suc=16.0%  n_dyn_img=8  ent=0.1096
+  Ep   575  r=+42.130  dyn_suc=17.0%  n_dyn_img=8  ent=0.1078
+  Ep   600  r=+43.779  dyn_suc=18.2%  n_dyn_img=18  ent=0.1060
+  Ep   625  r=+44.023  dyn_suc=18.3%  n_dyn_img=8  ent=0.1042
+  Ep   650  r=+45.289  dyn_suc=19.0%  n_dyn_img=12  ent=0.1023
+  Ep   675  r=+45.758  dyn_suc=19.3%  n_dyn_img=6  ent=0.1005
+  Ep   700  r=+44.800  dyn_suc=18.6%  n_dyn_img=12  ent=0.0987
+  Ep   725  r=+45.067  dyn_suc=18.8%  n_dyn_img=27  ent=0.0969
+  Ep   750  r=+44.538  dyn_suc=18.6%  n_dyn_img=4  ent=0.0950
+  Ep   775  r=+45.590  dyn_suc=19.0%  n_dyn_img=8  ent=0.0932
+  Ep   800  r=+45.263  dyn_suc=19.0%  n_dyn_img=17  ent=0.0914
+  Ep   825  r=+43.619  dyn_suc=18.2%  n_dyn_img=15  ent=0.0895
+  Ep   850  r=+43.881  dyn_suc=18.1%  n_dyn_img=16  ent=0.0877
+  Ep   875  r=+41.638  dyn_suc=17.4%  n_dyn_img=6  ent=0.0859
+  Ep   900  r=+42.413  dyn_suc=17.6%  n_dyn_img=14  ent=0.0840
+  Ep   925  r=+42.739  dyn_suc=17.7%  n_dyn_img=8  ent=0.0822
+  Ep   950  r=+43.433  dyn_suc=18.1%  n_dyn_img=19  ent=0.0804
+  Ep   975  r=+45.377  dyn_suc=18.8%  n_dyn_img=8  ent=0.0785
+  Ep  1000  r=+46.889  dyn_suc=19.7%  n_dyn_img=13  ent=0.0767
+  Ep  1025  r=+48.382  dyn_suc=20.4%  n_dyn_img=13  ent=0.0749
+  Ep  1050  r=+48.345  dyn_suc=20.4%  n_dyn_img=20  ent=0.0731
+  Ep  1075  r=+47.594  dyn_suc=20.0%  n_dyn_img=10  ent=0.0712
+  Ep  1100  r=+48.635  dyn_suc=20.0%  n_dyn_img=18  ent=0.0694
+  Ep  1125  r=+50.460  dyn_suc=20.7%  n_dyn_img=17  ent=0.0676
+  Ep  1150  r=+51.413  dyn_suc=21.4%  n_dyn_img=8  ent=0.0658
+  Ep  1175  r=+53.822  dyn_suc=22.5%  n_dyn_img=14  ent=0.0640
+  Ep  1200  r=+52.840  dyn_suc=22.2%  n_dyn_img=10  ent=0.0621
+  Ep  1225  r=+51.587  dyn_suc=21.6%  n_dyn_img=18  ent=0.0603
+  Ep  1250  r=+53.183  dyn_suc=22.1%  n_dyn_img=26  ent=0.0585
+  Ep  1275  r=+52.283  dyn_suc=21.7%  n_dyn_img=12  ent=0.0567
+  Ep  1300  r=+53.112  dyn_suc=22.3%  n_dyn_img=8  ent=0.0548
+  Ep  1325  r=+55.599  dyn_suc=23.5%  n_dyn_img=21  ent=0.0530
+  Ep  1350  r=+56.835  dyn_suc=24.0%  n_dyn_img=15  ent=0.0512
+  Ep  1375  r=+59.473  dyn_suc=25.2%  n_dyn_img=10  ent=0.0494
+  Ep  1400  r=+62.090  dyn_suc=26.3%  n_dyn_img=12  ent=0.0476
+  Ep  1425  r=+63.690  dyn_suc=26.9%  n_dyn_img=20  ent=0.0457
+  Ep  1450  r=+66.615  dyn_suc=28.6%  n_dyn_img=24  ent=0.0439
+  Ep  1475  r=+68.011  dyn_suc=29.5%  n_dyn_img=24  ent=0.0421
+  Skip no_curriculum seed=123 (already done)
+
+============================================================
+  no_curriculum  seed=456
+============================================================
+  Ep    25  r=+33.032  dyn_suc=9.1%  n_dyn_img=4  ent=0.1482
+  Ep    50  r=+36.922  dyn_suc=11.1%  n_dyn_img=8  ent=0.1463
+  Ep    75  r=+37.690  dyn_suc=11.5%  n_dyn_img=6  ent=0.1445
+  Ep   100  r=+38.656  dyn_suc=12.1%  n_dyn_img=4  ent=0.1426
+  Ep   125  r=+40.058  dyn_suc=13.3%  n_dyn_img=12  ent=0.1408
+  Ep   150  r=+39.156  dyn_suc=13.3%  n_dyn_img=18  ent=0.1389
+  Ep   175  r=+38.882  dyn_suc=13.9%  n_dyn_img=10  ent=0.1371
+  Ep   200  r=+37.990  dyn_suc=13.9%  n_dyn_img=10  ent=0.1353
+  Ep   225  r=+38.173  dyn_suc=14.1%  n_dyn_img=8  ent=0.1335
+  Ep   250  r=+38.807  dyn_suc=14.4%  n_dyn_img=10  ent=0.1316
+  Ep   275  r=+38.724  dyn_suc=14.2%  n_dyn_img=8  ent=0.1298
+  Ep   300  r=+39.959  dyn_suc=14.9%  n_dyn_img=6  ent=0.1279
+  Ep   325  r=+38.930  dyn_suc=14.7%  n_dyn_img=8  ent=0.1261
+  Ep   350  r=+38.324  dyn_suc=14.9%  n_dyn_img=12  ent=0.1243
+  Ep   375  r=+39.445  dyn_suc=15.6%  n_dyn_img=14  ent=0.1224
+  Ep   400  r=+39.417  dyn_suc=15.8%  n_dyn_img=14  ent=0.1206
+  Ep   425  r=+40.251  dyn_suc=16.3%  n_dyn_img=6  ent=0.1188
+  Ep   450  r=+41.896  dyn_suc=16.9%  n_dyn_img=8  ent=0.1169
+  Ep   475  r=+41.764  dyn_suc=16.6%  n_dyn_img=22  ent=0.1151
+  Ep   500  r=+41.124  dyn_suc=16.3%  n_dyn_img=12  ent=0.1132
+  Ep   525  r=+40.909  dyn_suc=16.2%  n_dyn_img=10  ent=0.1114
+  Ep   550  r=+40.092  dyn_suc=15.7%  n_dyn_img=4  ent=0.1095
+
+✓ Ablation table → /home/sanaa/Documents/alsat_dynamic_multi/results/ablation/ablation_table.csv
+
+Variant                Reward    CF rate     DynSuc
+------------------------------------------------------
+  full_system       60.008±0.00   1.000±0.000   0.314±0.000
+  no_bc             86.554±0.00   0.968±0.000   0.423±0.000
+  no_curriculum     60.999±0.00   0.899±0.000   0.340±0.000
+swig/python detected a memory leak of type 'BSKLogger *', no destructor found.
+DONE: no_curriculum
+======== STARTING: no_smdp ========
+ERROR:__main__:Variant no_smdp seed 42 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+
+============================================================
+  no_smdp  seed=42
+============================================================
+  Ep    25  r=+31.827  dyn_suc=11.9%  n_dyn_img=10  ent=0.1482
+  Ep    50  r=+29.839  dyn_suc=10.8%  n_dyn_img=10  ent=0.1463
+  Ep    75  r=+29.081  dyn_suc=10.8%  n_dyn_img=10  ent=0.1445
+  Ep   100  r=+29.069  dyn_suc=10.8%  n_dyn_img=14  ent=0.1426
+  Ep   125  r=+29.454  dyn_suc=11.2%  n_dyn_img=6  ent=0.1408
+  Ep   150  r=+30.315  dyn_suc=11.7%  n_dyn_img=12  ent=0.1390
+  Ep   175  r=+32.920  dyn_suc=12.9%  n_dyn_img=10  ent=0.1371
+  Ep   200  r=+33.169  dyn_suc=13.3%  n_dyn_img=12  ent=0.1353
+  Ep   225  r=+33.764  dyn_suc=13.6%  n_dyn_img=8  ent=0.1335
+  Ep   250  r=+37.585  dyn_suc=15.4%  n_dyn_img=12  ent=0.1317
+  Ep   275  r=+36.968  dyn_suc=14.9%  n_dyn_img=4  ent=0.1298
+  Ep   300  r=+38.247  dyn_suc=15.2%  n_dyn_img=4  ent=0.1280
+  Ep   325  r=+38.727  dyn_suc=15.1%  n_dyn_img=10  ent=0.1261
+  Ep   350  r=+36.207  dyn_suc=14.2%  n_dyn_img=14  ent=0.1243
+  Ep   375  r=+35.140  dyn_suc=13.8%  n_dyn_img=21  ent=0.1225
+  Ep   400  r=+34.933  dyn_suc=14.0%  n_dyn_img=4  ent=0.1206
+  Ep   425  r=+35.772  dyn_suc=14.4%  n_dyn_img=8  ent=0.1188
+  Ep   450  r=+37.199  dyn_suc=14.9%  n_dyn_img=8  ent=0.1170
+  Ep   475  r=+38.667  dyn_suc=15.4%  n_dyn_img=10  ent=0.1151
+  Ep   500  r=+41.986  dyn_suc=16.9%  n_dyn_img=14  ent=0.1133
+  Ep   525  r=+42.421  dyn_suc=17.1%  n_dyn_img=12  ent=0.1114
+  Ep   550  r=+42.342  dyn_suc=17.0%  n_dyn_img=12  ent=0.1096
+  Ep   575  r=+42.884  dyn_suc=17.5%  n_dyn_img=8  ent=0.1078
+  Ep   600  r=+41.433  dyn_suc=16.6%  n_dyn_img=12  ent=0.1060
+  Ep   625  r=+41.995  dyn_suc=17.2%  n_dyn_img=16  ent=0.1041
+  Ep   650  r=+41.017  dyn_suc=16.8%  n_dyn_img=10  ent=0.1023
+  Ep   675  r=+42.286  dyn_suc=17.3%  n_dyn_img=20  ent=0.1005
+  Ep   700  r=+41.724  dyn_suc=16.9%  n_dyn_img=12  ent=0.0986
+  Ep   725  r=+39.117  dyn_suc=15.8%  n_dyn_img=2  ent=0.0968
+  Ep   750  r=+39.654  dyn_suc=16.0%  n_dyn_img=10  ent=0.0949
+  Ep   775  r=+39.680  dyn_suc=15.9%  n_dyn_img=6  ent=0.0931
+  Ep   800  r=+40.490  dyn_suc=16.4%  n_dyn_img=21  ent=0.0913
+  Ep   825  r=+41.493  dyn_suc=16.8%  n_dyn_img=4  ent=0.0894
+
+============================================================
+  no_smdp  seed=123
+============================================================
+  Ep    25  r=+39.777  dyn_suc=15.5%  n_dyn_img=10  ent=0.1481
+  Ep    50  r=+41.848  dyn_suc=16.9%  n_dyn_img=10  ent=0.1463
+  Ep    75  r=+38.320  dyn_suc=15.1%  n_dyn_img=4  ent=0.1445
+  Ep   100  r=+35.498  dyn_suc=13.8%  n_dyn_img=6  ent=0.1426
+  Ep   125  r=+34.239  dyn_suc=13.4%  n_dyn_img=12  ent=0.1408
+  Ep   150  r=+30.785  dyn_suc=11.8%  n_dyn_img=14  ent=0.1389
+  Ep   175  r=+31.206  dyn_suc=12.2%  n_dyn_img=16  ent=0.1371
+  Ep   200  r=+33.165  dyn_suc=13.1%  n_dyn_img=8  ent=0.1352
+  Ep   225  r=+33.887  dyn_suc=13.4%  n_dyn_img=13  ent=0.1334
+  Ep   250  r=+34.742  dyn_suc=13.8%  n_dyn_img=10  ent=0.1316
+  Ep   275  r=+33.980  dyn_suc=13.4%  n_dyn_img=6  ent=0.1297
+  Ep   300  r=+34.996  dyn_suc=13.8%  n_dyn_img=6  ent=0.1279
+  Ep   325  r=+35.744  dyn_suc=14.1%  n_dyn_img=4  ent=0.1260
+  Ep   350  r=+35.316  dyn_suc=14.0%  n_dyn_img=10  ent=0.1242
+  Ep   375  r=+37.318  dyn_suc=15.1%  n_dyn_img=12  ent=0.1224
+  Ep   400  r=+35.995  dyn_suc=14.8%  n_dyn_img=10  ent=0.1206
+  Ep   425  r=+36.383  dyn_suc=14.9%  n_dyn_img=6  ent=0.1188
+  Ep   450  r=+39.221  dyn_suc=16.1%  n_dyn_img=12  ent=0.1169
+  Ep   475  r=+39.591  dyn_suc=15.9%  n_dyn_img=14  ent=0.1151
+  Ep   500  r=+39.746  dyn_suc=15.8%  n_dyn_img=2  ent=0.1132
+  Ep   525  r=+38.072  dyn_suc=15.3%  n_dyn_img=6  ent=0.1114
+  Ep   550  r=+38.632  dyn_suc=15.3%  n_dyn_img=10  ent=0.1096
+  Ep   575  r=+40.033  dyn_suc=15.9%  n_dyn_img=8  ent=0.1077
+  Ep   600  r=+42.056  dyn_suc=16.9%  n_dyn_img=10  ent=0.1059
+  Ep   625  r=+43.687  dyn_suc=17.5%  n_dyn_img=20  ent=0.1041
+  Ep   650  r=+43.439  dyn_suc=17.6%  n_dyn_img=8  ent=0.1022
+  Ep   675  r=+42.925  dyn_suc=17.6%  n_dyn_img=18  ent=0.1004
+  Ep   700  r=+42.281  dyn_suc=17.4%  n_dyn_img=20  ent=0.0986
+  Ep   725  r=+42.482  dyn_suc=17.2%  n_dyn_img=14  ent=0.0967
+  Ep   750  r=+42.860  dyn_suc=17.6%  n_dyn_img=14  ent=0.0949
+  Ep   775  r=+44.187  dyn_suc=18.1%  n_dyn_img=14  ent=0.0931
+  Ep   800  r=+45.422  dyn_suc=18.9%  n_dyn_img=10  ent=0.0913
+  Ep   825  r=+44.378  dyn_suc=18.6%  n_dyn_img=17  ent=0.0895
+  Ep   850  r=+43.218  dyn_suc=18.1%  n_dyn_img=20  ent=0.0876
+  Ep   875  r=+44.112  dyn_suc=18.5%  n_dyn_img=20  ent=0.0858
+  Ep   900  r=+45.508  dyn_suc=19.0%  n_dyn_img=14  ent=0.0840
+  Ep   925  r=+47.597  dyn_suc=20.0%  n_dyn_img=17  ent=0.0822
+  Ep   950  r=+51.077  dyn_suc=21.2%  n_dyn_img=8  ent=0.0803
+  Ep   975  r=+51.546  dyn_suc=21.3%  n_dyn_img=4  ent=0.0785
+  Ep  1000  r=+50.273  dyn_suc=20.8%  n_dyn_img=12  ent=0.0767
+  Ep  1025  r=+51.459  dyn_suc=21.3%  n_dyn_img=24  ent=0.0748
+  Ep  1050  r=+52.234  dyn_suc=21.8%  n_dyn_img=22  ent=0.0730
+  Ep  1075  r=+51.048  dyn_suc=21.6%  n_dyn_img=14  ent=0.0712
+  Ep  1100  r=+52.244  dyn_suc=22.1%  n_dyn_img=18  ent=0.0693
+  Ep  1125  r=+50.701  dyn_suc=21.6%  n_dyn_img=10  ent=0.0675
+  Ep  1150  r=+47.935  dyn_suc=20.2%  n_dyn_img=4  ent=0.0657
+  Ep  1175  r=+50.286  dyn_suc=20.9%  n_dyn_img=14  ent=0.0639
+  Ep  1200  r=+50.380  dyn_suc=20.8%  n_dyn_img=26  ent=0.0620
+  Ep  1225  r=+51.503  dyn_suc=21.2%  n_dyn_img=10  ent=0.0602
+  Ep  1250  r=+52.055  dyn_suc=21.6%  n_dyn_img=10  ent=0.0584
+  Ep  1275  r=+51.779  dyn_suc=21.3%  n_dyn_img=24  ent=0.0566
+  Ep  1300  r=+52.300  dyn_suc=21.8%  n_dyn_img=30  ent=0.0547
+  Ep  1325  r=+53.160  dyn_suc=22.5%  n_dyn_img=30  ent=0.0529
+  Ep  1350  r=+55.674  dyn_suc=23.8%  n_dyn_img=23  ent=0.0511
+  Ep  1375  r=+56.687  dyn_suc=24.4%  n_dyn_img=36  ent=0.0493
+  Ep  1400  r=+58.184  dyn_suc=24.9%  n_dyn_img=24  ent=0.0475
+  Ep  1425  r=+60.116  dyn_suc=25.2%  n_dyn_img=20  ent=0.0457
+  Ep  1450  r=+62.625  dyn_suc=26.0%  n_dyn_img=10  ent=0.0439
+  Ep  1475  r=+63.008  dyn_suc=26.1%  n_dyn_img=12  ent=0.0420
+  Ep  1500  r=+66.459  dyn_suc=27.7%  n_dyn_img=16  ent=0.0402
+  Ep  1525  r=+67.636  dyn_suc=28.8%  n_dyn_img=17  ent=0.0384
+  Ep  1550  r=+66.458  dyn_suc=28.5%  n_dyn_img=24  ent=0.0366
+  Ep  1575  r=+67.109  dyn_suc=29.0%  n_dyn_img=13  ent=0.0348
+  Ep  1600  r=+65.304  dyn_suc=28.2%  n_dyn_img=26  ent=0.0330
+  Ep  1625  r=+67.090  dyn_suc=28.6%  n_dyn_img=26  ent=0.0312
+  Ep  1650  r=+67.971  dyn_suc=28.9%  n_dyn_img=21  ent=0.0294
+  Ep  1675  r=+69.312  dyn_suc=29.4%  n_dyn_img=17  ent=0.0276
+  Ep  1700  r=+70.970  dyn_suc=30.2%  n_dyn_img=21  ent=0.0258
+  Ep  1725  r=+71.813  dyn_suc=30.5%  n_dyn_img=18  ent=0.0239
+  Ep  1750  r=+72.114  dyn_suc=30.8%  n_dyn_img=23  ent=0.0221
+  Ep  1775  r=+72.773  dyn_suc=31.5%  n_dyn_img=39  ent=0.0203
+  Ep  1800  r=+73.054  dyn_suc=31.7%  n_dyn_img=28  ent=0.0185
+  Ep  1825  r=+72.539  dyn_suc=32.1%  n_dyn_img=22  ent=0.0168
+  Ep  1850  r=+76.093  dyn_suc=33.6%  n_dyn_img=35  ent=0.0150
+  Ep  1875  r=+78.594  dyn_suc=34.3%  n_dyn_img=34  ent=0.0132
+  Ep  1900  r=+83.658  dyn_suc=36.3%  n_dyn_img=25  ent=0.0114
+
+✓ Training log saved → results/training_log.json  (1924 episodes)
+
+============================================================
+  no_smdp  seed=456
+============================================================
+  Ep    25  r=+32.656  dyn_suc=11.9%  n_dyn_img=2  ent=0.1482
+  Ep    50  r=+30.810  dyn_suc=11.9%  n_dyn_img=10  ent=0.1463
+  Ep    75  r=+32.059  dyn_suc=12.5%  n_dyn_img=8  ent=0.1445
+  Ep   100  r=+31.798  dyn_suc=12.5%  n_dyn_img=4  ent=0.1427
+  Ep   125  r=+32.455  dyn_suc=13.2%  n_dyn_img=8  ent=0.1409
+  Ep   150  r=+33.136  dyn_suc=13.6%  n_dyn_img=6  ent=0.1390
+  Ep   175  r=+34.417  dyn_suc=14.1%  n_dyn_img=6  ent=0.1372
+  Ep   200  r=+35.760  dyn_suc=14.6%  n_dyn_img=12  ent=0.1354
+  Ep   225  r=+37.570  dyn_suc=15.3%  n_dyn_img=25  ent=0.1336
+  Ep   250  r=+37.712  dyn_suc=15.1%  n_dyn_img=8  ent=0.1318
+  Ep   275  r=+37.690  dyn_suc=14.9%  n_dyn_img=12  ent=0.1299
+  Ep   300  r=+38.638  dyn_suc=15.1%  n_dyn_img=10  ent=0.1280
+  Ep   325  r=+36.533  dyn_suc=14.3%  n_dyn_img=8  ent=0.1262
+  Ep   350  r=+37.350  dyn_suc=14.7%  n_dyn_img=8  ent=0.1244ERROR:__main__:Variant no_smdp seed 456 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+
+  Ep   375  r=+36.876  dyn_suc=14.9%  n_dyn_img=16  ent=0.1226
+  Ep   400  r=+37.095  dyn_suc=15.1%  n_dyn_img=10  ent=0.1207
+  Ep   425  r=+38.646  dyn_suc=15.5%  n_dyn_img=14  ent=0.1189
+  Ep   450  r=+39.191  dyn_suc=15.8%  n_dyn_img=8  ent=0.1170
+  Ep   475  r=+39.001  dyn_suc=15.6%  n_dyn_img=6  ent=0.1152
+  Ep   500  r=+36.828  dyn_suc=14.7%  n_dyn_img=6  ent=0.1134
+  Ep   525  r=+35.918  dyn_suc=14.5%  n_dyn_img=8  ent=0.1115
+  Ep   550  r=+35.179  dyn_suc=14.2%  n_dyn_img=14  ent=0.1097
+  Ep   575  r=+36.441  dyn_suc=14.9%  n_dyn_img=10  ent=0.1079
+  Ep   600  r=+38.172  dyn_suc=15.7%  n_dyn_img=12  ent=0.1060
+  Ep   625  r=+38.385  dyn_suc=15.8%  n_dyn_img=2  ent=0.1042
+  Ep   650  r=+40.422  dyn_suc=16.7%  n_dyn_img=4  ent=0.1024
+  Ep   675  r=+39.312  dyn_suc=15.8%  n_dyn_img=22  ent=0.1005
+  Ep   700  r=+39.979  dyn_suc=16.1%  n_dyn_img=23  ent=0.0987
+  Ep   725  r=+40.348  dyn_suc=16.2%  n_dyn_img=10  ent=0.0969
+  Ep   750  r=+38.728  dyn_suc=15.5%  n_dyn_img=13  ent=0.0950
+  Ep   775  r=+39.080  dyn_suc=15.9%  n_dyn_img=12  ent=0.0932
+  Ep   800  r=+40.200  dyn_suc=16.5%  n_dyn_img=7  ent=0.0914
+  Ep   825  r=+41.864  dyn_suc=17.3%  n_dyn_img=20  ent=0.0895
+  Ep   850  r=+44.261  dyn_suc=18.4%  n_dyn_img=20  ent=0.0877
+  Ep   875  r=+47.484  dyn_suc=19.8%  n_dyn_img=14  ent=0.0858
+  Ep   900  r=+47.967  dyn_suc=20.0%  n_dyn_img=7  ent=0.0840
+  Ep   925  r=+48.713  dyn_suc=20.1%  n_dyn_img=25  ent=0.0822
+  Ep   950  r=+49.204  dyn_suc=20.4%  n_dyn_img=20  ent=0.0803
+  Ep   975  r=+50.143  dyn_suc=20.6%  n_dyn_img=20  ent=0.0785
+  Ep  1000  r=+50.264  dyn_suc=20.4%  n_dyn_img=16  ent=0.0767
+  Ep  1025  r=+52.721  dyn_suc=21.4%  n_dyn_img=16  ent=0.0748
+  Ep  1050  r=+54.384  dyn_suc=22.3%  n_dyn_img=16  ent=0.0730
+  Ep  1075  r=+52.458  dyn_suc=21.6%  n_dyn_img=15  ent=0.0712
+  Ep  1100  r=+54.617  dyn_suc=23.0%  n_dyn_img=22  ent=0.0694
+  Ep  1125  r=+53.323  dyn_suc=22.9%  n_dyn_img=8  ent=0.0676
+  Ep  1150  r=+53.971  dyn_suc=23.0%  n_dyn_img=12  ent=0.0658
+  Ep  1175  r=+55.245  dyn_suc=23.8%  n_dyn_img=14  ent=0.0640
+
+✓ Ablation table → /home/sanaa/Documents/alsat_dynamic_multi/results/ablation/ablation_table.csv
+
+Variant                Reward    CF rate     DynSuc
+------------------------------------------------------
+  full_system       60.008±0.00   1.000±0.000   0.314±0.000
+  no_bc             86.554±0.00   0.968±0.000   0.423±0.000
+  no_curriculum     59.638±1.36   0.950±0.050   0.326±0.014
+  no_smdp           71.847±13.57   0.966±0.034   0.370±0.058
+swig/python detected a memory leak of type 'BSKLogger *', no destructor found.
+swig/python detected a memory leak of type 'BSKLogger *', no destructor found.
+DONE: no_smdp
+======== STARTING: gaussian_cloud ========
+ERROR:__main__:Variant gaussian_cloud seed 42 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+ERROR:__main__:Variant gaussian_cloud seed 123 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+ERROR:__main__:Variant gaussian_cloud seed 456 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+
+============================================================
+  gaussian_cloud  seed=42
+============================================================
+  Ep    25  r=+34.063  dyn_suc=13.1%  n_dyn_img=6  ent=0.1482
+  Ep    50  r=+35.040  dyn_suc=13.6%  n_dyn_img=11  ent=0.1463
+  Ep    75  r=+34.389  dyn_suc=13.3%  n_dyn_img=8  ent=0.1445
+  Ep   100  r=+34.767  dyn_suc=13.6%  n_dyn_img=16  ent=0.1426
+  Ep   125  r=+35.447  dyn_suc=13.9%  n_dyn_img=8  ent=0.1408
+  Ep   150  r=+33.804  dyn_suc=13.2%  n_dyn_img=12  ent=0.1390
+  Ep   175  r=+31.824  dyn_suc=12.3%  n_dyn_img=10  ent=0.1371
+  Ep   200  r=+31.187  dyn_suc=12.0%  n_dyn_img=17  ent=0.1353
+  Ep   225  r=+31.147  dyn_suc=12.0%  n_dyn_img=9  ent=0.1334
+  Ep   250  r=+32.968  dyn_suc=12.8%  n_dyn_img=6  ent=0.1316
+  Ep   275  r=+36.130  dyn_suc=14.4%  n_dyn_img=2  ent=0.1298
+  Ep   300  r=+37.627  dyn_suc=14.8%  n_dyn_img=2  ent=0.1279
+  Ep   325  r=+36.869  dyn_suc=14.5%  n_dyn_img=4  ent=0.1261
+  Ep   350  r=+36.938  dyn_suc=14.5%  n_dyn_img=6  ent=0.1242
+  Ep   375  r=+36.176  dyn_suc=13.9%  n_dyn_img=6  ent=0.1224
+
+============================================================
+  gaussian_cloud  seed=123
+============================================================
+  Ep    25  r=+33.212  dyn_suc=12.9%  n_dyn_img=6  ent=0.1482
+  Ep    50  r=+36.452  dyn_suc=14.2%  n_dyn_img=8  ent=0.1463
+  Ep    75  r=+37.753  dyn_suc=14.6%  n_dyn_img=14  ent=0.1445
+  Ep   100  r=+36.846  dyn_suc=14.5%  n_dyn_img=8  ent=0.1426
+  Ep   125  r=+36.341  dyn_suc=14.4%  n_dyn_img=4  ent=0.1408
+  Ep   150  r=+33.909  dyn_suc=13.5%  n_dyn_img=11  ent=0.1390
+  Ep   175  r=+31.749  dyn_suc=12.8%  n_dyn_img=6  ent=0.1372
+  Ep   200  r=+32.563  dyn_suc=13.0%  n_dyn_img=14  ent=0.1353
+  Ep   225  r=+32.348  dyn_suc=12.9%  n_dyn_img=4  ent=0.1335
+  Ep   250  r=+33.524  dyn_suc=13.2%  n_dyn_img=16  ent=0.1316
+  Ep   275  r=+33.971  dyn_suc=13.3%  n_dyn_img=8  ent=0.1298
+  Ep   300  r=+33.598  dyn_suc=13.2%  n_dyn_img=8  ent=0.1280
+  Ep   325  r=+35.485  dyn_suc=14.0%  n_dyn_img=6  ent=0.1261
+  Ep   350  r=+35.486  dyn_suc=14.2%  n_dyn_img=6  ent=0.1243
+  Ep   375  r=+36.486  dyn_suc=14.7%  n_dyn_img=14  ent=0.1225
+  Ep   400  r=+37.534  dyn_suc=15.2%  n_dyn_img=12  ent=0.1206
+  Ep   425  r=+37.317  dyn_suc=15.0%  n_dyn_img=6  ent=0.1188
+  Ep   450  r=+36.715  dyn_suc=14.6%  n_dyn_img=2  ent=0.1170
+  Ep   475  r=+37.712  dyn_suc=14.8%  n_dyn_img=12  ent=0.1151
+  Ep   500  r=+37.489  dyn_suc=14.5%  n_dyn_img=10  ent=0.1133
+  Ep   525  r=+37.585  dyn_suc=14.5%  n_dyn_img=8  ent=0.1114
+  Ep   550  r=+39.593  dyn_suc=15.4%  n_dyn_img=20  ent=0.1096
+
+============================================================
+  gaussian_cloud  seed=456
+============================================================
+  Ep    25  r=+30.781  dyn_suc=12.4%  n_dyn_img=2  ent=0.1482
+  Ep    50  r=+28.622  dyn_suc=11.2%  n_dyn_img=10  ent=0.1463
+  Ep    75  r=+29.510  dyn_suc=11.4%  n_dyn_img=8  ent=0.1444
+  Ep   100  r=+29.150  dyn_suc=11.3%  n_dyn_img=2  ent=0.1426
+  Ep   125  r=+30.401  dyn_suc=11.6%  n_dyn_img=12  ent=0.1408
+  Ep   150  r=+31.472  dyn_suc=12.3%  n_dyn_img=6  ent=0.1389
+  Ep   175  r=+31.650  dyn_suc=12.4%  n_dyn_img=6  ent=0.1371
+  Ep   200  r=+31.791  dyn_suc=12.3%  n_dyn_img=6  ent=0.1352
+  Ep   225  r=+30.824  dyn_suc=11.8%  n_dyn_img=6  ent=0.1334
+  Ep   250  r=+29.986  dyn_suc=11.3%  n_dyn_img=6  ent=0.1316
+  Ep   275  r=+29.462  dyn_suc=11.0%  n_dyn_img=10  ent=0.1297
+  Ep   300  r=+28.115  dyn_suc=10.4%  n_dyn_img=2  ent=0.1278
+  Ep   325  r=+28.164  dyn_suc=10.5%  n_dyn_img=8  ent=0.1260
+  Ep   350  r=+27.847  dyn_suc=10.3%  n_dyn_img=8  ent=0.1242
+  Ep   375  r=+27.472  dyn_suc=10.2%  n_dyn_img=8  ent=0.1223
+  Ep   400  r=+29.640  dyn_suc=11.6%  n_dyn_img=14  ent=0.1205
+  Ep   425  r=+30.269  dyn_suc=11.7%  n_dyn_img=7  ent=0.1187
+  Ep   450  r=+32.807  dyn_suc=12.9%  n_dyn_img=13  ent=0.1168
+  Ep   475  r=+35.082  dyn_suc=13.9%  n_dyn_img=4  ent=0.1150
+  Ep   500  r=+36.463  dyn_suc=14.0%  n_dyn_img=8  ent=0.1131
+  Ep   525  r=+37.338  dyn_suc=14.2%  n_dyn_img=16  ent=0.1112
+  Ep   550  r=+36.861  dyn_suc=14.2%  n_dyn_img=12  ent=0.1094
+  Ep   575  r=+35.488  dyn_suc=13.7%  n_dyn_img=6  ent=0.1076
+  Ep   600  r=+35.939  dyn_suc=14.1%  n_dyn_img=8  ent=0.1057
+  Ep   625  r=+35.986  dyn_suc=14.4%  n_dyn_img=8  ent=0.1039
+  Ep   650  r=+35.626  dyn_suc=14.4%  n_dyn_img=10  ent=0.1021
+  Ep   675  r=+36.984  dyn_suc=14.7%  n_dyn_img=10  ent=0.1002
+  Ep   700  r=+38.817  dyn_suc=15.5%  n_dyn_img=8  ent=0.0984
+  Ep   725  r=+38.351  dyn_suc=15.1%  n_dyn_img=13  ent=0.0965
+  Ep   750  r=+39.039  dyn_suc=15.4%  n_dyn_img=14  ent=0.0947
+
+✓ Ablation table → /home/sanaa/Documents/alsat_dynamic_multi/results/ablation/ablation_table.csv
+
+Variant                Reward    CF rate     DynSuc
+------------------------------------------------------
+  full_system       60.008±0.00   1.000±0.000   0.314±0.000
+  no_bc             86.554±0.00   0.968±0.000   0.423±0.000
+  no_curriculum     59.638±1.36   0.950±0.050   0.326±0.014
+  no_smdp           71.847±13.57   0.966±0.034   0.370±0.058
+  gaussian_cloud    42.645±0.00   0.847±0.000   0.207±0.000
+swig/python detected a memory leak of type 'BSKLogger *', no destructor found.
+swig/python detected a memory leak of type 'BSKLogger *', no destructor found.
+DONE: gaussian_cloud
+======== STARTING: circular_cnn ========

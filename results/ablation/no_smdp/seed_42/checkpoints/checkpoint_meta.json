@@ -1,0 +1,36 @@
+[
+  {
+    "step": 50000,
+    "path": "/home/sanaa/Documents/alsat_dynamic_multi/results/ablation/no_smdp/seed_42/checkpoints/ckpt_no_smdp_s42_step50000.zip",
+    "mean_reward_100ep": 38.422,
+    "name": "no_smdp",
+    "description": "Fixed-step MDP with Gaussian cloud \u2014 proves SMDP adds value",
+    "use_bc": true,
+    "use_curriculum": true,
+    "use_smdp": false,
+    "use_cnn": "gaussian",
+    "use_mask": true,
+    "use_domrand": true,
+    "ent_coef_start": 0.15,
+    "ent_coef_end": 0.01,
+    "use_attention": false,
+    "dynamic_bonus": 3.0
+  },
+  {
+    "step": 100000,
+    "path": "/home/sanaa/Documents/alsat_dynamic_multi/results/ablation/no_smdp/seed_42/checkpoints/ckpt_no_smdp_s42_step100000.zip",
+    "mean_reward_100ep": 41.1148,
+    "name": "no_smdp",
+    "description": "Fixed-step MDP with Gaussian cloud \u2014 proves SMDP adds value",
+    "use_bc": true,
+    "use_curriculum": true,
+    "use_smdp": false,
+    "use_cnn": "gaussian",
+    "use_mask": true,
+    "use_domrand": true,
+    "ent_coef_start": 0.15,
+    "ent_coef_end": 0.01,
+    "use_attention": false,
+    "dynamic_bonus": 3.0
+  }
+]

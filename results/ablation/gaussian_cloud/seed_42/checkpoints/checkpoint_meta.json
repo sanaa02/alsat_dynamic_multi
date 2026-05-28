@@ -1,0 +1,53 @@
+[
+  {
+    "step": 50000,
+    "path": "/home/sanaa/Documents/alsat_dynamic_multi/results/ablation/gaussian_cloud/seed_42/checkpoints/ckpt_gaussian_cloud_s42_step50000.zip",
+    "mean_reward_100ep": 32.7954,
+    "name": "gaussian_cloud",
+    "description": "DYN_MODIS config \u2014 Gaussian noise cloud model baseline",
+    "use_bc": true,
+    "use_curriculum": true,
+    "use_smdp": true,
+    "use_cnn": "gaussian",
+    "use_mask": true,
+    "use_domrand": true,
+    "ent_coef_start": 0.15,
+    "ent_coef_end": 0.01,
+    "use_attention": false,
+    "dynamic_bonus": 3.0
+  },
+  {
+    "step": 100000,
+    "path": "/home/sanaa/Documents/alsat_dynamic_multi/results/ablation/gaussian_cloud/seed_42/checkpoints/ckpt_gaussian_cloud_s42_step100000.zip",
+    "mean_reward_100ep": 37.5278,
+    "name": "gaussian_cloud",
+    "description": "DYN_MODIS config \u2014 Gaussian noise cloud model baseline",
+    "use_bc": true,
+    "use_curriculum": true,
+    "use_smdp": true,
+    "use_cnn": "gaussian",
+    "use_mask": true,
+    "use_domrand": true,
+    "ent_coef_start": 0.15,
+    "ent_coef_end": 0.01,
+    "use_attention": false,
+    "dynamic_bonus": 3.0
+  },
+  {
+    "step": 150000,
+    "path": "/home/sanaa/Documents/alsat_dynamic_multi/results/ablation/gaussian_cloud/seed_42/checkpoints/ckpt_gaussian_cloud_s42_step150000.zip",
+    "mean_reward_100ep": 50.4994,
+    "name": "gaussian_cloud",
+    "description": "DYN_MODIS config \u2014 Gaussian noise cloud model baseline",
+    "use_bc": true,
+    "use_curriculum": true,
+    "use_smdp": true,
+    "use_cnn": "gaussian",
+    "use_mask": true,
+    "use_domrand": true,
+    "ent_coef_start": 0.15,
+    "ent_coef_end": 0.01,
+    "use_attention": false,
+    "dynamic_bonus": 3.0
+  }
+]
