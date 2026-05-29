@@ -326,13 +326,10 @@ def plot_scenario_comparison(scenario_results: dict, save_dir: str = PLOTS_DIR):
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="ALSAT-EO-1 Dynamic Targeting Eval")
-    ap.add_argument("--targets",   default=os.path.join(_ROOT,
-                    "config/targets/algeria_20_targets.json"))
-    ap.add_argument("--cloud",     default=os.path.join(_ROOT,
-                    "config/cloud_reality/algeria_real_clouds.json"))
-    ap.add_argument("--model",     default=os.path.join(_ROOT,
-                    "models/ppo_dynamic_final.zip"),
-                    help="Path to trained PPO model (.zip). Skipped if not found.")
+    ap.add_argument("--model", default=os.path.join(_ROOT, "models/ppo_smdp_full.zip"),
+                help="Path to trained PPO model (.zip). Skipped if not found.")
+    ap.add_argument("--targets", default=os.path.join(_ROOT, "scripts/config/targets/algeria_20_targets.json"))
+    ap.add_argument("--cloud", default=os.path.join(_ROOT, "scripts/config/cloud_reality/algeria_real_clouds.json"))
     ap.add_argument("--no-rl",     action="store_true",
                     help="Skip RL model evaluation even if model file exists.")
     ap.add_argument("--episodes",  type=int, default=5)
