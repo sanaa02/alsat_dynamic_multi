@@ -1,0 +1,36 @@
+[
+  {
+    "step": 50000,
+    "path": "/home/sanaa/Documents/alsat_dynamic_multi/results/ablation/circular_cnn/seed_123/checkpoints/ckpt_circular_cnn_s123_step50000.zip",
+    "mean_reward_100ep": 31.9074,
+    "name": "circular_cnn",
+    "description": "Circular CNN \u2014 synthetic patches encode ground truth (prior work baseline)",
+    "use_bc": true,
+    "use_curriculum": true,
+    "use_smdp": true,
+    "use_cnn": "circular",
+    "use_mask": true,
+    "use_domrand": true,
+    "ent_coef_start": 0.15,
+    "ent_coef_end": 0.01,
+    "use_attention": false,
+    "dynamic_bonus": 3.0
+  },
+  {
+    "step": 100000,
+    "path": "/home/sanaa/Documents/alsat_dynamic_multi/results/ablation/circular_cnn/seed_123/checkpoints/ckpt_circular_cnn_s123_step100000.zip",
+    "mean_reward_100ep": 37.8786,
+    "name": "circular_cnn",
+    "description": "Circular CNN \u2014 synthetic patches encode ground truth (prior work baseline)",
+    "use_bc": true,
+    "use_curriculum": true,
+    "use_smdp": true,
+    "use_cnn": "circular",
+    "use_mask": true,
+    "use_domrand": true,
+    "ent_coef_start": 0.15,
+    "ent_coef_end": 0.01,
+    "use_attention": false,
+    "dynamic_bonus": 3.0
+  }
+]

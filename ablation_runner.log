@@ -1785,3 +1785,31 @@ swig/python detected a memory leak of type 'BSKLogger *', no destructor found.
 swig/python detected a memory leak of type 'BSKLogger *', no destructor found.
 DONE: gaussian_cloud
 ======== STARTING: circular_cnn ========
+ERROR:__main__:Variant circular_cnn seed 42 FAILED: integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 394, in <module>
+    run_variant(cfg, seed=seed, episodes=args.episodes, n_envs=args.n_envs)
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/ablation_runner.py", line 253, in run_variant
+    model.learn(total_timesteps=total_steps, callback=cb_list,
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/ppo/ppo.py", line 311, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 324, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 224, in collect_rollouts
+    if not callback.on_step():
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_step
+    continue_training = callback.on_step() and continue_training
+                        ^^^^^^^^^^^^^^^^^^
+  File "/home/sanaa/anaconda3/envs/thesis_py311/lib/python3.11/site-packages/stable_baselines3/common/callbacks.py", line 115, in on_step
+    return self._on_step()
+           ^^^^^^^^^^^^^^^
+  File "/home/sanaa/Documents/alsat_dynamic_multi/scripts/training/callbacks.py", line 160, in _on_step
+    ep = self.n_calls // (self.locals.get("n_steps", 2048))
+         ~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
