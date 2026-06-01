@@ -274,8 +274,7 @@ def stage_bc(model, args, cfg):
         traceback.print_exc() 
     return model
 
-
-def stage_curriculum(args, cfg):
+def stage_curriculum(args, cfg, model=None):
     print("\n" + "="*60 + "\n  Stage 2 -- Curriculum Warm-up\n" + "="*60)
     from curriculum import CurriculumScheduler
     sched = CurriculumScheduler(verbose=True)
@@ -288,6 +287,7 @@ def stage_curriculum(args, cfg):
         return Monitor(env)
 
     vec = DummyVecEnv([_make])
+
     if model is None:
         model = _build_model(vec, args, steps_per_ep)
     for ep in range(min(args.curriculum_eps, 500)):
@@ -449,7 +449,7 @@ def main():
         # curriculum will still train from scratch. This is not ideal but better than overwriting.
         # The full fix (modifying stage_curriculum) is outside this immediate bug list.
         # We keep the curriculum call as is.
-        model = stage_curriculum(args, cfg)
+        model = stage_curriculum(args, cfg, model=model)
 
     model, cb, elapsed = stage_ppo(model, args, cfg)
 

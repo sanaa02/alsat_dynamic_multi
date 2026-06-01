@@ -1,0 +1,14 @@
+{
+  "name": "attention_policy",
+  "description": "Attention-based policy (SchedulerAttentionExtractor, ~200K params) vs MLP baseline \u2014 isolates policy architecture contribution",
+  "use_bc": true,
+  "use_curriculum": true,
+  "use_smdp": true,
+  "use_cnn": "real",
+  "use_mask": true,
+  "use_domrand": true,
+  "ent_coef_start": 0.15,
+  "ent_coef_end": 0.01,
+  "use_attention": true,
+  "dynamic_bonus": 3.0
+}
