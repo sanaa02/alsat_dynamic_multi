@@ -27,6 +27,7 @@ class EntropyAnnealingCallback(BaseCallback):
 
     def _on_step(self) -> bool:
         frac = min(1.0, self.num_timesteps / self.total_timesteps)
+        frac = min(1.0, self.num_timesteps / max(self.total_timesteps, 1))
         new_ent = self.start_val + frac * (self.end_val - self.start_val)
         self.model.ent_coef = float(new_ent)
         return True
@@ -87,9 +88,6 @@ class DynamicEventCallback(BaseCallback):
             return True
 
         for i, done in enumerate(self.locals["dones"]):
-            
-            
-
             info = (self.locals.get("infos") or [{}])[i]
             ep_m = info.get("episode_metrics", info.get("episode", {}))
             r    = float(info.get("episode", {}).get("r",
@@ -107,17 +105,18 @@ class DynamicEventCallback(BaseCallback):
             cf_rate = nc / ni  if ni > 0 else 0.0
 
             if not done:
-                # Add inside the loop, after computing cf_rate:
-                self.ep_rewards.append(r)
-                self.ep_dyn_success.append(dyn_suc)
-                self.ep_cf_rates.append(cf_rate)
-                continue
+                continue   # skip until episode ends – don't append partial rewards
 
             self._episode += 1
 
             self._reward_window.append(r)
             self._dyn_suc_window.append(dyn_suc)
             self.dyn_success_history.append(dyn_suc)
+
+            # ── Append episode-level metrics exactly once per episode ──
+            self.ep_rewards.append(r)
+            self.ep_dyn_success.append(dyn_suc)
+            self.ep_cf_rates.append(cf_rate)
 
             entry = {
                 "episode":           self._episode,
@@ -154,53 +153,52 @@ class DynamicEventCallback(BaseCallback):
                     f"ent={entry['ent_coef']:.4f}"
                 )
 
-            # Write to JSON for monitor script
             # ── Rich per-episode summary (fires at episode end) ──────────────
             if done:
                 ep = self.n_calls // max(1, self.locals.get("n_steps", 2048))
                 r = self.locals.get("rewards", [0])
                 ep_r = float(np.sum(r)) if hasattr(r, '__len__') else float(r)
 
-                # Retrieve satellite safely
-                sat = None
+            sat = None
+            try:
+                if hasattr(self, 'training_env') and self.training_env is not None:
+                    sat = self.training_env.unwrapped.satellites[0]
+            except Exception:
+                pass
+
+            if sat is not None:
+                m = sat._metrics
+                n_det = m.get("n_dyn_detected", 0)
+                n_img = m.get("n_dyn_imaged", 0)
+                n_cf = m.get("n_cloud_free", 0)
+                batt = "?"
                 try:
-                    if hasattr(self, 'training_env') and self.training_env is not None:
-                        sat = self.training_env.unwrapped.satellites[0]
-                except Exception:
+                    batt = f"{sat.dynamics.battery_charge_fraction:.0%}"
+                except:
                     pass
 
-                if sat is not None:
-                    m = sat._metrics
-                    n_det = m.get("n_dyn_detected", 0)
-                    n_img = m.get("n_dyn_imaged", 0)
-                    n_cf = m.get("n_cloud_free", 0)
-                    batt = "?"
-                    try:
-                        batt = f"{sat.dynamics.battery_charge_fraction:.0%}"
-                    except:
-                        pass
-            
-                    last_evt = getattr(sat, "_last_dyn_event_log", None)
-                    evt_str = ""
-                    if last_evt:
-                        evt_str = (f" | DYN: [{last_evt.get('type','?')}] "
-                                   f"{last_evt.get('lat',0):.1f}°N {last_evt.get('lon',0):.1f}°E "
-                                   f"prio={last_evt.get('priority',0):.2f} "
-                                   f"cloud={last_evt.get('cloud',0):.2f} "
-                                   f"r={last_evt.get('reward',0):+.2f}")
-                    last_tgt = getattr(sat, "_last_static_log", None)
-                    tgt_str = ""
-                    if last_tgt:
-                        tgt_str = f" | STATIC: {last_tgt.get('name','?')} cloud={last_tgt.get('cloud',0):.2f}"
+                last_evt = getattr(sat, "_last_dyn_event_log", None)
+                evt_str = ""
+                if last_evt:
+                    evt_str = (f" | DYN: [{last_evt.get('type','?')}] "
+                               f"{last_evt.get('lat',0):.1f}°N {last_evt.get('lon',0):.1f}°E "
+                               f"prio={last_evt.get('priority',0):.2f} "
+                               f"cloud={last_evt.get('cloud',0):.2f} "
+                               f"r={last_evt.get('reward',0):+.2f}")
+                last_tgt = getattr(sat, "_last_static_log", None)
+                tgt_str = ""
+                if last_tgt:
+                    tgt_str = f" | STATIC: {last_tgt.get('name','?')} cloud={last_tgt.get('cloud',0):.2f}"
 
-                    suc_rate = f"{n_img/max(n_det,1):.0%}"
-                    print(
-                        f" Ep {ep:4d} r={ep_r:+8.3f} "
-                        f"dyn={n_img}/{n_det}({suc_rate}) "
-                        f"cf={n_cf} batt={batt}"
-                        f"{evt_str}{tgt_str}"
-                    )
+                suc_rate = f"{n_img/max(n_det,1):.0%}"
+                print(
+                    f" Ep {ep:4d} r={ep_r:+8.3f} "
+                    f"dyn={n_img}/{n_det}({suc_rate}) "
+                    f"cf={n_cf} batt={batt}"
+                    f"{evt_str}{tgt_str}"
+                )
 
+            # ── Write live JSON for monitor (only at episode end) ──
             log_data = {
                 "episode_rewards": self.ep_rewards,
                 "ep_dyn_success": self.ep_dyn_success,
@@ -211,6 +209,7 @@ class DynamicEventCallback(BaseCallback):
             }
             with open(self._log_path, "w") as f:
                 json.dump(log_data, f, indent=2)
+
         return True
 
     def _on_training_end(self) -> None:
@@ -312,3 +311,115 @@ class AutoCheckpointCallback(BaseCallback):
 
     def _on_training_end(self) -> None:
         self._save_checkpoint()
+
+import math as _math
+
+ACTION_NAMES = {
+    **{i: f"STATIC-T{i:02d}" for i in range(20)},
+    20: "DYN-slot0", 21: "DYN-slot1", 22: "DYN-slot2", 23: "DRIFT",
+}
+EVENT_ICONS = {"wildfire":"🔥","flood":"🌊","plume":"💨","earthquake":"⚡","eruption":"🌋"}
+
+class VerboseActionLogger(BaseCallback):
+    """
+    Prints per-step action details: target name, cloud forecast, reward, success.
+    Enable with --verbose-actions flag. Prints every `print_every` steps.
+    """
+    def __init__(self, print_every: int = 1, verbose: int = 1):
+        super().__init__(verbose)
+        self._ep = 0
+        self._step = 0
+        self._print_every = print_every
+        self._ep_reward = 0.0
+        self._ep_static = 0
+        self._ep_dyn_det = 0
+        self._ep_dyn_img = 0
+        self._ep_imaged = 0
+
+    def _on_step(self) -> bool:
+        actions = np.atleast_1d(self.locals.get("actions", []))
+        rewards = np.atleast_1d(self.locals.get("rewards", [0.0]))
+        dones = np.atleast_1d(self.locals.get("dones", [False]))
+        infos = self.locals.get("infos", [{}])
+
+        for i, (action, reward, done, info) in enumerate(zip(actions, rewards, dones, infos)):
+            action = int(action)
+            reward = float(reward)
+            self._step += 1
+            self._ep_reward += reward
+
+            if self._step % self._print_every == 0:
+                # Try to get satellite state for rich logging
+                try:
+                    env = self.training_env
+                    sat = env.unwrapped.satellites[0] if hasattr(env.unwrapped, 'satellites') else None
+                    if sat is None:
+                        # Try unwrapping further
+                        e = env
+                        while hasattr(e, 'env'): e = e.env
+                        while hasattr(e, 'envs'): e = e.envs[0]
+                        if hasattr(e, 'unwrapped') and hasattr(e.unwrapped, 'satellites'):
+                            sat = e.unwrapped.satellites[0]
+                except Exception:
+                    sat = None
+
+                # Build action description
+                if 20 <= action <= 22:
+                    slot = action - 20
+                    evt_str = f"DYN-slot{slot}"
+                    try:
+                        mgr = getattr(sat, '_event_manager', None)
+                        now = float(sat.simulator.sim_time)
+                        slots = mgr.get_slots(sat, now) if mgr else []
+                        evt = slots[slot] if slot < len(slots) else None
+                        if evt:
+                            icon = EVENT_ICONS.get(evt.event_type, "📍")
+                            lat = _math.degrees(evt.lat_rad)
+                            lon = _math.degrees(evt.lon_rad)
+                            cf = evt.cloud_cover_forecast
+                            cloud_label = "CLEAR ✅" if cf < 0.3 else ("CLOUDY ❌" if cf > 0.7 else "PARTIAL ⚠️")
+                            evt_str = (f"{icon} {evt.event_type.upper()} "
+                                       f"lat={lat:.1f}°N lon={lon:.1f}°E "
+                                       f"prio={evt.priority:.2f} "
+                                       f"cloud_fcst={cf:.2f}({cloud_label})")
+                    except Exception:
+                        pass
+                    print(f" [Step {self._step:5d}] ACT={action}({evt_str}) r={reward:+.3f}")
+
+                elif action <= 19:
+                    tgt_str = f"STATIC-T{action}"
+                    try:
+                        tgt = sat.scenario.targets[action]
+                        cf = getattr(tgt, 'cloud_cover_forecast', 0.0)
+                        cloud_label = "CLEAR ✅" if cf < 0.3 else ("CLOUDY ❌" if cf > 0.7 else "~")
+                        tgt_str = (f"STATIC [{getattr(tgt,'name',f'T{action}')}] "
+                                   f"prio={getattr(tgt,'priority',0):.2f} "
+                                   f"cloud_fcst={cf:.2f}({cloud_label})")
+                    except Exception:
+                        pass
+                    if reward > 0.01:
+                        print(f" [Step {self._step:5d}] ACT={action}({tgt_str}) r={reward:+.3f} ✅")
+
+                elif action == 23:
+                    pass  # suppress drift steps
+
+            if done:
+                self._ep += 1
+                m = info.get("episode_metrics", {}) if info else {}
+                nd = m.get("n_dyn_detected", 0)
+                nim = m.get("n_dyn_imaged", 0)
+                ni = m.get("n_imaged", 0)
+                nc = m.get("n_cloud_free", 0)
+                ent = round(float(getattr(self.model, "ent_coef", 0)), 4)
+                print(
+                    f"\n {'═'*64}\n"
+                    f" EPISODE {self._ep} DONE r={self._ep_reward:+.2f} "
+                    f"static={ni-nim}/{ni-nim+20} "
+                    f"dyn={nim}/{nd}({'0%' if nd==0 else f'{100*nim//nd}%'}) "
+                    f"cf={nc}/{ni} ent={ent}\n"
+                    f" {'═'*64}"
+                )
+                self._ep_reward = 0.0
+                self._step = 0
+
+        return True

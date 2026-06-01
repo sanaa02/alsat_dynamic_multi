@@ -4,7 +4,7 @@ from __future__ import annotations
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..'))
 import path_setup  # noqa
-from attention_policy import make_attention_ppo
+# from attention_policy import make_attention_ppo
 
 # -----------------------------------------------------------------
 """
@@ -217,25 +217,22 @@ class FullTrainingLogger(BaseCallback):
 
 def _build_model(vec_env, args, steps_per_ep):
     start_ent = getattr(args, 'ent_coef', 0.15)
-    # ── Attention policy path ─────────────────────────────────────
     if getattr(args, 'attention', False):
         try:
-            import sys, os as _os
-            sys.path.insert(0, _os.path.join(_os.path.dirname(__file__), '..', 'models'))
             from attention_policy import make_attention_ppo
-            print(" [INFO] Using SchedulerAttentionExtractor (attention policy)")
+            print(" [INFO] SchedulerAttentionExtractor policy loaded")
             return make_attention_ppo(
                 vec_env, ent_coef=start_ent,
                 seed=args.seed, device="cuda",
             )
         except ImportError as e:
-            print(f" [WARN] Attention unavailable ({e}) — falling back to MLP")
-    # ── Default MLP policy ───────────────────────────────────────
+            print(f" [WARN] attention_policy not importable ({e}), falling back to MLP")
+    # Default MLP policy
     return PPO(
         "MlpPolicy", vec_env,
         learning_rate=3e-4, n_steps=min(2048, steps_per_ep),
         batch_size=72, n_epochs=10, gamma=0.99, gae_lambda=0.95,
-        ent_coef=start_ent,  # was hardcoded 0.01 — now uses --ent-coef
+        ent_coef=start_ent,
         vf_coef=0.5, max_grad_norm=0.5,
         policy_kwargs=dict(net_arch=dict(pi=[256,256], vf=[256,256])),
         verbose=0, seed=args.seed, device="cpu",
@@ -254,6 +251,21 @@ def stage_cnn(args):
     except Exception as e:
         print(f"  [WARN] CNN training failed: {e}")
 
+def _reload_with_env(model, new_vec):
+    """
+    SB3 requires model.n_envs == new_vec.num_envs for set_env().
+    If they differ (e.g. BC used 2 envs, curriculum uses 1),
+    save and reload the policy weights into a fresh model with the correct n_envs.
+    """
+    if model.n_envs == new_vec.num_envs:
+        model.set_env(new_vec)
+        return model
+    # n_envs mismatch: save weights, reload with new env
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp = os.path.join(tmpdir, "tmp_model")
+        model.save(tmp)
+        return PPO.load(tmp + ".zip", env=new_vec)
 
 def stage_bc(model, args, cfg):
     print("\n" + "="*60 + "\n  Stage 1 -- Behavioral Cloning\n" + "="*60)
@@ -278,8 +290,7 @@ def stage_bc(model, args, cfg):
         traceback.print_exc() 
     return model
 
-
-def stage_curriculum(args, cfg):
+def stage_curriculum(args, cfg, model=None):
     print("\n" + "="*60 + "\n  Stage 2 -- Curriculum Warm-up\n" + "="*60)
     from curriculum import CurriculumScheduler
     sched = CurriculumScheduler(verbose=True)
@@ -292,7 +303,12 @@ def stage_curriculum(args, cfg):
         return Monitor(env)
 
     vec = DummyVecEnv([_make])
-    model = _build_model(vec, args, steps_per_ep)
+
+    if model is None:
+        model = _build_model(vec, args, steps_per_ep)
+    else:
+        # Replace the model's old (dead) environment with the new vec
+        model = _reload_with_env(model, vec)
     for ep in range(min(args.curriculum_eps, 500)):
         env = sched.make_env(args.targets, args.cloud, seed=args.seed+ep,
                              use_smdp=False, cfg=cfg,
@@ -304,7 +320,7 @@ def stage_curriculum(args, cfg):
             obs, r, t, tr, _ = env.step(int(act)); ep_r+=r; done=t or tr
         env.close()
         if sched.maybe_advance(ep_r):
-            vec.close(); vec=DummyVecEnv([_make]); model.set_env(vec)
+            vec.close(); vec=DummyVecEnv([_make]); model = _reload_with_env(model, vec)
         model.learn(total_timesteps=steps_per_ep, reset_num_timesteps=False)
         if ep%25==0:
             print(f"  Ep {ep+1}/{min(args.curriculum_eps,500)}  "
@@ -328,9 +344,9 @@ def stage_ppo(model_init, args, cfg):
                        with_safety=with_safety, cnn_path=args.cnn_model, with_action_mask=args.action_mask, with_domain_rand=args.domain_rand)
         return Monitor(env)
 
-    vec = DummyVecEnv([_make])
+    vec = DummyVecEnv([_make] * max(1, args.n_envs))
     model = model_init if model_init else _build_model(vec, args, steps_per_ep)
-    if model_init: model.set_env(vec)
+    if model_init: model = _reload_with_env(model_init, vec) 
 
     _live_log = os.path.join(RESULTS_DIR, "training_live.json")
     _ckpt_dir = os.path.join(MODELS_DIR,  "checkpoints")
@@ -339,7 +355,15 @@ def stage_ppo(model_init, args, cfg):
     print(f"  Checkpoints → {_ckpt_dir}/ppo_smdp_epXXXXX.zip")
     t0 = time.time()
     try:
-        model.learn(total_timesteps=total_steps, callback=cb,
+        callbacks_list = [cb]
+        if getattr(args, 'verbose_actions', False):
+            from callbacks import VerboseActionLogger
+            verbose_cb = VerboseActionLogger(print_every=1)
+            callbacks_list.append(verbose_cb)
+            print(" [INFO] Verbose action logging enabled")
+
+        model.learn(total_timesteps=total_steps,
+                    callback=callbacks_list if getattr(args, 'verbose_actions', False) else cb,
                     progress_bar=True, reset_num_timesteps=True)
     except KeyboardInterrupt:
         print("\n  [INFO] Interrupted.")
@@ -377,6 +401,9 @@ def main():
     ap.add_argument("--eval-episodes",  type=int, default=5)
     ap.add_argument("--explain",     action="store_true")
 
+    ap.add_argument("--verbose-actions", action="store_true",
+                help="Print per-step action details (which target/event was imaged)")
+
     ap.add_argument("--action-mask", action="store_true",
                 help="Use action masking to block infeasible actions")
     ap.add_argument("--domain-rand", action="store_true",    
@@ -410,27 +437,38 @@ def main():
     print(f"  Episodes: {args.episodes}  rate={args.event_rate}/hr")
 
     model = None
-    if args.train_cnn: stage_cnn(args); use_vision=os.path.exists(cnn_path); cfg=Config.DYN_REAL_VISION if use_vision else Config.DYN_MODIS
+
+    # ── Warm‑start: apply BEFORE BC/curriculum so they build on top of it ──
+    if getattr(args, 'init_model', None) and os.path.exists(args.init_model):
+        try:
+            from stable_baselines3 import PPO as _PPO
+            model = _PPO.load(args.init_model)
+            print(f" [INFO] Warm-starting from {args.init_model}")
+        except Exception as _e:
+            print(f" [WARN] Could not load init model: {_e}")
+
     if args.bc:
         tmp = make_vec_env(cfg, seed=args.seed, event_rate=args.event_rate,
                            duration_s=args.duration,
                            with_safety=not args.no_safety,
                            cnn_path=cnn_path, n_envs=args.n_envs, use_subproc=(args.n_envs > 1))
-        m0  = _build_model(tmp, args, int(args.duration/SCHED_STEP_S))
-        model = stage_bc(m0, args, cfg); tmp.close()
-    if args.curriculum: model = stage_curriculum(args, cfg)
+        # Use warm‑started model if available, otherwise build a fresh one
+        m0 = model if model else _build_model(tmp, args, int(args.duration / SCHED_STEP_S))
+        model = stage_bc(m0, args, cfg)
+        tmp.close()
 
-    # ── Warm-start from a previous model (optional) ─────────────────
-
-    # ── Warm-start from a previous model (optional) ─────────────────
-    if getattr(args, 'init_model', None) and os.path.exists(args.init_model):
-        try:
-            from stable_baselines3 import PPO as _PPO
-            _init = _PPO.load(args.init_model)
-            print(f" [INFO] Warm-starting policy weights from {args.init_model}")
-            model = _init
-        except Exception as _e:
-            print(f" [WARN] Could not load init model: {_e}")
+    if args.curriculum:
+        # stage_curriculum currently creates its own model; we need to pass the warm‑started one.
+        # For now, we keep the original call (it will ignore the warm‑start). 
+        # To fully fix, you should modify stage_curriculum to accept an optional model.
+        # But as a minimal fix, we call it with the warm‑started model if it exists.
+        # Since stage_curriculum creates its own model, this won't use warm‑start.
+        # The proper fix would require rewriting stage_curriculum to accept a model.
+        # For the sake of the current bug fix, we move the warm‑start before but
+        # curriculum will still train from scratch. This is not ideal but better than overwriting.
+        # The full fix (modifying stage_curriculum) is outside this immediate bug list.
+        # We keep the curriculum call as is.
+        model = stage_curriculum(args, cfg, model=model)
 
     model, cb, elapsed = stage_ppo(model, args, cfg)
 
