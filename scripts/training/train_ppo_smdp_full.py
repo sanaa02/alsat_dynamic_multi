@@ -250,6 +250,21 @@ def stage_cnn(args):
     except Exception as e:
         print(f"  [WARN] CNN training failed: {e}")
 
+def _reload_with_env(model, new_vec):
+    """
+    SB3 requires model.n_envs == new_vec.num_envs for set_env().
+    If they differ (e.g. BC used 2 envs, curriculum uses 1),
+    save and reload the policy weights into a fresh model with the correct n_envs.
+    """
+    if model.n_envs == new_vec.num_envs:
+        model.set_env(new_vec)
+        return model
+    # n_envs mismatch: save weights, reload with new env
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp = os.path.join(tmpdir, "tmp_model")
+        model.save(tmp)
+        return PPO.load(tmp + ".zip", env=new_vec)
 
 def stage_bc(model, args, cfg):
     print("\n" + "="*60 + "\n  Stage 1 -- Behavioral Cloning\n" + "="*60)
@@ -292,7 +307,7 @@ def stage_curriculum(args, cfg, model=None):
         model = _build_model(vec, args, steps_per_ep)
     else:
         # Replace the model's old (dead) environment with the new vec
-        model.set_env(vec)
+        model = _reload_with_env(model, vec)
     for ep in range(min(args.curriculum_eps, 500)):
         env = sched.make_env(args.targets, args.cloud, seed=args.seed+ep,
                              use_smdp=False, cfg=cfg,
@@ -304,7 +319,7 @@ def stage_curriculum(args, cfg, model=None):
             obs, r, t, tr, _ = env.step(int(act)); ep_r+=r; done=t or tr
         env.close()
         if sched.maybe_advance(ep_r):
-            vec.close(); vec=DummyVecEnv([_make]); model.set_env(vec)
+            vec.close(); vec=DummyVecEnv([_make]); model = _reload_with_env(model, vec)
         model.learn(total_timesteps=steps_per_ep, reset_num_timesteps=False)
         if ep%25==0:
             print(f"  Ep {ep+1}/{min(args.curriculum_eps,500)}  "
@@ -328,9 +343,9 @@ def stage_ppo(model_init, args, cfg):
                        with_safety=with_safety, cnn_path=args.cnn_model, with_action_mask=args.action_mask, with_domain_rand=args.domain_rand)
         return Monitor(env)
 
-    vec = DummyVecEnv([_make])
+    vec = DummyVecEnv([_make] * max(1, args.n_envs))
     model = model_init if model_init else _build_model(vec, args, steps_per_ep)
-    if model_init: model.set_env(vec)
+    if model_init: model = _reload_with_env(model_init, vec) 
 
     _live_log = os.path.join(RESULTS_DIR, "training_live.json")
     _ckpt_dir = os.path.join(MODELS_DIR,  "checkpoints")
