@@ -49,7 +49,7 @@ def obs_dim(cfg: Config) -> int:
         return 43
     else:
         from env_alsat_dynamic import OBS_TOTAL_DIM
-        return OBS_TOTAL_DIM   # now returns 57
+        return OBS_TOTAL_DIM   # now returns 56
 
 
 def n_actions(cfg: Config) -> int:

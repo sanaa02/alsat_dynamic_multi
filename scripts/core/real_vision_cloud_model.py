@@ -74,11 +74,20 @@ class RealVisionCloudModel:
         patches_dir:     str,
         cnn_path:        str = "models/cloud_cnn_real.pt",
         seed:            int = 42,
-        device:          str = "cuda",
+        device:          str = None,
     ) -> None:
 
         # ── 1. Ground-truth data from MODIS JSON ─────────────────────────
+        import torch
         import json as _json
+        if device is None:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+        if not torch.cuda.is_available() and device != "cuda":
+            logger.warning("RealVisionCloudModel: no CUDA GPU — running CNN on CPU.")
+            # ^^^^ warn ONCE here in __init__, NOT in predict()
+
+        self._device = torch.device(device)
+        
         with open(cloud_json_path) as f:
             data = _json.load(f)
         self._lookup:       dict = {}

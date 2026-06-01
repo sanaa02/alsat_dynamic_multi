@@ -157,7 +157,7 @@ class DynamicEventCallback(BaseCallback):
             # Write to JSON for monitor script
             # ── Rich per-episode summary (fires at episode end) ──────────────
             if done:
-                ep = self.n_calls // (self.locals.get("n_steps", 2048))
+                ep = self.n_calls // max(1, self.locals.get("n_steps", 2048))
                 r = self.locals.get("rewards", [0])
                 ep_r = float(np.sum(r)) if hasattr(r, '__len__') else float(r)
 

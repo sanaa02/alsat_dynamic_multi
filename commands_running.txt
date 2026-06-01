@@ -1,0 +1,137 @@
+Use shell redirection:
+
+```bash id="abym5k"
+CUDA_VISIBLE_DEVICES=0 python -m scripts.training.train_ppo_smdp_full \
+    --bc --curriculum --eval --explain \
+    --episodes 5000 --event-rate 4.0 \
+    --n-envs 2 --seed 42 \
+    --action-mask --domain-rand \
+    --cnn-model models/cloud_cnn_real.pt \
+    --ent-coef 0.15 \
+    --init-model models/checkpoints/ppo_smdp_ep00500.zip \
+    > training.log 2>&1
+```
+
+This:
+
+* `>` saves normal output
+* `2>&1` also saves errors
+* everything goes into `training.log`
+
+---
+
+If you want to both **see output live** and save it:
+
+```bash id="2xmpjt"
+CUDA_VISIBLE_DEVICES=0 python -m scripts.training.train_ppo_smdp_full \
+    --bc --curriculum --eval --explain \
+    --episodes 5000 --event-rate 4.0 \
+    --n-envs 2 --seed 42 \
+    --action-mask --domain-rand \
+    --cnn-model models/cloud_cnn_real.pt \
+    --ent-coef 0.15 \
+    --init-model models/checkpoints/ppo_smdp_ep00500.zip \
+    2>&1 | tee training.log
+```
+
+---
+
+To run in background:
+
+```bash id="r1k3u8"
+CUDA_VISIBLE_DEVICES=0 python -m scripts.training.train_ppo_smdp_full \
+    --bc --curriculum --eval --explain \
+    --episodes 5000 --event-rate 4.0 \
+    --n-envs 2 --seed 42 \
+    --action-mask --domain-rand \
+    --cnn-model models/cloud_cnn_real.pt \
+    --ent-coef 0.15 \
+    --init-model models/checkpoints/ppo_smdp_ep00500.zip \
+    > training.log 2>&1 &
+```
+
+Then monitor logs with:
+
+```bash id="e6k9q2"
+tail -f training.log
+```
+
+```bash id="lqg4a2"
+CUDA_VISIBLE_DEVICES=1 python -m scripts.training.train_ppo_smdp_full \
+    --bc --curriculum --eval --explain \
+    --episodes 3000 --event-rate 4.0 \
+    --n-envs 2 --seed 42 \
+    --action-mask --domain-rand \
+    --cnn-model models/cloud_cnn_real.pt \
+    --ent-coef 0.15 \
+    --attention \
+    > training_attention.log 2>&1
+```
+
+To see output live while saving:
+
+```bash id="8m1vzy"
+CUDA_VISIBLE_DEVICES=1 python -m scripts.training.train_ppo_smdp_full \
+    --bc --curriculum --eval --explain \
+    --episodes 3000 --event-rate 4.0 \
+    --n-envs 2 --seed 42 \
+    --action-mask --domain-rand \
+    --cnn-model models/cloud_cnn_real.pt \
+    --ent-coef 0.15 \
+    --attention \
+    2>&1 | tee training_attention.log
+```
+
+Background version:
+
+```bash id="gk4w91"
+CUDA_VISIBLE_DEVICES=1 python -m scripts.training.train_ppo_smdp_full \
+    --bc --curriculum --eval --explain \
+    --episodes 3000 --event-rate 4.0 \
+    --n-envs 2 --seed 42 \
+    --action-mask --domain-rand \
+    --cnn-model models/cloud_cnn_real.pt \
+    --ent-coef 0.15 \
+    --attention \
+    > training_attention.log 2>&1 &
+```
+
+```bash id="t8x4mk"
+for VARIANT in full_system no_bc no_curriculum no_smdp gaussian_cloud circular_cnn attention_policy; do
+    echo "======== STARTING: $VARIANT ========"
+    CUDA_VISIBLE_DEVICES=1 python -m scripts.training.ablation_runner \
+        --variant $VARIANT \
+        --seeds 42 123 456 \
+        --episodes 2000 \
+        --n-envs 1
+    echo "DONE: $VARIANT"
+done > ablation_runner.log 2>&1
+```
+
+To see output live while saving:
+
+```bash id="y2m6pv"
+for VARIANT in full_system no_bc no_curriculum no_smdp gaussian_cloud circular_cnn attention_policy; do
+    echo "======== STARTING: $VARIANT ========"
+    CUDA_VISIBLE_DEVICES=1 python -m scripts.training.ablation_runner \
+        --variant $VARIANT \
+        --seeds 42 123 456 \
+        --episodes 2000 \
+        --n-envs 1
+    echo "DONE: $VARIANT"
+done 2>&1 | tee ablation_runner.log
+```
+
+Background version:
+
+```bash id="j7q9rc"
+for VARIANT in full_system no_bc no_curriculum no_smdp gaussian_cloud circular_cnn attention_policy; do
+    echo "======== STARTING: $VARIANT ========"
+    CUDA_VISIBLE_DEVICES=1 python -m scripts.training.ablation_runner \
+        --variant $VARIANT \
+        --seeds 42 123 456 \
+        --episodes 2000 \
+        --n-envs 1
+    echo "DONE: $VARIANT"
+done > ablation_runner.log 2>&1 &
+```

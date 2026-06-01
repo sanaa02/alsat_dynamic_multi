@@ -101,8 +101,7 @@ DEFAULT_GAMMA     = 0.99
 TIME_NORM_S       = SCHED_STEP_S * 100
 
 # [DECAY] urgency decay time-constant (1 hour)
-EVENT_DECAY_TAU_S = 7200.0
-
+EVENT_DECAY_TAU_S = 3600.0      # 1-hour exponential time constant
 
 # =============================================================================
 #  Keplerian TTA wrapper (with binary fallback)
@@ -504,12 +503,17 @@ class DynamicObsWrapper(gym.Wrapper):
         except Exception:
             pass
 
-        obs_i, r_i, term, trunc, info = self.env.step(action)
-        last_obs = obs_i
-        # Apply SMDP discount proportional to action duration
-        # Longer slews discount more, incentivising efficient scheduling
-        smdp_discount = self._gamma_sub ** (tau / BASE_STEP_S)
-        total_r       = r_i * smdp_discount
+        DRIFT_ACT = N_STATIC_TARGETS + N_DYN_SLOTS  # = 23
+        total_r = 0.0
+        for _i in range(n_sub):
+            _sub_a = action if _i == 0 else DRIFT_ACT
+            obs_i, r_i, term, trunc, info = self.env.step(_sub_a)
+            total_r += (self._gamma_sub ** _i) * r_i
+            last_obs = obs_i
+            if term or trunc:
+                break
+            smdp_discount = self._gamma_sub ** (tau / BASE_STEP_S)
+
 
         # ── [ROOT FIX] geometric imaging check (non-critical, wrapped safely)
         # NOTE: do NOT reset _locked_dyn_event here — the main injection
@@ -521,9 +525,10 @@ class DynamicObsWrapper(gym.Wrapper):
                 total_r += _dyn_r
                 # Only reset lock if main injection block already ran
                 # (checked by _dyn_reward_given flag)
-                if getattr(_sat, '_dyn_reward_given', False):
-                    _sat._locked_dyn_event = None
-                    _sat._locked_dyn_slot  = None
+                _sat._dyn_reward_given = True   # ← prevent injection block from firing again
+                _sat._locked_dyn_event = None
+                _sat._locked_dyn_slot  = None
+
         except Exception:
             pass  # Geometric check failed; main injection block handles reward
 
@@ -561,7 +566,7 @@ class DynamicObsWrapper(gym.Wrapper):
                     try:
                         _now     = float(_sat.simulator.sim_time)
                         _elapsed = max(0.0, _now - float(_target.appearance_time))
-                        _urgency = max(0.15, 1.0 - _elapsed / (2.0 * EVENT_DECAY_TAU_S))
+                        _urgency = max(0.15, math.exp(-_elapsed / EVENT_DECAY_TAU_S))
                     except Exception:
                         _urgency = 1.0
 
@@ -869,6 +874,6 @@ def _dyn_imaging_check(sat, info: dict) -> float:
         if hasattr(locked_ev, 'mark_accessed'):
             locked_ev.mark_accessed()
         pri = float(getattr(locked_ev, 'priority', 1.0))
-        return pri * (1.0 - cloud) + + DYNAMIC_BONUS   # DYNAMIC_BONUS = 5.0
+        return pri * (1.0 - cloud) + + DYNAMIC_BONUS   # DYNAMIC_BONUS = 3.0
 
     return 0.0

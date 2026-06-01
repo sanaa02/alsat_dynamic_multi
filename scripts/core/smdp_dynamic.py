@@ -47,14 +47,14 @@ from typing import Optional
 import gymnasium as gym
 import numpy as np
 
-from scripts.core.env_alsat_dynamic import (
+from env_alsat_dynamic import (
     make_dynamic_env,
     DynamicObsWrapper,
     SingleSatelliteEnv,
     N_TOTAL_ACTIONS,
     OBS_TOTAL_DIM,
 )
-from scripts.core.env_alsat_debug import (
+from env_alsat_debug import (
     calculate_slew_angle_to_target,
     calculate_slew_time,
     IMAGING_DUR_S,

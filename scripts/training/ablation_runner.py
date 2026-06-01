@@ -172,7 +172,8 @@ def run_variant(cfg: AblationConfig, seed: int, episodes: int, n_envs: int = 2) 
     else:
         vec = DummyVecEnv([_make_env(0)])
 
-    _device = "cuda" if torch.cuda.is_available() else "cpu"
+    # _device = "cuda" if torch.cuda.is_available() else "cpu"
+    _device = "cpu"
     _n_steps = max(128, 2048 // n_envs)
 
     if cfg.use_attention:
