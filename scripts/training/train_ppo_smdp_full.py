@@ -290,6 +290,9 @@ def stage_curriculum(args, cfg, model=None):
 
     if model is None:
         model = _build_model(vec, args, steps_per_ep)
+    else:
+        # Replace the model's old (dead) environment with the new vec
+        model.set_env(vec)
     for ep in range(min(args.curriculum_eps, 500)):
         env = sched.make_env(args.targets, args.cloud, seed=args.seed+ep,
                              use_smdp=False, cfg=cfg,
