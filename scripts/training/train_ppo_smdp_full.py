@@ -258,7 +258,7 @@ def _reload_with_env(model, new_vec):
     save and reload the policy weights into a fresh model with the correct n_envs.
     """
     if model.n_envs == new_vec.num_envs:
-        model.set_env(new_vec)
+        model = PPO.load(model, env=new_vec)
         return model
     # n_envs mismatch: save weights, reload with new env
     import tempfile
@@ -351,6 +351,12 @@ def stage_ppo(model_init, args, cfg):
     _live_log = os.path.join(RESULTS_DIR, "training_live.json")
     _ckpt_dir = os.path.join(MODELS_DIR,  "checkpoints")
     cb = FullTrainingLogger(verbose=1, log_path=_live_log, ckpt_dir=_ckpt_dir)
+    from callbacks import EntropyAnnealingCallback
+    ent_cb = EntropyAnnealingCallback(
+        start_val=getattr(args, 'ent_coef', 0.15),
+        end_val=0.005,
+        total_timesteps=total_steps,
+    )
     print(f"  Live log  → {_live_log}")
     print(f"  Checkpoints → {_ckpt_dir}/ppo_smdp_epXXXXX.zip")
     t0 = time.time()
@@ -363,7 +369,7 @@ def stage_ppo(model_init, args, cfg):
             print(" [INFO] Verbose action logging enabled")
 
         model.learn(total_timesteps=total_steps,
-                    callback=callbacks_list if getattr(args, 'verbose_actions', False) else cb,
+                    callback=[ent_cb] + callbacks_list if getattr(args, 'verbose_actions', False) else [ent_cb] + [cb],
                     progress_bar=True, reset_num_timesteps=True)
     except KeyboardInterrupt:
         print("\n  [INFO] Interrupted.")
