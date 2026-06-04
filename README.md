@@ -85,7 +85,7 @@ The full system (SMDP + CNN + BC pre-training + curriculum) achieves:
 
 ---
 
-## 📌 Abstract
+##  Abstract
 
 This project presents an autonomous observation scheduling system for the **ALSAT-2A Earth observation satellite** (686 km Sun-Synchronous Orbit, Algeria) that responds in real time to unplanned emergency events — wildfires, floods, earthquake impacts, and atmospheric plumes — alongside its nominal static target schedule.
 
@@ -95,7 +95,7 @@ The core contribution is a **Semi-Markov Decision Process (SMDP)** formulation t
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [What Is This Project?](#-what-is-this-project-plain-language)
 2. [Architecture](#architecture)
@@ -111,7 +111,7 @@ The core contribution is a **Semi-Markov Decision Process (SMDP)** formulation t
 
 ---
 
-## 🏗 Architecture <a id="architecture"></a>
+##  Architecture <a id="architecture"></a>
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -174,7 +174,7 @@ The core contribution is a **Semi-Markov Decision Process (SMDP)** formulation t
 
 ---
 
-## ⚙️ Environment <a id="environment"></a>
+## Environment <a id="environment"></a>
 
 ### Observation Space — `Box(−∞, ∞, (56,))`
 
@@ -219,7 +219,7 @@ At every decision step, the agent receives a 56-dimensional vector describing th
 
 ---
 
-## 🎯 Reward Design <a id="reward"></a>
+##  Reward Design <a id="reward"></a>
 
 The reward function defines what "good behaviour" means for the agent. It was designed with three principles: **reward useful images, penalise wasted attempts, and urgently incentivise emergency response.**
 
@@ -259,7 +259,7 @@ Missed event: −0.5 × priority × (1 − cloud_truth)  applied at expiry if un
 
 ---
 
-## 🚀 Installation <a id="installation"></a>
+##  Installation <a id="installation"></a>
 
 **Requirements:** Python ≥ 3.10. CUDA optional (~2× speedup for CNN inference).
 
@@ -289,7 +289,7 @@ earthaccess==0.18.0               pyhdf==0.11.6
 
 ---
 
-## 🏋 Training Pipeline <a id="training"></a>
+##  Training Pipeline <a id="training"></a>
 
 The master script `scripts/training/train_ppo_smdp_full.py` runs up to 5 stages:
 
@@ -378,7 +378,7 @@ The agent is compared against four hand-crafted baselines to measure the value o
 
 ---
 
-## 📈 Results & Ablation <a id="results"></a>
+## Results & Ablation <a id="results"></a>
 
 Ablation study across 3 random seeds (42, 123, 456), 6 system variants:
 
@@ -398,7 +398,7 @@ Comparison figure: `data/outputs/plots/dynamic_eval_comparison.png`
 
 ---
 
-## 📁 Repository Structure <a id="structure"></a>
+##  Repository Structure <a id="structure"></a>
 
 ```
 alsat_dynamic_multi/
