@@ -63,7 +63,7 @@ from env_alsat_debug import (
 )
 from dynamic_event import (
     DynamicEvent, EventGenerator, EventManager,
-    N_DYN_SLOTS, MAX_OFFNADIR_RAD, INACCESSIBLE_TIME_S, DYNAMIC_BONUS,
+    N_DYN_SLOTS, MAX_OFFNADIR_RAD, INACCESSIBLE_TIME_S, DYNAMIC_BONUS, DYN_MULTIPLIER,
 )
 from bsk_rl.act import Action
 from bsk_rl.act.discrete_actions import DiscreteActionBuilder
@@ -336,11 +336,11 @@ class DynamicScienceDataStore(ScienceDataStore):
                 urgency = 1.0
 
             if cloud_truth < CLOUD_THRESH:
-                reward = priority * (1.0 - cloud_truth) * urgency + DYNAMIC_BONUS
+                reward = DYN_MULTIPLIER * priority * (1.0 - cloud_truth) * urgency
                 sat._metrics['n_cloud_free'] += 1
             else:
-                reward = -0.05 * priority
-                sat._metrics['n_cloudy'] += 1
+                reward = -0.3 * priority   # stronger penalty for cloudy dynamic waste
+
 
             event_mgr = getattr(sat, '_event_manager', None)
             if event_mgr is not None and isinstance(target, DynamicEvent):
@@ -552,11 +552,13 @@ class DynamicObsWrapper(gym.Wrapper):
                 _slew   = getattr(_sat, 'last_slew_angle',   float('inf'))
                 _fired  = getattr(_sat, '_dyn_reward_given', False)
 
+                _already_done = _target.imaged if _target else False
                 if (_target is not None
                         and isinstance(_target, DynamicEvent)
                         and _l_slot == _slot
                         and _slew <= MAX_OFFNADIR_RAD
-                        and not _fired):
+                        and not _fired
+                        and not _already_done):
 
                     _sat._dyn_reward_given = True
                     _cloud  = float(_target.cloud_cover)
@@ -645,8 +647,8 @@ class DynamicObsWrapper(gym.Wrapper):
         if (term or trunc):
             n_static = getattr(self, '_n_static_actions_ep', 0)
             if n_static == 0:
-                total_r -= 5.0   # static imaging floor
-                logger.debug(f"Static forgetting penalty: -5.0 (n_static=0)")
+                total_r -= 1.0   # static imaging floor
+                logger.debug(f"Static forgetting penalty: -1.0 (n_static=0)")
             self._n_static_actions_ep = 0   # reset for next episode
         # ─────────────────────────────────────────────────────────────
 
@@ -820,6 +822,7 @@ if __name__ == '__main__':
 
 # ── [ROOT FIX] DYN geometric imaging bypass ───────────────────────────────
 import numpy as _np_dyn, math as _math_dyn
+from dynamic_event import DYN_MULTIPLIER as _DYN_MULT
 
 _DYN_MAX_OFFNADIR_DEG = 45.0   # must match MAX_OFFNADIR_RAD in dynamic_event.py
 _DYN_CLOUD_THRESH     = 0.9    # max cloud cover for successful imaging
@@ -874,6 +877,6 @@ def _dyn_imaging_check(sat, info: dict) -> float:
         if hasattr(locked_ev, 'mark_accessed'):
             locked_ev.mark_accessed()
         pri = float(getattr(locked_ev, 'priority', 1.0))
-        return pri * (1.0 - cloud) + + DYNAMIC_BONUS   # DYNAMIC_BONUS = 3.0
+        return DYN_MULTIPLIER * pri * (1.0 - cloud)
 
     return 0.0

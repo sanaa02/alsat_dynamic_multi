@@ -31,16 +31,22 @@ class CurriculumPhase:
     min_episodes:         int = 50
 
 
-PHASES: List[CurriculumPhase] = [
-    # Thresholds lowered — old values caused permanent stuck-at-phase-0
-    # static_clear mean ~6-7 in practice; 10.0 was unreachable
-    CurriculumPhase("static_clear",    0.0, True,  7.0, 50),   # was 10.0
-    CurriculumPhase("static_clouds",   0.0, False,  5.0, 75),   # was  7.0
-    CurriculumPhase("dynamic_sparse",  0.5, False,  6.5, 100),  # was  9.0
-    CurriculumPhase("dynamic_dense",   2.0, False, None, 250),
-    CurriculumPhase("balanced_mix", 2.0, False, None, 500)
-]
+# PHASES: List[CurriculumPhase] = [
+#     # Thresholds lowered — old values caused permanent stuck-at-phase-0
+#     # static_clear mean ~6-7 in practice; 10.0 was unreachable
+#     CurriculumPhase("static_clear",    0.0, True,  7.0, 50),   # was 10.0
+#     CurriculumPhase("static_clouds",   0.0, False,  5.0, 75),   # was  7.0
+#     CurriculumPhase("dynamic_sparse",  0.5, False,  6.5, 100),  # was  9.0
+#     CurriculumPhase("dynamic_dense",   2.0, False, None, 250),
+#     CurriculumPhase("balanced_mix", 2.0, False, None, 500)
+# ]
 
+PHASES: List[CurriculumPhase] = [
+    CurriculumPhase("static_clear",    0.0, True,  3.5, 50),   # achievable
+    CurriculumPhase("static_clouds",   0.0, False, 2.5, 75),   # achievable
+    CurriculumPhase("dynamic_sparse",  0.5, False, 3.0, 100),  # achievable
+    CurriculumPhase("dynamic_dense",   2.0, False, None, 250),
+]
 
 class ClearSkyWrapper(gym.ObservationWrapper):
     """Phase 1: zero out cloud forecast features so the agent learns scheduling first."""

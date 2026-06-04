@@ -1,170 +1,37 @@
-python -m scripts.training.train_ppo_smdp_full     --bc --curriculum --eval     --episodes 80     --event-rate 2.0     --n-envs 4     --seed 42
-Using device: cuda
 Using device: cuda
 ============================================================
   ALSAT-EO-1  Phase 3  Master Training Pipeline
 ============================================================
   Config  : dyn_real_vision  obs=56  acts=24
   Safety  : ON (default)
-  Episodes: 80  rate=2.0/hr
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-Using device: cuda
-  PPO: n_steps=144  batch=288  envs=4  rollout=576
+  Episodes: 10  rate=2.0/hr
 
 ============================================================
   Stage 1 -- Behavioral Cloning
 ============================================================
-  Loaded 7,285 transitions from /home/students_fyp/Documents/sanaa/Dynamic_Targeting/data/demos.npz
-  BC pretraining (50 epochs)...
-  BC: using 4339/7285 non-drift transitions (60% of demos)
-  BC weights: min=0.35  max=2.00  (using 22 distinct actions)
-    BC ep  10/50  loss=2.9934  acc=35.58%
-    BC ep  20/50  loss=2.9779  acc=37.17%
-    BC ep  30/50  loss=2.9539  acc=36.92%
-    BC ep  40/50  loss=2.9393  acc=37.34%
-    BC ep  50/50  loss=2.9325  acc=37.36%
-  BC done.  Best loss=2.9325
-
-============================================================
-  Stage 2 -- Curriculum Warm-up
-============================================================
-Using device: cuda
-Using device: cuda
-  PPO: n_steps=144  batch=72  envs=1  rollout=144
-  Ep 1/200  phase=static_clear  r=+11.254
-  Ep 26/200  phase=static_clear  r=+8.591
-
-[CURRICULUM] 'static_clear' -> 'static_clouds'  (mean_r=+7.028)
-
-  Ep 51/200  phase=static_clouds  r=+3.047
-  Ep 76/200  phase=static_clouds  r=+6.879
-  Ep 101/200  phase=static_clouds  r=+6.423
-
-[CURRICULUM] 'static_clouds' -> 'dynamic_sparse'  (mean_r=+6.641)
-
-  Ep 126/200  phase=dynamic_sparse  r=+9.865
-  Ep 151/200  phase=dynamic_sparse  r=+9.219
-  Ep 176/200  phase=dynamic_sparse  r=+3.920
-Curriculum: phase=dynamic_sparse  idx=2
-  Graduated 'static_clear' ep=51 r=+7.028
-  Graduated 'static_clouds' ep=75 r=+6.641
+  Loaded 5,858 transitions from /home/sanaa/Documents/alsat_dynamic_multi/data/demos.npz
+  BC pretraining (100 epochs)...
+  BC: using 5604/5858 non-drift transitions (96% of demos)
+  BC weights: min=0.38  max=2.00  (using 16 distinct actions)
+    BC ep  10/100  loss=2.7571  acc=40.97%  lr=7.00e-04  
+    BC ep  20/100  loss=2.7573  acc=41.79%  lr=6.79e-04  
+    BC ep  30/100  loss=2.7580  acc=40.04%  lr=6.18e-04  
+    BC ep  40/100  loss=2.7545  acc=41.95%  lr=5.25e-04  
+    BC ep  50/100  loss=2.7529  acc=42.51%  lr=4.11e-04  
+    BC ep  60/100  loss=2.7516  acc=42.17%  lr=2.89e-04 ★
+    BC ep  70/100  loss=2.7480  acc=42.20%  lr=1.75e-04 ★
+    BC ep  80/100  loss=2.7473  acc=42.67%  lr=8.19e-05  
+    BC ep  90/100  loss=2.7460  acc=42.59%  lr=2.11e-05  
+    BC ep 100/100  loss=2.7457  acc=42.61%  lr=0.00e+00  
+  ✓ Restored best weights from ep 94  (loss=2.7455)
+  BC done.  Best loss=2.7455  Best ep=94/100
 
 ============================================================
   Stage 3 -- SMDP-PPO  cfg=dyn_real_vision  obs=56
 ============================================================
-  [DEBUG] episode_metrics keys: ['n_cloud_free', 'n_cloudy', 'n_imaged', 
-'total_slew_angle_deg', 'total_slew_energy_wh', 'total_reward', 
-'n_dyn_detected', 'n_dyn_imaged']
-  Ep   10  r=  +9.580  avg10=  +7.903  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
-  Ep   20  r= +10.651  avg10=  +8.394  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
-  Ep   30  r= +10.271  avg10=  +4.660  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
-  Ep   40  r= +10.398  avg10=  +9.357  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
-  Ep   50  r=  +9.814  avg10=  +5.478  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
-  Ep   60  r= +12.305  avg10=  +6.608  cf=100%(avg=70%)  dyn_suc=0%(avg=0%)
-  Ep   70  r= +10.952  avg10=  +7.525  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
-  Ep   80  r= +10.067  avg10=  +7.682  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
-  Ep   90  r= +12.020  avg10=  +7.001  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
-  Ep  100  r=  +0.000  avg10=  +7.082  cf=0%(avg=80%)  dyn_suc=0%(avg=0%)
-  Ep  110  r= +12.329  avg10=  +8.008  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
-  Ep  120  r=  +1.293  avg10=  +7.825  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
-  Ep  130  r= +12.608  avg10= +10.644  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
-  Ep  140  r=  +9.828  avg10=  +8.660  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
-  Ep  150  r= +12.309  avg10=  +7.735  cf=100%(avg=78%)  dyn_suc=0%(avg=0%)
-  Ep  160  r=  +3.992  avg10=  +3.971  cf=100%(avg=80%)  dyn_suc=0%(avg=0%)
-  Ep  170  r=  +9.476  avg10=  +7.140  cf=100%(avg=90%)  dyn_suc=0%(avg=0%)
-  Ep  180  r= +10.248  avg10=  +7.971  cf=100%(avg=100%)  dyn_suc=0%(avg=0%)
- 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11,520/11,520  [ 0:12:10 < 0:00:00 , 16 it/s ]
-  Done 12.2 min  model -> /home/students_fyp/Documents/sanaa/Dynamic_Targeting/models/ppo_smdp_full.zip
-/home/students_fyp/anaconda3/envs/thesis/lib/python3.14/site-packages/stable_baselines3/common/on_policy_algorithm.py:150: UserWarning: You are trying to run PPO on the GPU, but it is primarily intended to run on the CPU when not using a CNN policy (you are using ActorCriticPolicy which should be a MlpPolicy). See https://github.com/DLR-RM/stable-baselines3/issues/1245 for more info. You can pass `device='cpu'` or `export CUDA_VISIBLE_DEVICES=` to force using the CPU.Note: The model will train, but the GPU utilization will be poor and the training might take longer than on CPU.
-  warnings.warn(
-  [RL] Loaded model from /home/students_fyp/Documents/sanaa/Dynamic_Targeting/models/ppo_smdp_full.zip
+  Live log     -> /home/sanaa/Documents/alsat_dynamic_multi/results/training_live.json
+  Checkpoints  -> /home/sanaa/Documents/alsat_dynamic_multi/models/checkpoints_seed456/ppo_smdp_epXXXXX.zip
+ [INFO] Verbose step logging enabled (every 1 steps)
 
-──────────────────────────────────────────────────────────────────────
-  SCENARIO: No events (baseline)
-──────────────────────────────────────────────────────────────────────
-    ep  1  greedy_dyn=+13.471  ignore=+13.471  det=0  suc=0%
-    ep  2  greedy_dyn=+13.104  ignore=+13.104  det=0  suc=0%
-    ep  3  greedy_dyn=+0.000  ignore=+0.000  det=0  suc=0%
-    ep  4  greedy_dyn=+10.911  ignore=+10.911  det=0  suc=0%
-    ep  5  greedy_dyn=+9.906  ignore=+9.906  det=0  suc=0%
-
-
-================================================================================
-  DYNAMIC TARGETING COMPARISON  (event_rate=0.0/hr)
-================================================================================
-  Policy                        Reward      ±    CF%   DynDet   DynImg   Suc%   Delay(s)
-  ------------------------------------------------------------------------------
-  greedy_dynamic_scout          +9.478  4.923    80%      0.0      0.0     0%          0
-  greedy_ignore_dynamic         +9.478  4.923    80%      0.0      0.0     0%          0
-  RL-PPO-dynamic                +8.281  5.972    80%      0.0      0.0     0%          0
-================================================================================
-  Dynamic targeting value (greedy_dynamic - ignore_dynamic): +0.000
-
-
-──────────────────────────────────────────────────────────────────────
-  SCENARIO: Sparse events (0.5/hr)
-──────────────────────────────────────────────────────────────────────
-    ep  1  greedy_dyn=+13.471  ignore=+13.471  det=23  suc=0%
-    ep  2  greedy_dyn=+13.104  ignore=+13.104  det=18  suc=0%
-    ep  3  greedy_dyn=+0.000  ignore=+0.000  det=31  suc=0%
-    ep  4  greedy_dyn=+12.203  ignore=+10.911  det=28  suc=0%
-    ep  5  greedy_dyn=+8.197  ignore=+9.906  det=19  suc=0%
-
-
-================================================================================
-  DYNAMIC TARGETING COMPARISON  (event_rate=0.5/hr)
-================================================================================
-  Policy                        Reward      ±    CF%   DynDet   DynImg   Suc%   Delay(s)
-  ------------------------------------------------------------------------------
-  greedy_dynamic_scout          +9.395  5.059    80%     23.8      0.0     0%          0
-  greedy_ignore_dynamic         +9.478  4.923    80%     23.8      0.0     0%          0
-  RL-PPO-dynamic                +8.281  5.972    80%     23.6      0.0     0%          0
-================================================================================
-  Dynamic targeting value (greedy_dynamic - ignore_dynamic): -0.083
-
-
-──────────────────────────────────────────────────────────────────────
-  SCENARIO: Dense events (2.0/hr)
-──────────────────────────────────────────────────────────────────────
-    ep  1  greedy_dyn=+13.470  ignore=+13.471  det=60  suc=0%
-    ep  2  greedy_dyn=+13.104  ignore=+13.104  det=53  suc=0%
-    ep  3  greedy_dyn=+0.000  ignore=+0.000  det=63  suc=0%
-    ep  4  greedy_dyn=+14.221  ignore=+10.911  det=62  suc=0%
-    ep  5  greedy_dyn=+9.712  ignore=+9.906  det=63  suc=0%
-
-
-================================================================================
-  DYNAMIC TARGETING COMPARISON  (event_rate=2.0/hr)
-================================================================================
-  Policy                        Reward      ±    CF%   DynDet   DynImg   Suc%   Delay(s)
-  ------------------------------------------------------------------------------
-  greedy_dynamic_scout         +10.101  5.283    80%     60.2      0.0     0%          0
-  greedy_ignore_dynamic         +9.478  4.923    80%     59.2      0.0     0%          0
-  RL-PPO-dynamic                +8.281  5.972    80%     58.8      0.0     0%          0
-================================================================================
-  Dynamic targeting value (greedy_dynamic - ignore_dynamic): +0.623
-
-  Additional science value (dense, dynamic-scout vs ignore): +0.623
-/home/students_fyp/Documents/sanaa/Dynamic_Targeting/scripts/evaluation/eval_dynamic.py:301: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
-  ax.set_title("Dynamic Imaging Success Rate"); ax.legend(fontsize=8); ax.grid(axis="y", alpha=0.3)
-/home/students_fyp/Documents/sanaa/Dynamic_Targeting/scripts/evaluation/eval_dynamic.py:312: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
-  ax.legend(fontsize=8); ax.grid(axis="y", alpha=0.3)
-  Plot saved → /home/students_fyp/Documents/sanaa/Dynamic_Targeting/data/outputs/plots/dynamic_eval_comparison.png
-
-(thesis) students_fyp@lamine-System-Product-Name:~/Documents/sanaa/Dynamic_Targeting$ 
-
-
+  [INFO] Interrupted — saving current model.
+  Done 0.0 min  model -> /home/sanaa/Documents/alsat_dynamic_multi/models/ppo_smdp_seed456.zip

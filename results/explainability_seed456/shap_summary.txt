@@ -1,0 +1,22 @@
+ALSAT-EO-1 Phase 3 — Explainability Summary
+==================================================
+
+Episode decisions: 59
+  Static targets : 0
+  Dynamic events : 59
+  Drift          : 0
+  Total reward   : +1.775
+
+Top-5 most influential features (by mean |SHAP|):
+  1. sojourn_norm                    mean|SHAP|=0.0000
+  2. dyn_2_slew_norm                 mean|SHAP|=0.0000
+  3. dyn_2_tta_norm                  mean|SHAP|=0.0000
+  4. dyn_2_cloud_fcst                mean|SHAP|=0.0000
+  5. dyn_2_priority                  mean|SHAP|=0.0000
+
+Sample decision explanations:
+  t=0.0h  Imaged dynamic event 'dyn_wildfire_0001' (value=1.723):    priority=0.951    cloud_forecast=0.239    slew=0.0°    +1.0 emergency bonus applied.
+  t=0.3h  Imaged dynamic event 'dyn_wildfire_0002' (value=1.630):    priority=0.848    cloud_forecast=0.258    slew=0.0°    +1.0 emergency bonus applied.
+  t=1.0h  Imaged dynamic event 'dyn_wildfire_0002' (value=1.630):    priority=0.848    cloud_forecast=0.258    slew=0.0°    +1.0 emergency bonus applied.
+  t=2.0h  Imaged dynamic event 'dyn_wildfire_0002' (value=1.630):    priority=0.848    cloud_forecast=0.258    slew=0.0°    +1.0 emergency bonus applied.
+  t=2.7h  Imaged dynamic event 'dyn_wildfire_0002' (value=1.630):    priority=0.848    cloud_forecast=0.258    slew=0.0°    +1.0 emergency bonus applied.

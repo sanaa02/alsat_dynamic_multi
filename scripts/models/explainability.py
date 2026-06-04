@@ -56,6 +56,12 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 # ── Try SHAP ─────────────────────────────────────────────────────────────────
@@ -223,7 +229,7 @@ class DecisionLogger:
 
         kind  = "dynamic event" if rec.is_dynamic else "static target"
         val   = rec.priority * (1.0 - rec.cloud_fcst)
-        bonus = 1.0 if rec.is_dynamic else 0.0
+        bonus = 2.5 if rec.is_dynamic else 0.0
         val  += bonus
 
         reason_parts = [
@@ -288,13 +294,12 @@ class PolicyExplainer:
 
         if SHAP_AVAILABLE:
             def _value_fn(obs_array: np.ndarray) -> np.ndarray:
-                """Returns scalar value estimate for each obs row."""
-                import torch
-                t   = torch.FloatTensor(obs_array)
-                pol = model.policy
-                pol.eval()
+                device = next(model.policy.parameters()).device
+                t      = torch.FloatTensor(obs_array).to(device)
+                model.policy.eval()
                 with torch.no_grad():
-                    _, val, _ = pol.evaluate_actions(t, torch.zeros(len(obs_array), dtype=torch.long))
+                    _, val, _ = model.policy.evaluate_actions(
+                        t, torch.zeros(len(obs_array), dtype=torch.long).to(device))
                 return val.cpu().numpy().flatten()
 
             self._explainer = shap.KernelExplainer(
@@ -320,22 +325,29 @@ class PolicyExplainer:
                 logger.warning(f"SHAP failed: {exc} — using finite-diff.")
         return self._finite_diff(x)
 
-    def _finite_diff(self, x: np.ndarray, eps: float = 1e-3) -> np.ndarray:
-        """Finite-difference approximation of feature importance."""
-        import torch
+    _eps = 5e-2   # class-level constant — add this line BEFORE _finite_diff as a class attribute
+    
+    def _finite_diff(self, x):
         pol    = self.model.policy
-        pol.eval()
-        t0     = torch.FloatTensor(x)
+        device = next(pol.parameters()).device
+        eps    = self._eps
+        t0   = torch.FloatTensor(x.reshape(1, -1)).to(device)
         with torch.no_grad():
-            _, v0, _ = pol.evaluate_actions(t0, torch.zeros(1, dtype=torch.long))
-        v0 = v0.item()
+            dist = pol.get_distribution(t0)
+            # Use log-prob of the most likely action as the attribution target
+            probs = dist.distribution.probs.squeeze(0)
+            best_action = probs.argmax().unsqueeze(0)
+            v0 = dist.log_prob(best_action).item()
         dim  = x.shape[1]
         attr = np.zeros(dim)
-        for i in range(dim):
-            xi = x.copy(); xi[0, i] += eps
-            with torch.no_grad():
-                _, vi, _ = pol.evaluate_actions(
-                    torch.FloatTensor(xi), torch.zeros(1, dtype=torch.long))
+        with torch.no_grad():
+            for i in range(dim):
+                xi        = x.copy(); xi[0, i] += eps
+                ti        = torch.FloatTensor(xi).to(device)
+                dist_i  = pol.get_distribution(ti)
+                probs_i = dist_i.distribution.probs.squeeze(0)
+                vi      = dist_i.log_prob(probs_i.argmax().unsqueeze(0)).item()
+                attr[i] = (vi - v0) / self._eps
             attr[i] = (vi.item() - v0) / eps
         return attr
 

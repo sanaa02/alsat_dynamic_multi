@@ -52,8 +52,8 @@ logging.Logger.callHandlers = _q
 
 import torch
 
-# device = "cuda" if torch.cuda.is_available() else "cpu"
-device = "cpu"
+device = "cuda" if torch.cuda.is_available() else "cpu"
+# device = "cpu"
 print(f"Using device: {device}")
 
 
@@ -97,7 +97,7 @@ class FullTrainingLogger(BaseCallback):
         self._ep_count      = 0
         self._step_actions  = []   # actions taken this episode
         self._log_path      = log_path or os.path.join(RESULTS_DIR, "training_live.json")
-        self._ckpt_dir      = ckpt_dir or os.path.join(MODELS_DIR,  "checkpoints")
+        self._ckpt_dir = ckpt_dir or os.path.join(MODELS_DIR, "checkpoints")
         os.makedirs(self._ckpt_dir, exist_ok=True)
         os.makedirs(os.path.dirname(self._log_path), exist_ok=True)
 
@@ -252,20 +252,14 @@ def stage_cnn(args):
         print(f"  [WARN] CNN training failed: {e}")
 
 def _reload_with_env(model, new_vec):
-    """
-    SB3 requires model.n_envs == new_vec.num_envs for set_env().
-    If they differ (e.g. BC used 2 envs, curriculum uses 1),
-    save and reload the policy weights into a fresh model with the correct n_envs.
-    """
     if model.n_envs == new_vec.num_envs:
-        model = PPO.load(model, env=new_vec)
+        model.set_env(new_vec)   # correct SB3 API for same n_envs
         return model
-    # n_envs mismatch: save weights, reload with new env
     import tempfile
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = os.path.join(tmpdir, "tmp_model")
         model.save(tmp)
-        return PPO.load(tmp + ".zip", env=new_vec)
+        return PPO.load(tmp + ".zip", env=new_vec, device=device)
 
 def stage_bc(model, args, cfg):
     print("\n" + "="*60 + "\n  Stage 1 -- Behavioral Cloning\n" + "="*60)
@@ -309,23 +303,25 @@ def stage_curriculum(args, cfg, model=None):
     else:
         # Replace the model's old (dead) environment with the new vec
         model = _reload_with_env(model, vec)
-    for ep in range(min(args.curriculum_eps, 500)):
-        env = sched.make_env(args.targets, args.cloud, seed=args.seed+ep,
-                             use_smdp=False, cfg=cfg,
-                             with_safety=not args.no_safety)
-        obs, _ = env.reset(seed=args.seed+ep)
-        ep_r, done = 0.0, False
-        while not done:
-            act, _ = model.predict(obs, deterministic=False)
-            obs, r, t, tr, _ = env.step(int(act)); ep_r+=r; done=t or tr
-        env.close()
-        if sched.maybe_advance(ep_r):
-            vec.close(); vec=DummyVecEnv([_make]); model = _reload_with_env(model, vec)
-        model.learn(total_timesteps=steps_per_ep, reset_num_timesteps=False)
-        if ep%25==0:
-            print(f"  Ep {ep+1}/{min(args.curriculum_eps,500)}  "
-                  f"phase={sched.current_phase.name}  r={ep_r:+.3f}")
-    vec.close()
+    try:
+        for ep in range(min(args.curriculum_eps, 500)):
+            vec.close()
+            vec = DummyVecEnv([lambda ep=ep: Monitor(
+                sched.make_env(args.targets, args.cloud, seed=args.seed+ep,
+                               use_smdp=True, cfg=cfg,
+                               with_safety=not args.no_safety)
+            )])
+            model = _reload_with_env(model, vec)
+            model.learn(total_timesteps=steps_per_ep, reset_num_timesteps=False)
+            # ── CRITICAL: tell scheduler how this episode went ──
+            ep_reward = float(np.mean(model.ep_info_buffer[-1]["r"])
+                              if model.ep_info_buffer else 0.0)
+            advanced = sched.maybe_advance(ep_reward)
+            if ep % 25 == 0 or advanced:
+                print(f"  Ep {ep+1}/{min(args.curriculum_eps,500)}  "
+                      f"phase={sched.current_phase.name}  r={ep_reward:+.2f}")
+    finally:
+       vec.close()
     print(sched.summary())
     return model
 
@@ -338,43 +334,96 @@ def stage_ppo(model_init, args, cfg):
     total_steps  = args.episodes * steps_per_ep
 
     with_safety = not args.no_safety
+
     def _make():
-        env = make_env(cfg, args.targets, args.cloud, event_rate=args.event_rate,
-                       duration_s=args.duration, seed=args.seed,
-                       with_safety=with_safety, cnn_path=args.cnn_model, with_action_mask=args.action_mask, with_domain_rand=args.domain_rand)
+        env = make_env(
+            cfg, args.targets, args.cloud,
+            event_rate=args.event_rate,
+            duration_s=args.duration,
+            seed=args.seed,
+            with_safety=with_safety,
+            cnn_path=args.cnn_model,
+            with_action_mask=args.action_mask,
+            with_domain_rand=args.domain_rand,
+        )
+        # Apply dynamic reward shaping (was written but never applied before)
+        if not getattr(args, 'no_reward_shaping', False):
+            try:
+                from reward_shaping import DynamicRewardShaper
+                env = DynamicRewardShaper(
+                    env,
+                    urgency_scale=3.0,
+                    urgency_max=4.0,
+                    explore_bonus_init=0.3,
+                    explore_decay=0.99,
+                    explore_min=0.0,
+                )
+            except ImportError:
+                pass  # reward_shaping not available, skip silently
         return Monitor(env)
 
     vec = DummyVecEnv([_make] * max(1, args.n_envs))
-    model = model_init if model_init else _build_model(vec, args, steps_per_ep)
-    if model_init: model = _reload_with_env(model_init, vec) 
+
+    if model_init:
+        model = _reload_with_env(model_init, vec)
+    else:
+        model = _build_model(vec, args, steps_per_ep)
 
     _live_log = os.path.join(RESULTS_DIR, "training_live.json")
-    _ckpt_dir = os.path.join(MODELS_DIR,  "checkpoints")
+    _ckpt_dir = os.path.join(MODELS_DIR, f"checkpoints_seed{args.seed}")
+    os.makedirs(_ckpt_dir, exist_ok=True)
+
     cb = FullTrainingLogger(verbose=1, log_path=_live_log, ckpt_dir=_ckpt_dir)
+
     from callbacks import EntropyAnnealingCallback
     ent_cb = EntropyAnnealingCallback(
         start_val=getattr(args, 'ent_coef', 0.15),
-        end_val=0.005,
+        end_val=0.05,           # raised from 0.03 — keeps dynamic exploration alive
         total_timesteps=total_steps,
     )
-    print(f"  Live log  → {_live_log}")
-    print(f"  Checkpoints → {_ckpt_dir}/ppo_smdp_epXXXXX.zip")
+
+    print(f"  Live log     -> {_live_log}")
+    print(f"  Checkpoints  -> {_ckpt_dir}/ppo_smdp_epXXXXX.zip")
+
+    # ── IMPORTANT: callbacks_list MUST be initialized here,
+    #    before any conditional .append() calls below ─────────────────────────
+    callbacks_list = [cb]
+
+    if getattr(args, 'verbose_actions', False):
+        try:
+            from callbacks import VerboseStepLogger
+            callbacks_list.append(VerboseStepLogger(print_every=1))
+            print(" [INFO] Verbose step logging enabled (--verbose-actions)")
+        except ImportError:
+            print(" [WARN] VerboseStepLogger not found in callbacks.py")
+
+    if getattr(args, 'verbose_steps', False):
+        try:
+            from callbacks import VerboseStepLogger
+            vb = VerboseStepLogger(
+                print_every=getattr(args, 'log_every_n', 1),
+                show_drift=getattr(args, 'show_drift', False),
+                show_events=True,
+            )
+            callbacks_list.append(vb)
+            n = getattr(args, 'log_every_n', 1)
+            print(f" [INFO] Verbose step logging enabled (every {n} steps)")
+        except ImportError:
+            print(" [WARN] VerboseStepLogger not found in callbacks.py")
+
     t0 = time.time()
     try:
-        callbacks_list = [cb]
-        if getattr(args, 'verbose_actions', False):
-            from callbacks import VerboseActionLogger
-            verbose_cb = VerboseActionLogger(print_every=1)
-            callbacks_list.append(verbose_cb)
-            print(" [INFO] Verbose action logging enabled")
-
-        model.learn(total_timesteps=total_steps,
-                    callback=[ent_cb] + callbacks_list if getattr(args, 'verbose_actions', False) else [ent_cb] + [cb],
-                    progress_bar=True, reset_num_timesteps=True)
+        model.learn(
+            total_timesteps=total_steps,
+            callback=[ent_cb] + callbacks_list,
+            progress_bar=True,
+            reset_num_timesteps=True,
+        )
     except KeyboardInterrupt:
-        print("\n  [INFO] Interrupted.")
-    elapsed = time.time()-t0
-    out = os.path.join(MODELS_DIR,"ppo_smdp_full.zip")
+        print("\n  [INFO] Interrupted — saving current model.")
+
+    elapsed = time.time() - t0
+    out = os.path.join(MODELS_DIR, f"ppo_smdp_seed{args.seed}.zip")
     model.save(out)
     print(f"  Done {elapsed/60:.1f} min  model -> {out}")
     vec.close()
@@ -399,7 +448,7 @@ def main():
     ap.add_argument("--cnn-samples", type=int, default=8000)
     ap.add_argument("--cnn-epochs",  type=int, default=25)
     ap.add_argument("--bc",          action="store_true")
-    ap.add_argument("--bc-demos",    type=int, default=30)
+    ap.add_argument("--bc-demos",    type=int, default=100)
     ap.add_argument("--bc-epochs",   type=int, default=50)
     ap.add_argument("--curriculum",  action="store_true")
     ap.add_argument("--curriculum-eps", type=int, default=200)
@@ -414,7 +463,7 @@ def main():
                 help="Use action masking to block infeasible actions")
     ap.add_argument("--domain-rand", action="store_true",    
                 help="Enable domain randomisation (CNN noise, slew cost, etc.)")
-    ap.add_argument("--ent-coef",   type=float, default=0.05,
+    ap.add_argument("--ent-coef",   type=float, default=0.15,
                     help="PPO entropy coef start (anneals to 0.005). "
                          "Higher = more dynamic-event exploration.")
     ap.add_argument("--cnn-model", type=str, default=None, help="Path to a custom cloud CNN model")
@@ -424,6 +473,15 @@ def main():
     ap.add_argument("--init-model", type=str, default=None,
                 help="Path to a pre-trained model (.zip) to warm-start from "
                      "(e.g., ppo_smdp_full.zip from a previous run)")
+    
+    ap.add_argument("--no-reward-shaping", action="store_true",
+    help="Disable DynamicRewardShaper (for ablation studies)")
+    ap.add_argument("--verbose-steps", action="store_true",
+        help="Per-step detail: cloud truth, slew, orbital pos, active events")
+    ap.add_argument("--log-every-n", type=int, default=1,
+        help="Print every N steps when --verbose-steps is on (default 1)")
+    ap.add_argument("--show-drift", action="store_true",
+        help="Also log DRIFT steps in verbose mode")
     
     args = ap.parse_args()
 
@@ -448,7 +506,7 @@ def main():
     if getattr(args, 'init_model', None) and os.path.exists(args.init_model):
         try:
             from stable_baselines3 import PPO as _PPO
-            model = _PPO.load(args.init_model)
+            model = _PPO.load(args.init_model, device=device)
             print(f" [INFO] Warm-starting from {args.init_model}")
         except Exception as _e:
             print(f" [WARN] Could not load init model: {_e}")
@@ -457,7 +515,7 @@ def main():
         tmp = make_vec_env(cfg, seed=args.seed, event_rate=args.event_rate,
                            duration_s=args.duration,
                            with_safety=not args.no_safety,
-                           cnn_path=cnn_path, n_envs=args.n_envs, use_subproc=(args.n_envs > 1))
+                           cnn_path=cnn_path, n_envs=args.n_envs, use_subproc=False)
         # Use warm‑started model if available, otherwise build a fresh one
         m0 = model if model else _build_model(tmp, args, int(args.duration / SCHED_STEP_S))
         model = stage_bc(m0, args, cfg)
@@ -490,7 +548,7 @@ def main():
         try:
             from eval_dynamic import evaluate_all_scenarios, plot_scenario_comparison
             res = evaluate_all_scenarios(args.targets, args.cloud,
-                n_episodes=args.eval_episodes, model_path=os.path.join(MODELS_DIR,"ppo_smdp_full.zip"),
+                n_episodes=args.eval_episodes, model_path=os.path.join(MODELS_DIR, f"ppo_smdp_seed{args.seed}.zip"),
                 duration_s=args.duration, verbose=True)
             plot_scenario_comparison(res, PLOTS_DIR)
         except Exception as e: print(f"  [WARN] eval: {e}")

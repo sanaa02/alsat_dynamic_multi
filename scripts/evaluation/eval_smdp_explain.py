@@ -56,12 +56,12 @@ _lg.Logger.callHandlers = _q
 
 logger = logging.getLogger(__name__)
 
-from scripts.core.env_dynamic_factory import Config, make_env, obs_dim, n_actions
-from scripts.models.explainability import (
+from env_dynamic_factory import Config, make_env, obs_dim, n_actions
+from explainability import (
     DecisionLogger, PolicyExplainer,
     TimelineRenderer, build_feature_names, FEATURE_NAMES,
 )
-from scripts.core.env_alsat_debug import SIM_DURATION_S
+from env_alsat_debug import SIM_DURATION_S
 
 
 # ============================================================================
@@ -225,7 +225,7 @@ def run_explainability_report(
     model,
     targets_path:    str,
     cloud_json_path: str,
-    cfg:         Config = Config.SMDP_VISION,
+    cfg:         Config = Config.DYN_VISION,
     event_rate:  float  = 2.0,
     seed:        int    = 300,
     output_dir:  str    = "results/explainability_report",
@@ -267,9 +267,10 @@ def run_explainability_report(
         sample_records = dec_log.records[::max(1, len(dec_log.records)//50)]
         print(f"  Computing attributions for {len(sample_records)} steps...")
         for rec in sample_records:
-            attr = explainer.explain(rec.obs)
-            rec.shap_values = attr
-            all_shap.append(attr)
+            if use_shap:
+                attr = explainer.explain(rec.obs)
+                rec.shap_values = attr
+                all_shap.append(attr)
         all_records.extend(dec_log.records)
 
     if all_shap:
@@ -288,6 +289,9 @@ def run_explainability_report(
         print("  [WARN] No SHAP values computed.")
 
     # Timeline (uses last episode's records with SHAP)
+    if 'dec_log' not in dir() or dec_log is None:
+        print("  [WARN] No episodes completed, skipping timeline.")
+        return
     print("  Rendering decision timeline...")
     TimelineRenderer().render(
         dec_log.records,
@@ -328,7 +332,7 @@ def main():
 
     cnn_path  = os.path.join(_ROOT, "models/cloud_cnn_real.pt")
     use_vis   = not args.no_vision and os.path.exists(cnn_path)
-    cfg       = Config.SMDP_MODIS if not use_vis else Config.SMDP_VISION
+    cfg       = Config.DYN_MODIS if not use_vis else Config.DYN_VISION
     print(f"  Config: {cfg.value}  obs_dim={obs_dim(cfg)}")
 
     from stable_baselines3 import PPO
