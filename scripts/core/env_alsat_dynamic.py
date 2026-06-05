@@ -21,10 +21,10 @@ COMPLETE REWRITE  --  Four principal upgrades vs. prior version:
         The tta_norm features in obs[43:55] now carry real predicted access
         times, giving the policy meaningful look-ahead.
 
-[DECAY] Urgency-decayed dynamic event reward
-        reward = priority*(1-cloud_truth)*exp(-elapsed/DECAY_TAU) + DYNAMIC_BONUS
-        DECAY_TAU = 3600 s (1-hour half-value).  The agent learns to image
-        fresh events before their value erodes.
+[URGENCY] Deadline-pressure dynamic event reward
+        urgency(t) = 1.0 + 0.5*(1 - remaining/total_lifetime)  ∈ [1.0, 1.5]
+        reward = DYN_MULTIPLIER*priority*(1-cloud)*urgency - SLEW_ENERGY_ALPHA*slew_wh
+        Missed events apply -0.5*priority*(1-cloud) at expiry (see DynamicObsWrapper).
 
 [SAFE]  Safety monitor hook
         DynamicImageTargetAction calls satellite._safety_monitor.check()
@@ -331,12 +331,16 @@ class DynamicScienceDataStore(ScienceDataStore):
             try:
                 now       = float(sat.simulator.sim_time)
                 elapsed   = now - float(target.appearance_time)
-                urgency = max(0.15, 1.0 - elapsed / (2.0 * EVENT_DECAY_TAU_S))
+                remaining = max(0.0, float(target.expiration_time) - now)
+                total_dur  = max(1.0, float(target.expiration_time) - float(target.appearance_time))
+                time_pressure = 1.0 - remaining / total_dur         # 0.0 when fresh → 1.0 at expiry
+                urgency = 1.0 + 0.5 * time_pressure                 # range [1.0, 1.5]
             except Exception:
                 urgency = 1.0
 
             if cloud_truth < CLOUD_THRESH:
-                reward = DYN_MULTIPLIER * priority * (1.0 - cloud_truth) * urgency
+                reward = (DYN_MULTIPLIER * priority * (1.0 - cloud_truth) * urgency
+                         - SLEW_ENERGY_ALPHA * slew_energy)
                 sat._metrics['n_cloud_free'] += 1
             else:
                 reward = -0.3 * priority   # stronger penalty for cloudy dynamic waste
@@ -392,6 +396,11 @@ class DynamicAlsatSatellite(AlsatSatellite):
         super().__init__(name=name, sat_args=sat_args, scenario=scenario, **kwargs)
 
     def reset_post_sim_init(self) -> None:
+        self._dyn_img_fired    = False
+        self._locked_dyn_event = None
+        self._locked_dyn_slot  = None
+        self._dyn_reward_given = False
+        
         super().reset_post_sim_init()
         self.current_action_is_dynamic = False
         self._metrics.update({'n_dyn_detected': 0, 'n_dyn_imaged': 0})
@@ -566,17 +575,22 @@ class DynamicObsWrapper(gym.Wrapper):
 
                     # Urgency: newer events pay more
                     try:
-                        _now     = float(_sat.simulator.sim_time)
-                        _elapsed = max(0.0, _now - float(_target.appearance_time))
-                        _urgency = max(0.15, math.exp(-_elapsed / EVENT_DECAY_TAU_S))
+                        _now        = float(_sat.simulator.sim_time)
+                        _remaining  = max(0.0, float(_target.expiration_time) - _now)
+                        _total_dur  = max(1.0, float(_target.expiration_time)
+                                              - float(_target.appearance_time))
+                        _urgency    = 1.0 + 0.5 * (1.0 - _remaining / _total_dur)
                     except Exception:
                         _urgency = 1.0
 
                     if _cloud < CLOUD_THRESH:
-                        _dyn_r = _prio * (1.0 - _cloud) * _urgency + DYNAMIC_BONUS
+                        # [FIX-3] DYN_MULTIPLIER was missing; [FIX-4] add slew cost
+                        _slew_energy = calculate_slew_energy_wh(_slew)
+                        _dyn_r = (DYN_MULTIPLIER * _prio * (1.0 - _cloud) * _urgency
+                                 - SLEW_ENERGY_ALPHA * _slew_energy)
                         _sat._metrics['n_cloud_free'] += 1
                     else:
-                        _dyn_r = -0.05 * _prio
+                        _dyn_r = -0.3 * _prio  # [FIX] matches compare_log_states penalty
                         _sat._metrics['n_cloudy'] += 1
 
                     # Update metrics
@@ -629,6 +643,20 @@ class DynamicObsWrapper(gym.Wrapper):
             dt   = max(0.0, now - self._prev_time)
             new_events = self._gen.step(now, dt)
             self._mgr.add_events(new_events)
+            # [FIX-2] Missed-event penalty before purge (Li et al. IEEE TGRS 2023)
+            for _exp_evt in list(self._mgr._events):
+                if not _exp_evt.imaged and _exp_evt.expiration_time <= now:
+                    _cloud_e = float(_exp_evt.cloud_cover)
+                    _prio_e  = float(_exp_evt.priority)
+                    _miss_p  = -0.5 * _prio_e * (1.0 - _cloud_e)
+                    total_r += _miss_p
+                    sat._metrics['total_reward'] += _miss_p
+                    sat._metrics.setdefault('n_missed_events', 0)
+                    sat._metrics['n_missed_events'] += 1
+                    logger.debug(
+                        f"Missed event penalty: {_miss_p:.3f}  "
+                        f"event={_exp_evt.name}  cloud={_cloud_e:.2f}"
+                    )
             self._mgr.purge_expired(now)
             self._prev_time = now
             sat._metrics['n_dyn_detected'] = self._mgr._metrics['n_detected']
