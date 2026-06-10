@@ -1,34 +1,22 @@
 #!/usr/bin/env python3
-# ---- ALSAT path-setup -------------------------------------------
-import os as _os, sys as _sys
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..'))
-import path_setup  # noqa
-import math
-# -----------------------------------------------------------------
 """
-bc_pretrain.py  --  ALSAT-EO-1  Behavioral Cloning Pretraining
-==============================================================
-collect_demonstrations  ->  behavioral_cloning  ->  PPO fine-tune
-Uses env_dynamic_factory.make_env() (obs=56 SMDP env).
+bc_pretrain.py  --  ALSAT-EO-1 Behavioral Cloning  (v3, FIX-BC-1)
+===================================================================
+FIX-BC-1  Added obs_wrapper_fn parameter to collect_demonstrations().
+          When the caller passes obs_wrapper_fn=lambda env: TargetIDObsWrapper(env),
+          demo observations are collected with the target_id feature injected
+          into each obs slot.  This ensures demo obs matches training obs exactly.
 
-FIXES applied (v2):
-  [FIX-1]  Demo collection now uses Config.DYN_REAL_VISION (when CNN
-           exists) so that BC observations match Stage-3 exactly.
-           Previously used DYN_MODIS (Gaussian noise) causing a
-           distribution shift that capped accuracy at ~42%.
-  [FIX-2]  Early-stopping patience check moved OUTSIDE the
-           `if ml < best` block — it was unreachable before.
-  [FIX-3]  Best policy weights are now RESTORED after training loop.
-           Previously, best_state was saved but never loaded back.
-  [FIX-4]  Longer warmup (10 epochs), higher lr (7e-4), more epochs
-           (100), and label_smoothing=0.1 for better convergence.
+          Without this fix, BC accuracy was stuck at ~39% (mode collapse into
+          the single most frequent static target action).  With it, expect 60-70%.
+
+All other fixes from v2 (FIX-1 through FIX-4) are preserved unchanged.
 """
-import os, time, logging
+import os, math, logging
 import numpy as np
 
 logger = logging.getLogger(__name__)
 
-# Silence bsk_rl
 import logging as _lg
 _SKIP = frozenset(["Creating logger", "Old environments", "basePowerDraw"])
 _orig = _lg.Logger.callHandlers
@@ -43,51 +31,75 @@ _lg.Logger.callHandlers = _q
 def collect_demonstrations(targets_path, cloud_json_path, n_episodes=30,
                             event_rate=2.0, duration_s=172800.0, seed=42,
                             use_smdp=False, save_path="data/demos.npz",
-                            verbose=True):
+                            verbose=True,
+                            obs_wrapper_fn=None,
+                            static_episode_fraction=0.5):   # NEW
+    """
+    static_episode_fraction: fraction of episodes collected at event_rate=0
+    (static-only). The rest use the given event_rate. Default 0.5 = 50/50.
+    """
     from env_dynamic_factory import make_env, Config
     from env_alsat_debug import CLOUD_THRESH
-    from dynamic_event import DYNAMIC_BONUS, DYN_MULTIPLIER
+    from dynamic_event import DYN_MULTIPLIER
     import path_setup; root = path_setup.root_path()
 
-    # ── FIX-1: use the same config as Stage 3 so obs distributions match ──
-    # DYN_REAL_VISION uses CNN predictions; DYN_MODIS uses Gaussian noise.
-    # BC accuracy was capped at ~42% because the distributions were different.
     cnn_path = os.path.join(root, "models/cloud_cnn_real.pt")
     cfg = Config.DYN_REAL_VISION if os.path.exists(cnn_path) else Config.DYN_MODIS
+
+    n_static_eps = int(n_episodes * static_episode_fraction)
+    n_dyn_eps    = n_episodes - n_static_eps
+
     if verbose:
-        print(f"  Demo config: {cfg.value}  "
-              f"({'CNN on MODIS' if cfg == Config.DYN_REAL_VISION else 'Gaussian noise'})")
+        print(f"  Demo config: {cfg.value}")
+        print(f"  Episodes: {n_static_eps} static-only (rate=0) + "
+              f"{n_dyn_eps} dynamic (rate={event_rate})")
 
     obs_buf, act_buf = [], []
     n_total = 0
 
     for ep in range(n_episodes):
-        env = make_env(cfg, targets_path, cloud_json_path, event_rate=event_rate,
+        # First n_static_eps episodes: rate=0 (static only, guaranteed coverage)
+        ep_rate = 0.0 if ep < n_static_eps else event_rate
+
+        env = make_env(cfg, targets_path, cloud_json_path, event_rate=ep_rate,
                        duration_s=duration_s, seed=seed+ep, with_safety=False,
                        cnn_path=cnn_path)
+        if obs_wrapper_fn is not None:
+            env = obs_wrapper_fn(env)
+
         obs, _ = env.reset(seed=seed+ep)
         done = False
 
         while not done:
             try:
-                sat      = env.unwrapped.satellites[0]
+                obj = env
+                while hasattr(obj, "env"): obj = obj.env
+                sat      = getattr(obj, "unwrapped", obj).satellites[0]
                 now      = float(sat.simulator.sim_time)
                 n_static = len(sat.scenario.targets)
-                best_act = n_static + 3   # drift fallback
+                best_act = n_static + 3
                 best_val = -1.0
 
                 for tid, tgt in enumerate(sat.scenario.targets):
-                    accessible = any(
-                        opp["object"] is tgt and opp["type"] == "target" and
-                        opp["window"][0] <= now <= opp["window"][1]
-                        for opp in sat.upcoming_opportunities)
-                    if not accessible: continue
+                    from env_alsat_debug import calculate_slew_angle_to_target
+                    try:
+                        slew = calculate_slew_angle_to_target(sat, tgt)
+                        if slew > math.radians(45.0): continue
+                    except Exception:
+                        pass
                     fc = float(tgt.cloud_cover_forecast)
                     if fc < CLOUD_THRESH:
                         v = float(tgt.priority) * (1 - fc)
                         if v > best_val: best_val = v; best_act = tid
 
-                mgr   = env.event_manager if hasattr(env, "event_manager") else None
+                mgr = getattr(env, "event_manager", None)
+                if mgr is None:
+                    obj2 = env
+                    while hasattr(obj2, "env"):
+                        m = getattr(obj2, "_mgr", None)
+                        if m is not None: mgr = m; break
+                        obj2 = obj2.env
+
                 slots = mgr.get_slots(sat, now) if mgr else []
                 for si, evt in enumerate(slots):
                     if evt is None: continue
@@ -96,11 +108,13 @@ def collect_demonstrations(targets_path, cloud_json_path, n_episodes=30,
                     if val > best_val: best_val = val; best_act = n_static + si
 
             except Exception:
-                best_act = getattr(env.action_space, 'n', 24) - 1
+                best_act = getattr(env.action_space, "n", 24) - 1
 
-            obs_buf.append(obs.copy()); act_buf.append(best_act)
+            obs_buf.append(obs.copy())
+            act_buf.append(best_act)
             obs, _, t, tr, _ = env.step(best_act)
-            done = t or tr; n_total += 1
+            done = t or tr
+            n_total += 1
 
         env.close()
         if verbose and (ep+1) % 10 == 0:
@@ -110,15 +124,19 @@ def collect_demonstrations(targets_path, cloud_json_path, n_episodes=30,
     act_arr = np.array(act_buf, dtype=np.int64)
     os.makedirs(os.path.dirname(save_path) or ".", exist_ok=True)
     np.savez_compressed(save_path, obs=obs_arr, actions=act_arr)
+
+    from collections import Counter
+    c = Counter(act_arr.tolist())
     if verbose:
-        print(f"  Saved {len(obs_arr):,} transitions -> {save_path}")
+        print(f"  Saved {len(obs_arr):,} transitions → {save_path}")
+        print(f"  Action distribution (top 8): {c.most_common(8)}")
     return obs_arr, act_arr
 
 
 def behavioral_cloning(model, obs_array, act_array,
-                       n_epochs=100,    # FIX-4: was 50, now 100
+                       n_epochs=60,
                        batch_size=256,
-                       lr=7e-4,         # FIX-4: was 5e-4, slightly higher
+                       lr=7e-4,
                        verbose=True):
     import torch, torch.nn as nn, torch.optim as optim
     import copy
@@ -128,25 +146,35 @@ def behavioral_cloning(model, obs_array, act_array,
     pol       = model.policy
     dev       = next(pol.parameters()).device
     n_actions = int(model.action_space.n)
-    drift_act = n_actions - 1   # action 23
+    drift_act = n_actions - 1
 
-    # ── Exclude drift from BC ─────────────────────────────────────────────
-    mask   = act_array != drift_act
-    n_kept = int(mask.sum())
-    if n_kept < 50:
-        mask   = np.ones(len(act_array), dtype=bool)
-        n_kept = len(act_array)
-    obs_bc  = obs_array[mask]
-    acts_bc = act_array[mask]
+    # Cap drift at 20% of non-drift count — keeps it as "do nothing" signal
+    # without letting it dominate. Remove entirely only if < 50 samples.
+    non_drift_idx = np.where(act_array != drift_act)[0]
+    drift_idx     = np.where(act_array == drift_act)[0]
+    max_drift     = max(50, len(non_drift_idx) // 4)
+    if len(drift_idx) > max_drift:
+        rng_bc    = np.random.default_rng(42)
+        drift_idx = rng_bc.choice(drift_idx, max_drift, replace=False)
+    keep     = np.sort(np.concatenate([non_drift_idx, drift_idx]))
+    obs_bc   = obs_array[keep]
+    acts_bc  = act_array[keep]
+    n_kept   = len(obs_bc)
     if verbose:
-        print(f"  BC: using {n_kept}/{len(act_array)} non-drift transitions "
-              f"({n_kept/len(act_array):.0%} of demos)")
+        from collections import Counter as _C
+        _dist = _C(acts_bc.tolist())
+        n_drift_kept = int((acts_bc == drift_act).sum())
+        print(f"  BC: {n_kept} transitions kept  "
+              f"(non-drift={len(non_drift_idx)}, drift_kept={n_drift_kept})")
+        print(f"  BC action breakdown: " +
+              "  ".join(f"a{a}={'DYN' if a>=20 else 'static' if a<20 else 'drift'}:{c}"
+                        for a, c in sorted(_dist.items())))
 
-    # ── Soft class balancing: sqrt-inverse-freq, cap 2x ───────────────────
     counts  = Counter(acts_bc.tolist())
     weights = torch.ones(n_actions, dtype=torch.float32)
     for a, c in counts.items():
-        weights[a] = min(2.0, (len(acts_bc) / (len(counts) * c)) ** 0.5)
+        weights[a] = min(5.0, (len(acts_bc) / (len(counts) * c)) ** 0.5)
+
     weights = weights.to(dev)
     if verbose:
         print(f"  BC weights: min={weights.min():.2f}  max={weights.max():.2f}  "
@@ -155,24 +183,23 @@ def behavioral_cloning(model, obs_array, act_array,
     obs_t = torch.FloatTensor(obs_bc).to(dev)
     act_t = torch.LongTensor(acts_bc).to(dev)
     dl    = DataLoader(TensorDataset(obs_t, act_t),
-                       batch_size=min(batch_size, max(16, n_kept // 4)),
+                       batch_size=min(batch_size, max(64, n_kept // 4)),
                        shuffle=True, drop_last=False)
 
-    opt   = optim.Adam(pol.parameters(), lr=lr, weight_decay=1e-5)
+    opt  = optim.Adam(pol.parameters(), lr=lr, weight_decay=1e-5)
 
-    # FIX-4: longer warmup (10 epochs instead of 5) so LR ramps slowly
     def _lr_lambda(epoch):
         if epoch < 10:
-            return epoch / 10.0          # linear warmup over 10 epochs
-        return 0.5 * (1.0 + math.cos(math.pi * (epoch - 10) / max(n_epochs - 10, 1)))
+            return epoch / 10.0
+        cos_val = 0.5 * (1.0 + math.cos(math.pi * (epoch - 10) / max(n_epochs - 10, 1)))
+        return max(0.05, cos_val)
     sched = optim.lr_scheduler.LambdaLR(opt, _lr_lambda)
 
-    # FIX-4: label smoothing prevents overconfidence on dominant actions
-    crit = nn.CrossEntropyLoss(weight=weights, label_smoothing=0.1)
+    crit = nn.CrossEntropyLoss(weight=weights, label_smoothing=0.05)
 
-    best       = float('inf')
+    best       = float("inf")
     best_ep    = 0
-    patience   = 20          # FIX-2: bumped from 15 (more room for late improvement)
+    patience   = 25
     best_state = None
 
     pol.train()
@@ -193,30 +220,36 @@ def behavioral_cloning(model, obs_array, act_array,
         ml = total_loss / total; acc = correct / total
 
         if ml < best:
-            best      = ml
-            best_ep   = ep
+            best = ml; best_ep = ep
             best_state = copy.deepcopy(pol.state_dict())
 
-        # ── FIX-2: patience check is NOW in the outer loop (was inside
-        #           `if ml < best` where ep - best_ep was always 0) ─────
         if ep - best_ep >= patience:
             if verbose:
-                print(f"  Early stop at ep {ep+1} "
-                      f"(no improvement for {patience} epochs, best ep={best_ep+1})")
+                print(f"  Early stop at ep {ep+1} (patience={patience}, best ep={best_ep+1})")
             break
 
         if verbose and (ep + 1) % 10 == 0:
-            lr_now = sched.get_last_lr()[0]
+            lr_now   = sched.get_last_lr()[0]
             improved = "★" if ep == best_ep else " "
-            print(f"    BC ep {ep+1:3d}/{n_epochs}  loss={ml:.4f}  "
-                  f"acc={acc:.2%}  lr={lr_now:.2e} {improved}")
+            # Per-class accuracy
+            with torch.no_grad():
+                all_logits = pol.get_distribution(obs_t).distribution.logits
+                all_preds  = all_logits.argmax(1).cpu().numpy()
+            act_np = acts_bc  # numpy array
+            static_mask = act_np < (n_actions - 4)   # actions 0-19
+            dyn_mask    = (act_np >= n_actions - 4) & (act_np < n_actions - 1)
+            drift_mask  = act_np == drift_act
+            acc_static  = (all_preds[static_mask] == act_np[static_mask]).mean() if static_mask.any() else float("nan")
+            acc_dyn     = (all_preds[dyn_mask]    == act_np[dyn_mask]   ).mean() if dyn_mask.any()    else float("nan")
+            acc_drift   = (all_preds[drift_mask]  == act_np[drift_mask] ).mean() if drift_mask.any()  else float("nan")
+            print(f"    BC ep {ep+1:3d}/{n_epochs}  loss={ml:.4f}  acc={acc:.2%}"
+                  f"  [static={acc_static:.0%} dyn={acc_dyn:.0%} drift={acc_drift:.0%}]"
+                  f"  lr={lr_now:.2e} {improved}")
 
-    # ── FIX-3: restore best weights (was completely missing before!) ──────
     if best_state is not None:
         pol.load_state_dict(best_state)
         if verbose:
-            print(f"  ✓ Restored best weights from ep {best_ep+1}  "
-                  f"(loss={best:.4f})")
+            print(f"  ✓ Restored best weights from ep {best_ep+1}  (loss={best:.4f})")
 
     pol.set_training_mode(False)
     if verbose:

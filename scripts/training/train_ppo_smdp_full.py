@@ -228,14 +228,25 @@ def _build_model(vec_env, args, steps_per_ep):
         except ImportError as e:
             print(f" [WARN] attention_policy not importable ({e}), falling back to MLP")
     # Default MLP policy
+    _n_steps   = 4 * steps_per_ep          # 4 × 144 = 576 steps
+    _batch_sz  = max(72, _n_steps // 8)    # ≈ 72 minimum, larger if possible
+    # gamma: 0.995 gives effective horizon ~200 steps > 144-step episode;
+    # covers the full 48 h episode without over-discounting late events.
     return PPO(
         "MlpPolicy", vec_env,
-        learning_rate=3e-4, n_steps=min(2048, steps_per_ep),
-        batch_size=72, n_epochs=10, gamma=0.99, gae_lambda=0.95,
+        learning_rate=3e-4,
+        n_steps=_n_steps,
+        batch_size=_batch_sz,
+        n_epochs=10,
+        gamma=0.995,        # was 0.99; better late-episode coverage
+        gae_lambda=0.95,
         ent_coef=start_ent,
-        vf_coef=0.5, max_grad_norm=0.5,
-        policy_kwargs=dict(net_arch=dict(pi=[256,256], vf=[256,256])),
-        verbose=0, seed=args.seed, device="cpu",
+        vf_coef=0.5,
+        max_grad_norm=0.5,
+        policy_kwargs=dict(net_arch=dict(pi=[256, 256], vf=[256, 256])),
+        verbose=0,
+        seed=args.seed,
+        device="cpu",
     )
 
 
@@ -304,18 +315,37 @@ def stage_curriculum(args, cfg, model=None):
         # Replace the model's old (dead) environment with the new vec
         model = _reload_with_env(model, vec)
     try:
+        current_phase = None
         for ep in range(min(args.curriculum_eps, 500)):
-            vec.close()
-            vec = DummyVecEnv([lambda ep=ep: Monitor(
-                sched.make_env(args.targets, args.cloud, seed=args.seed+ep,
-                               use_smdp=True, cfg=cfg,
-                               with_safety=not args.no_safety)
-            )])
-            model = _reload_with_env(model, vec)
-            model.learn(total_timesteps=steps_per_ep, reset_num_timesteps=False)
-            # ── CRITICAL: tell scheduler how this episode went ──
-            ep_reward = float(np.mean(model.ep_info_buffer[-1]["r"])
-                              if model.ep_info_buffer else 0.0)
+            if sched.current_phase.name != current_phase:
+                vec.close()
+                vec = DummyVecEnv([lambda ep=ep: Monitor(
+                    sched.make_env(args.targets, args.cloud, seed=args.seed+ep,
+                                   use_smdp=True, cfg=cfg,
+                                   with_safety=not args.no_safety)
+                )])
+                model = _reload_with_env(model, vec)
+                current_phase = sched.current_phase.name
+            # Learn for 2× episode length to guarantee at least one full episode
+            # terminates and is logged by Monitor (SMDP steps vary in length, so
+            # the episode may need more than steps_per_ep wrapper steps to finish).
+            model.learn(total_timesteps=2 * steps_per_ep, reset_num_timesteps=False)
+
+            # Read episode reward from Monitor's buffer.
+            # ep_info_buffer stores dicts with key 'r' (scalar float).
+            # If empty (episode still in progress), default to 0.0 — never advances.
+            if model.ep_info_buffer:
+                # Average over last min(5, buffer_len) completed episodes for stability.
+                recent_n = min(5, len(model.ep_info_buffer))
+                ep_reward = float(np.mean(
+                    [info["r"] for info in list(model.ep_info_buffer)[-recent_n:]]
+                ))
+            else:
+                ep_reward = 0.0
+                logger.warning(
+                    f"[curriculum ep {ep}] ep_info_buffer empty — "
+                    "episode may not have terminated. Consider increasing total_timesteps."
+                )
             advanced = sched.maybe_advance(ep_reward)
             if ep % 25 == 0 or advanced:
                 print(f"  Ep {ep+1}/{min(args.curriculum_eps,500)}  "

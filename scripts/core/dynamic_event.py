@@ -48,8 +48,8 @@ EARTH_R_M = 6.3781e6
 # ── Event lifecycle defaults ──────────────────────────────────────────────────
 EVENT_DURATION_MIN_S  = 3600.0      # 1 h minimum active period
 EVENT_DURATION_MAX_S  = 14400.0     # 4 h maximum active period
-DYNAMIC_BONUS         = 0.0         # Extra reward beyond priority*(1-cloud)
-DYN_MULTIPLIER        = 3.5
+DYNAMIC_BONUS         = 1.5         # Extra reward beyond priority*(1-cloud)
+DYN_MULTIPLIER        = 2.0
 MAX_ACTIVE_EVENTS     = 5           # Internal queue depth
 N_DYN_SLOTS           = 3           # Slots visible to the agent
 PRIORITY_MIN          = 0.8
@@ -122,6 +122,16 @@ class DynamicEvent:
     def is_expired(self, sim_time: float) -> bool:
         """True when the event's time window has closed (time-based, not imaging-based)."""
         return sim_time >= self.expiration_time
+    
+    @property
+    def id(self) -> str:
+        """Unique string identifier required by bsk_rl's task_target_for_imaging()."""
+        return self.name
+
+    @property
+    def target_id(self) -> str:
+        """Alias of id for bsk_rl compatibility."""
+        return self.name
 
 
 # ============================================================================
@@ -247,30 +257,30 @@ class EventManager:
 
     # ── Slot access ───────────────────────────────────────────────────────────
 
-    def get_slots(self, satellite, sim_time: float) -> List[Optional[DynamicEvent]]:
+    def get_slots(self, satellite, sim_time: float) -> list:
+        """Return up to N_DYN_SLOTS active events sorted by urgency.
+
+        Does NOT filter by current satellite accessibility.  The RL policy
+        is the scheduler — it decides where to point.  Filtering here
+        caused n_dyn_imaged=0 because the satellite is over Algeria only
+        ~15% of each orbit.
+
+        Sort key: priority / remaining_lifetime.  A high-priority event
+        with little time left ranks highest (EDF-priority composite).
         """
-        Returns list of length n_slots with the top-priority accessible events.
-        Empty slots are None.  Sorted by (priority − 0.1 × normalised_slew).
-        """
-        active = [e for e in self._events
-                  if not e.imaged and e.expiration_time > sim_time]
+        active = [
+            e for e in self._events
+            if not e.imaged and e.expiration_time > sim_time
+        ]
         if not active:
             return [None] * self.n_slots
-
-        def _score(evt: DynamicEvent) -> float:
-            slew     = _slew_angle_safe(satellite, evt)
-            priority = evt.get_current_priority(sim_time)
-            return priority - 0.1 * (slew / MAX_OFFNADIR_RAD)
-
-        ranked = sorted(active, key=_score, reverse=True)
-        slots: List[Optional[DynamicEvent]] = []
-        for i in range(self.n_slots):
-            if i < len(ranked):
-                ranked[i].slot = i
-                slots.append(ranked[i])
-            else:
-                slots.append(None)
-        return slots
+        active.sort(
+            key=lambda e: -(e.priority / max(30.0, e.expiration_time - sim_time))
+        )
+        result = [None] * self.n_slots
+        for i, ev in enumerate(active[: self.n_slots]):
+            result[i] = ev
+        return result
 
     # ── Lifecycle ──────────────────────────────────────────────────────────────
 
@@ -430,45 +440,3 @@ if __name__ == "__main__":
     print(f"  No-events (0.0/hr): {total_n} events in 48h  (expected 0)")
     print()
     print("Self-test passed.")
-
-
-# ── [ROOT FIX] get_slots no-accessibility-filter
-# WHY: get_slots() was filtering events by CURRENT satellite accessibility
-# (slew <= 45°).  The satellite is only over Algeria ~15% of the time, so
-# get_slots() returned [None,None,None] for ~85% of steps → set_action()
-# saw no event → current_action_is_dynamic=False → no imaging → n_dyn_imaged=0.
-# FIX: return ALL active events sorted by urgency, regardless of current
-# satellite position.  The scheduler decides where to point — not get_slots().
-
-_orig_get_slots = EventManager.get_slots
-
-def _patched_get_slots(self, satellite, sim_time: float):
-    """Return up to N_DYN_SLOTS active events, sorted by urgency.
-    Does NOT filter by current satellite accessibility."""
-    active = [e for e in self._events if not e.imaged and e.expiration_time > sim_time]
-
-    if not active:
-        return [None] * self.n_slots
-    # Sort: most urgent (highest priority / shortest remaining life) first
-    active.sort(key=lambda e: -(e.priority / max(30.0, e.expiration_time - sim_time)))
-    result = [None] * self.n_slots
-    for i, ev in enumerate(active[:self.n_slots]):
-        result[i] = ev
-    return result
-
-EventManager.get_slots = _patched_get_slots
-
-
-# ── [FIX] DynamicEvent missing bsk_rl interface attributes ───────────────────
-# bsk_rl's task_target_for_imaging() requires .id on every target object.
-# AlsatTarget has .id; DynamicEvent did not — causing AttributeError in set_action,
-# which silently resets _locked_dyn_event=None → n_dyn_imaged stays 0.
-
-def _dyn_id(self):
-    return self.name   # name is unique per event (set in _spawn)
-
-def _dyn_target_id(self):
-    return self.name
-
-DynamicEvent.id        = property(_dyn_id)
-DynamicEvent.target_id = property(_dyn_target_id)

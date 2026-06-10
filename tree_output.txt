@@ -1,0 +1,76 @@
+scripts
+├── all_files.py
+├── bsk_patches.py
+├── config
+│   ├── cloud_reality
+│   │   └── algeria_real_clouds.json
+│   └── targets
+│       ├── algeria_20_targets.json
+│       └── algeria_targets.json
+├── core
+│   ├── cloud_cache.py
+│   ├── dynamic_event.py
+│   ├── env_alsat_debug.py
+│   ├── env_alsat_dynamic.py
+│   ├── env_alsat_scalable.py
+│   ├── env_dynamic_factory.py
+│   ├── env_multi_satellite.py
+│   ├── real_vision_cloud_model.py
+│   ├── reward_shaping.py
+│   ├── scout_provider.py
+│   ├── smdp_dynamic.py
+│   └── tta_cache.py
+├── data
+│   └── outputs
+│       └── plots
+│           ├── dynamic_eval_comparison.png
+│           └── phase3_dynamic_training.png
+├── debug_dyn_suc.py
+├── evaluation
+│   ├── baselines_dynamic.py
+│   ├── eval_dynamic.py
+│   ├── eval_smdp_explain.py
+│   ├── server.py
+│   ├── test.py
+│   └── viz_episode.py
+├── install_paths.py
+├── models
+│   ├── attention_policy.py
+│   ├── cloud_cnn.pt
+│   ├── cloud_cnn.py
+│   ├── explainability.py
+│   ├── extract_modis_patches.py
+│   ├── modis_real_data.py
+│   ├── ppo_checkpoint_500.zip
+│   ├── ppo_dynamic_final.zip
+│   └── test_cnn_cloud.py
+├── monitor.py
+├── path_setup.py
+├── plots
+│   └── make_plots.py
+├── results
+│   ├── phase3_dynamic_training_log.json
+│   ├── phase3_scenario_eval.json
+│   └── training_autosave_42.json
+├── tests
+│   └── test_reward.py
+├── training
+│   ├── ablation_runner.py
+│   ├── bc_diagnose.py
+│   ├── bc_pretrain.py
+│   ├── callbacks.py
+│   ├── curriculum.py
+│   ├── repro.py
+│   ├── train_multi_sat.py
+│   ├── train_ppo_dynamic.py
+│   ├── train_ppo_smdp_full_fixed.py
+│   └── train_ppo_smdp_full.py
+├── view_modis.py
+└── wrappers
+    ├── action_mask_wrapper.py
+    ├── domain_randomization_wrapper.py
+    ├── env_alsat_dynamic_patch.py
+    ├── env_alsat_dynamic_tta_patch.py
+    └── safety_monitor.py
+
+21 directories, 91 files

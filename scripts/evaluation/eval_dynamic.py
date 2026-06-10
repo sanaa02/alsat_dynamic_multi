@@ -318,7 +318,75 @@ def plot_scenario_comparison(scenario_results: dict, save_dir: str = PLOTS_DIR):
     plt.close()
     print(f"  Plot saved → {path}")
     return path
+# ============================================================
+# ADD: Multi-seed evaluation function at the bottom of eval_dynamic.py
+# (or replace the single-seed main() block)
+# ============================================================
 
+from typing import Dict, Any
+import scipy.stats as stats
+
+
+def evaluate_multi_seed(
+    model_path: str,
+    n_seeds: int = 5,
+    base_seed: int = 100,
+    seed_stride: int = 17,  # coprime stride avoids orbital aliases
+    **eval_kwargs,
+) -> Dict[str, Any]:
+    """Run evaluation over multiple random seeds and return mean ± std.
+
+    Parameters
+    ----------
+    model_path  : Path to the trained model (.zip).
+    n_seeds     : Number of independent evaluation episodes.
+    base_seed   : First seed value.
+    seed_stride : Increment between seeds (default 17, coprime to 144-step period).
+    **eval_kwargs : Forwarded to single-episode evaluation function.
+
+    Returns
+    -------
+    dict with per-metric {mean, std, ci95, min, max, values} entries.
+    """
+    seeds   = [base_seed + i * seed_stride for i in range(n_seeds)]
+    results = []
+
+    print(f"\n[multi-seed eval] model={model_path}")
+    print(f"  seeds: {seeds}")
+
+    for s in seeds:
+        r = evaluate_episode(model_path, seed=s, **eval_kwargs)
+        results.append(r)
+        print(f"  seed={s:4d}  r={r.episode_reward:+.3f}  "
+              f"static={r.n_static_imaged}/{r.n_static_visible}  "
+              f"dyn={r.n_dyn_imaged}/{r.n_dyn_total}")
+
+    # Build per-metric summary
+    metric_keys = [f for f in results[0].__dataclass_fields__
+                   if isinstance(getattr(results[0], f), (int, float))]
+    summary: Dict[str, Any] = {}
+    for k in metric_keys:
+        vals = [float(getattr(r, k)) for r in results]
+        arr  = np.array(vals)
+        ci   = stats.t.interval(0.95, df=len(vals)-1,
+                                loc=arr.mean(), scale=stats.sem(arr)) if len(vals) > 1 else (arr[0], arr[0])
+        summary[k] = {
+            "mean":   float(arr.mean()),
+            "std":    float(arr.std()),
+            "ci95":   (float(ci[0]), float(ci[1])),
+            "min":    float(arr.min()),
+            "max":    float(arr.max()),
+            "values": vals,
+        }
+
+    # Pretty-print
+    print(f"\n{'Metric':<30} {'Mean':>8} {'±Std':>8} {'95% CI':>18}")
+    print("-" * 66)
+    for k, v in summary.items():
+        print(f"  {k:<28} {v['mean']:>8.3f} {v['std']:>8.3f}  "
+              f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]")
+
+    return summary
 
 # ============================================================================
 #  CLI

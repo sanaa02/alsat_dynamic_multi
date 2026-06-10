@@ -1,0 +1,24 @@
+{
+  "action_dist": {
+    "mode_action": 20,
+    "mode_pct_nondrift": 0.39195804195804196,
+    "n_distinct_nondrift": 8,
+    "total": 5875,
+    "drift_pct": 0.026382978723404255
+  },
+  "obs_alignment": {
+    "structural_mismatch": true,
+    "explanation": "obs slots sorted by TTA; action index = target_id in scenario list"
+  },
+  "loss_landscape": {
+    "mode_freq_nondrift": 0.39195804195804196,
+    "expected_loss_at_mode": 0.8429404097059235
+  },
+  "achievable": {
+    "achievable_with_current_obs": "~50-60%",
+    "fix_options": [
+      "add target_id to obs slots",
+      "use slot-based action space"
+    ]
+  }
+}

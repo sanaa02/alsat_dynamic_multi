@@ -196,8 +196,16 @@ if TORCH_OK and SB3_OK:
             self.sojourn_proj = nn.Linear(_N_SOJOURN, d_model)
 
             # Learned type embeddings (tell the model which block each token is)
-            self.type_embed = nn.Embedding(4, d_model)   # 0=state,1=tgt,2=dyn,3=sojourn
+            self.type_embed = nn.Embedding(4, d_model)
 
+            # Per-slot positional embeddings for target and DYN blocks.
+            # The slots are pre-sorted by urgency (get_slots), so the model
+            # can learn that slot-0 = most urgent and act accordingly.
+            _N_TARGET_SLOTS = 6   # = N_STATIC_TARGETS visible window size
+            _N_DYN_SLOTS    = 3   # = N_DYN_SLOTS
+            self.target_slot_embed = nn.Embedding(_N_TARGET_SLOTS, d_model)
+            self.dyn_slot_embed    = nn.Embedding(_N_DYN_SLOTS,    d_model)
+            
             # Cross-attention: satellite state attends to targets / events
             self.target_cross = CrossAttentionBlock(d_model, n_heads)
             self.dyn_cross    = CrossAttentionBlock(d_model, n_heads)
@@ -226,9 +234,16 @@ if TORCH_OK and SB3_OK:
             targets = targets.view(B, _N_TS, _N_TF)  # (B,6,5)
             dyn     = dyn.view(B, _N_DS, _N_DF)      # (B,3,4)
 
-            s_tok = self.state_proj(state).unsqueeze(1)    # (B,1,d)
-            t_tok = self.target_proj(targets)               # (B,6,d)
-            d_tok = self.dyn_proj(dyn)                      # (B,3,d)
+            s_tok  = self.state_proj(state)                # (B, d)
+            t_tok = self.target_proj(targets)          # (B, n_tgt, d)
+            d_tok = self.dyn_proj(dyn)                 # (B, n_dyn, d)
+
+            # Add slot-index embeddings so the model can distinguish
+            # slot 0 (most urgent) from slot 5 (least urgent)
+            t_idx = torch.arange(t_tok.shape[1], device=obs.device)
+            d_idx = torch.arange(d_tok.shape[1],    device=obs.device)
+            t_tok = t_tok + self.target_slot_embed(t_idx).unsqueeze(0)
+            d_tok    = d_tok    + self.dyn_slot_embed(d_idx).unsqueeze(0)
             j_tok = self.sojourn_proj(sojourn).unsqueeze(1) # (B,1,d)
 
             # 3. Add type embeddings

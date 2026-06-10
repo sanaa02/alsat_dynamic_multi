@@ -343,6 +343,157 @@ def print_dynamic_table(baseline_results: Dict[str, dict],
     print()
 
 
+# ============================================================
+# ADD: EDF + Greedy composite baseline
+# ============================================================
+
+def edf_greedy_baseline(
+    env,
+    n_episodes: int = 10,
+    seed: int = 100,
+) -> dict:
+    """Earliest-Deadline-First (EDF) for dynamic events + greedy-priority static.
+
+    Strategy:
+    - At each decision step, inspect observation.
+    - If any DYN event slot is active (non-zero priority), select the one
+      with the smallest remaining time (EDF policy).
+    - Otherwise, select the highest-priority static target with the
+      smallest TTA (cloud-aware greedy).
+    - Drift if nothing feasible is visible.
+
+    This is a stronger baseline than greedy_dynamic_scout because:
+    1. It uses EDF scheduling theory for deadline-constrained tasks.
+    2. It cloud-weights static targets.
+    3. It accounts for TTA instead of random ordering.
+    """
+    obs_dim = env.observation_space.shape[0]
+
+    # Observation layout constants (must match env_alsat_dynamic.py)
+    N_STATE     = 13
+    N_TF        = 5   # features per static target slot
+    N_SLOTS_ST  = 6
+    N_DF        = 4   # features per DYN slot
+    N_SLOTS_DYN = 3
+    # DYN slot offsets: [priority, cloud, TTA, remaining_time_frac]
+    IDX_DYN_START = N_STATE + N_TF * N_SLOTS_ST  # 13 + 30 = 43
+    IDX_STATIC_START = N_STATE                   # 13
+
+    results = []
+    rng = np.random.default_rng(seed)
+
+    for ep in range(n_episodes):
+        obs, _ = env.reset(seed=int(rng.integers(1, 10000)))
+        done, total_r, step = False, 0.0, 0
+
+        while not done:
+            # --- Parse DYN slots ---
+            dyn_scores = []
+            for s in range(N_SLOTS_DYN):
+                base = IDX_DYN_START + s * N_DF
+                if base + N_DF <= len(obs):
+                    prio, cloud, tta, rem_frac = obs[base:base+N_DF]
+                    if prio > 0.01:  # slot occupied
+                        # EDF score: higher priority / lower remaining time → higher priority
+                        edf_score = prio * (1.0 - float(cloud)) / max(0.01, float(rem_frac))
+                        dyn_scores.append((edf_score, 20 + s))  # action = 20,21,22
+
+            if dyn_scores:
+                # Take highest EDF-score DYN action
+                action = max(dyn_scores, key=lambda x: x[0])[1]
+            else:
+                # No DYN events: greedy static (priority × cloud × 1/TTA)
+                static_scores = []
+                for s in range(N_SLOTS_ST):
+                    base = IDX_STATIC_START + s * N_TF
+                    if base + N_TF <= len(obs):
+                        prio, cloud, tta, slew, _ = obs[base:base+N_TF]
+                        if tta > 0.0 and prio > 0.01:
+                            score = prio * max(0.0, 1.0 - float(cloud)) / max(0.001, float(tta))
+                            static_scores.append((score, s))
+                if static_scores:
+                    action = max(static_scores, key=lambda x: x[0])[1]
+                else:
+                    action = 23  # drift
+
+            obs, r, term, trunc, info = env.step(action)
+            total_r += r
+            done = term or trunc
+            step += 1
+
+        metrics = info.get("episode_metrics", {})
+        results.append({
+            "episode_reward":  total_r,
+            "n_dyn_imaged":    metrics.get("n_dyn_imaged", 0),
+            "n_static_imaged": metrics.get("n_cloud_free", 0),
+            "n_steps":         step,
+        })
+
+    # Summary
+    rew = np.array([r["episode_reward"] for r in results])
+    dyn = np.array([r["n_dyn_imaged"]   for r in results])
+    print(f"\n[EDF+Greedy Baseline] n={n_episodes}")
+    print(f"  Reward:       {rew.mean():.3f} ± {rew.std():.3f}")
+    print(f"  DYN imaged:   {dyn.mean():.1f} ± {dyn.std():.1f}")
+    return {"reward": rew.tolist(), "n_dyn": dyn.tolist()}
+
+
+# ============================================================
+# ADD: Greedy oracle for static scheduling (upper bound)
+# ============================================================
+
+def greedy_static_oracle(
+    targets_with_windows: list,
+    cloud_coverage: dict,
+    episode_duration_s: float = 172800.0,
+) -> dict:
+    """Greedy oracle for static target scheduling with perfect cloud knowledge.
+
+    Solves a simplified scheduling problem: given all access windows for
+    static targets and ground-truth cloud cover, greedily select the
+    highest-value non-overlapping set.
+
+    This provides an approximate UPPER BOUND on static scheduling
+    performance (true optimal requires ILP).
+
+    Returns
+    -------
+    dict with keys: selected_targets, total_reward, n_imaged
+    """
+    # Sort windows by (priority × clear-sky fraction) descending
+    candidates = []
+    for t in targets_with_windows:
+        for window in t.get("windows", []):
+            cloud  = float(cloud_coverage.get(t["id"], 0.5))
+            value  = float(t["priority"]) * max(0.0, 1.0 - cloud)
+            start  = float(window["start_s"])
+            end    = float(window["end_s"])
+            if value > 0.0:
+                candidates.append({
+                    "id": t["id"], "priority": t["priority"],
+                    "cloud": cloud, "value": value,
+                    "start": start, "end": end,
+                })
+
+    candidates.sort(key=lambda c: -c["value"])
+
+    # Greedy interval scheduling
+    selected   = []
+    last_end   = 0.0
+    total_r    = 0.0
+    for c in candidates:
+        if c["start"] >= last_end:  # no overlap
+            selected.append(c)
+            total_r += c["value"]
+            last_end = c["end"]
+
+    return {
+        "selected_targets": selected,
+        "total_reward":     total_r,
+        "n_imaged":         len(selected),
+    }
+
+
 # ── Standalone test ───────────────────────────────────────────────────────────
 if __name__ == "__main__":
     import os, sys

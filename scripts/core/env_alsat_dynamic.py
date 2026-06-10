@@ -98,7 +98,8 @@ MAX_SUB_STEPS     = 20                  # safety cap on sub-steps per action
 DEFAULT_GAMMA     = 0.99
 
 # TTA normalisation  (same scale as opportunity_open)
-TIME_NORM_S       = SCHED_STEP_S * 100
+ORBITAL_PERIOD_S  = 5900.0             # T = 2π√(a³/μ) at 686 km altitude
+TIME_NORM_S       = ORBITAL_PERIOD_S   
 
 # [DECAY] urgency decay time-constant (1 hour)
 EVENT_DECAY_TAU_S = 3600.0      # 1-hour exponential time constant
@@ -120,9 +121,21 @@ def _compute_tta(satellite, event, sim_time: float) -> float:
 
 def _slew_safe(satellite, target) -> float:
     try:
-        return float(calculate_slew_angle_to_target(satellite, target))
+        val = float(calculate_slew_angle_to_target(satellite, target))
+        # Sanity check: a zero slew is only valid if satellite is pointing
+        # almost exactly at the target. A suspiciously-zero value from an
+        # uninitialized satellite should be treated as unknown → use pi/2.
+        if val == 0.0:
+            # verify by checking c_hat_P norm
+            try:
+                c_hat = np.asarray(satellite.fsw.c_hat_P, dtype=float).ravel()
+                if np.linalg.norm(c_hat) < 1e-6:
+                    return math.pi / 2  # uninitialized pointing → treat as inaccessible
+            except Exception:
+                return math.pi / 2
+        return val
     except Exception:
-        return 0.0
+        return math.pi / 2  # on error, assume inaccessible (large slew)
 
 
 # =============================================================================
@@ -136,18 +149,20 @@ def _action_duration(satellite, action: int) -> float:
     if action < N_STATIC_TARGETS:
         target = satellite.scenario.targets[action]
     else:
-        slot    = action - N_STATIC_TARGETS
-        mgr     = getattr(satellite, '_event_manager', None)
+        slot   = action - N_STATIC_TARGETS
+        mgr    = getattr(satellite, '_event_manager', None)
         if mgr is None:
             return BASE_STEP_S
-        now     = float(satellite.simulator.sim_time)
-        slots   = mgr.get_slots(satellite, now)
-        target  = slots[slot] if slot < len(slots) else None
+        now    = float(satellite.simulator.sim_time)
+        slots  = mgr.get_slots(satellite, now)
+        target = slots[slot] if slot < len(slots) else None
         if target is None:
             return BASE_STEP_S
     slew = _slew_safe(satellite, target)
-    tau  = calculate_slew_time(slew) + 20.0   # IMAGING_DUR_S
-    return float(np.clip(tau, BASE_STEP_S, MAX_ACTION_DUR_S))
+    tau  = calculate_slew_time(slew) + 20.0
+    result = float(np.clip(tau, BASE_STEP_S, MAX_ACTION_DUR_S))
+    logger.debug(f"_action_duration: action={action} slew={math.degrees(slew):.1f}° tau={tau:.0f}s -> {result:.0f}s")
+    return result
 
 
 # =============================================================================
@@ -201,6 +216,12 @@ class DynamicImageTargetAction(ImageTargetAction):
 
         # Dynamic event
         slot      = action - n_static
+        logger.debug(
+            f"[ACT-DYN] action={action}  slot={slot}  "
+            f"locked_slot={getattr(self.satellite,'_locked_dyn_slot',None)}  "
+            f"locked_event={getattr(self.satellite,'_locked_dyn_event',None)}  "
+            f"t={now:.0f}s"
+        )
         event_mgr = getattr(self.satellite, '_event_manager', None)
         if event_mgr is None:
             self.satellite.last_slew_angle = 0.0
@@ -229,11 +250,19 @@ class DynamicImageTargetAction(ImageTargetAction):
         else:
             # New DYN action or first sub-step — query and lock
             slots = event_mgr.get_slots(self.satellite, now)
+            logger.debug(
+                f"[ACT-DYN-SLOTS] mgr_id={id(event_mgr)}  sat_mgr_id={id(getattr(self.satellite,'_event_manager',None))}  "
+                f"n_events={len(getattr(event_mgr,'_events',[]))}  slots={[s.name if s else None for s in slots]}"
+            )
             event = slots[slot] if slot < len(slots) else None
             setattr(self.satellite, _LOCK_SLOT,  slot)
             setattr(self.satellite, _LOCK_EVT,   event)
 
         if event is None:
+            logger.debug(f"[ACT-DYN] slot={slot} → no event available at t={now:.0f}s")
+            self.satellite._locked_dyn_event = None
+            self.satellite._locked_dyn_slot = None
+            self.satellite._dyn_img_fired    = False
             self.satellite.last_slew_angle         = 0.0
             self.satellite.current_action_is_dynamic = False
             return
@@ -278,6 +307,11 @@ class DynamicImageTargetAction(ImageTargetAction):
                 except Exception:
                     pass
                 self.satellite.task_target_for_imaging(event)
+                logger.debug(
+                    f"[ACT-DYN] tasked event={event.name}  "
+                    f"slew_deg={math.degrees(slew):.1f}  "
+                    f"cloud_fcst={event.cloud_cover_forecast:.2f}"
+                )
             except Exception as exc:
                 logger.debug(f"task_target_for_imaging (dynamic): {exc}")
 
@@ -298,23 +332,31 @@ class DynamicScienceDataStore(ScienceDataStore):
         # DynamicEvents have NO precomputed windows → always returns False.
         # Fix: directly confirm imaging when satellite correctly pointed at
         # the DYN event (slew <= MAX_OFFNADIR_RAD) and imaging not yet fired.
+        _locked = getattr(sat, '_locked_dyn_event', None)
+        if _locked is not None and getattr(_locked, 'imaged', False):
+            sat.current_action_target = None
+            sat.current_action_is_dynamic = False
+            sat._locked_dyn_event = None
+            sat._locked_dyn_slot = None
+            sat.was_image_taken_since_last_check()  # drain buffer
+            return ScienceData(0.0)
+
         is_dyn_action = getattr(sat, 'current_action_is_dynamic', False)
         slew_angle    = getattr(sat, 'last_slew_angle', float('inf'))
         already_fired = getattr(sat, '_dyn_img_fired', False)
 
-        if is_dyn_action and slew_angle <= MAX_OFFNADIR_RAD:
-            if already_fired:
-                # Already gave reward for this SMDP action — prevent double-count
-                return ScienceData(0.0)
-            else:
-                # First confirmation for this DYN action — mark and proceed
-                sat._dyn_img_fired = True
-                image_taken = True
-        else:
-            # Static target: use bsk_rl's standard check
-            image_taken = sat.was_image_taken_since_last_check()
-            if not image_taken:
-                return ScienceData(0.0)
+
+        
+        if is_dyn_action:
+            sat.was_image_taken_since_last_check()  # drain bsk_rl image buffer
+            return ScienceData(0.0)                 # reward injected by wrapper
+
+        # Static target: use bsk_rl's standard imaging check
+        # Static target: use bsk_rl's standard imaging check
+        image_taken = sat.was_image_taken_since_last_check()
+        if not image_taken:
+            logger.debug(f"[STATIC] was_image_taken=False  target={getattr(sat,'current_action_target',None)}")
+            return ScienceData(0.0)
 
         target = getattr(sat, 'current_action_target', None)
         if target is None:
@@ -324,7 +366,8 @@ class DynamicScienceDataStore(ScienceDataStore):
         cloud_truth = float(target.cloud_cover)
         priority    = float(target.priority)
         slew_angle  = getattr(sat, 'last_slew_angle', 0.0)
-        slew_energy = calculate_slew_energy_wh(slew_angle)
+        _slew_mult  = getattr(sat, '_slew_energy_multiplier', 1.0)
+        slew_energy = calculate_slew_energy_wh(slew_angle, _slew_mult)
 
         if is_dynamic:
             # [DECAY] urgency factor
@@ -333,14 +376,14 @@ class DynamicScienceDataStore(ScienceDataStore):
                 elapsed   = now - float(target.appearance_time)
                 remaining = max(0.0, float(target.expiration_time) - now)
                 total_dur  = max(1.0, float(target.expiration_time) - float(target.appearance_time))
-                time_pressure = 1.0 - remaining / total_dur         # 0.0 when fresh → 1.0 at expiry
-                urgency = 1.0 + 0.5 * time_pressure                 # range [1.0, 1.5]
+                frac_remaining = min(1.0, max(0.0, remaining / total_dur))  # 1 fresh → 0 expiry
+                urgency = 1.0 + 0.5 * frac_remaining  # linearly decays from 1.5 to 1.0 as event approaches expiry
             except Exception:
                 urgency = 1.0
 
             if cloud_truth < CLOUD_THRESH:
                 reward = (DYN_MULTIPLIER * priority * (1.0 - cloud_truth) * urgency
-                         - SLEW_ENERGY_ALPHA * slew_energy)
+                         - SLEW_ENERGY_ALPHA * slew_energy + DYNAMIC_BONUS)
                 sat._metrics['n_cloud_free'] += 1
             else:
                 reward = -0.3 * priority   # stronger penalty for cloudy dynamic waste
@@ -353,12 +396,21 @@ class DynamicScienceDataStore(ScienceDataStore):
 
         else:
             if cloud_truth < CLOUD_THRESH:
-                reward = (priority * (1.0 - cloud_truth)
-                          - SLEW_ENERGY_ALPHA * slew_energy)
+                _base_r = priority * (1.0 - cloud_truth)
+                _cost   = SLEW_ENERGY_ALPHA * slew_energy
+                # Cap cost so it can never exceed 50% of the base reward.
+                # This prevents large-slew static attempts from generating large negatives.
+                reward  = _base_r - min(_cost, 0.5 * _base_r)
                 sat._metrics['n_cloud_free'] += 1
             else:
                 reward = -0.1 * priority
                 sat._metrics['n_cloudy'] += 1
+
+        logger.debug(
+            f"[STATIC] image taken: target={target.name}  "
+            f"cloud_truth={cloud_truth:.2f}  priority={priority:.2f}  "
+            f"slew_deg={math.degrees(slew_angle):.1f}  reward={reward:+.4f}"
+        )
 
         sat._metrics['n_imaged']             += 1
         sat._metrics['total_slew_angle_deg'] += math.degrees(slew_angle)
@@ -400,7 +452,7 @@ class DynamicAlsatSatellite(AlsatSatellite):
         self._locked_dyn_event = None
         self._locked_dyn_slot  = None
         self._dyn_reward_given = False
-        
+
         super().reset_post_sim_init()
         self.current_action_is_dynamic = False
         self._metrics.update({'n_dyn_detected': 0, 'n_dyn_imaged': 0})
@@ -482,8 +534,25 @@ class DynamicObsWrapper(gym.Wrapper):
             pass
         self._n_static_actions_ep = 0 
         return self._build_obs(obs, tau_norm=0.0), info
-
+    
+    def set_event_rate(self, rate: float) -> None:
+        try:
+            self._gen.rate_hz = float(rate) / 3600.0   # fix: use rate_hz, not rate
+            logger.debug(f"[DynamicObsWrapper] event_rate set: rate_hz={self._gen.rate_hz:.6f} ({rate:.2f}/hr)")
+        except Exception as exc:
+            logger.debug(f"[DynamicObsWrapper] set_event_rate failed: {exc}")
     def step(self, action: int):
+        _N_STATIC = N_STATIC_TARGETS
+        _is_dyn_action = _N_STATIC <= int(action) < _N_STATIC + N_DYN_SLOTS
+        if _is_dyn_action:
+            try:
+                _sat_pre = self.env.unwrapped.satellites[0]
+                _sat_pre.was_image_taken_since_last_check()  # drain before ANY sub-step
+                _sat_pre._dyn_img_fired = False
+                _sat_pre._dyn_reward_given = False
+            except Exception:
+                pass
+
         if int(action) < N_STATIC_TARGETS:
            self._n_static_actions_ep = getattr(self, '_n_static_actions_ep', 0) + 1
         # [SMDP] compute actual task duration
@@ -491,6 +560,14 @@ class DynamicObsWrapper(gym.Wrapper):
             sat      = self.env.unwrapped.satellites[0]
             # Reset DYN imaging flag for new action
             sat._dyn_reward_given = False
+            # [FIX-A] For DYN actions: drain the image buffer BEFORE sub-steps
+            # so that any image taken for a prior static target doesn't bleed
+            # a negative slew-energy penalty into total_r during DYN sub-steps.
+            if _N_STATIC <= int(action) < _N_STATIC + N_DYN_SLOTS:
+                try:
+                    sat.was_image_taken_since_last_check()  # drain buffer, discard result
+                except Exception:
+                    pass
             tau      = _action_duration(sat, int(action))
         except Exception:
             tau = BASE_STEP_S
@@ -508,19 +585,32 @@ class DynamicObsWrapper(gym.Wrapper):
 
             # Keep sat._event_manager pointing at self._mgr (survives bsk_rl resets)
             for _sx in self.env.unwrapped.satellites:
-                _sx._event_manager = self._mgr
+                if getattr(_sx, '_event_manager', None) is not self._mgr:
+                   _sx._event_manager = self._mgr
         except Exception:
             pass
 
         DRIFT_ACT = N_STATIC_TARGETS + N_DYN_SLOTS  # = 23
         total_r = 0.0
         for _i in range(n_sub):
-            _sub_a = action if _i == 0 else DRIFT_ACT
+            _sub_a = action 
+            try:
+
+                # Keep sat._event_manager pointing at self._mgr (survives bsk_rl resets)
+                for _sx in self.env.unwrapped.satellites:
+                    _sx._event_manager = self._mgr
+            except Exception:
+                pass
             obs_i, r_i, term, trunc, info = self.env.step(_sub_a)
             total_r += (self._gamma_sub ** _i) * r_i
             last_obs = obs_i
             if term or trunc:
                 break
+
+            logger.debug(
+               f"[SMDP] action={action}  tau={tau:.0f}s  n_sub={n_sub}  "
+               f"total_r={total_r:.4f}  term={term}  trunc={trunc}"
+            ) 
             smdp_discount = self._gamma_sub ** (tau / BASE_STEP_S)
 
 
@@ -529,18 +619,24 @@ class DynamicObsWrapper(gym.Wrapper):
         # block below (lines 506+) uses it and must see it intact.
         try:
             _sat = self.env.unwrapped.satellites[0]
-            _dyn_r = _dyn_imaging_check(_sat, info)
-            if _dyn_r > 0.0:
-                total_r += _dyn_r
-                # Only reset lock if main injection block already ran
-                # (checked by _dyn_reward_given flag)
-                _sat._dyn_reward_given = True   # ← prevent injection block from firing again
-                _sat._locked_dyn_event = None
-                _sat._locked_dyn_slot  = None
-
+            # [FIX-B] Only run geometric check if there is actually a locked event.
+            # Without this guard, _dyn_imaging_check fires on empty slots and
+            # gives the agent free +0.29 rewards for doing nothing.
+            _locked_evt = getattr(_sat, '_locked_dyn_event', None)
+            _has_locked = (
+                _locked_evt is not None
+                and not getattr(_locked_evt, 'imaged', False)
+                and _locked_evt.expiration_time > float(_sat.simulator.sim_time)
+            )
+            if _has_locked:
+                _dyn_r = _dyn_imaging_check(_sat, info)
+                if _dyn_r > 0.0:
+                    total_r += _dyn_r
+                    _sat._dyn_reward_given = True
+                    _sat._locked_dyn_event = None
+                    _sat._locked_dyn_slot  = None
         except Exception:
-            pass  # Geometric check failed; main injection block handles reward
-
+            pass
 
         # ── DYN event reward injection ────────────────────────────────────
         # bsk_rl's imaging pipeline never fires for DynamicEvent targets
@@ -550,7 +646,9 @@ class DynamicObsWrapper(gym.Wrapper):
         # and current_action_target=None before this code runs.  Therefore we
         # use P4's LOCKED event (_locked_dyn_event), which persists after
         # the bsk_rl step and is NOT touched by compare_log_states.
+        
         _N_STATIC = N_STATIC_TARGETS  # = 20
+           
         if _N_STATIC <= int(action) < _N_STATIC + N_DYN_SLOTS:
             try:
                 _sat    = self.env.unwrapped.satellites[0]
@@ -558,16 +656,42 @@ class DynamicObsWrapper(gym.Wrapper):
                 # Use P4's locked event (survives compare_log_states reset)
                 _target = getattr(_sat, '_locked_dyn_event', None)
                 _l_slot = getattr(_sat, '_locked_dyn_slot',  -1)
-                _slew   = getattr(_sat, 'last_slew_angle',   float('inf'))
-                _fired  = getattr(_sat, '_dyn_reward_given', False)
+                _slew   = getattr(_sat, '_min_dyn_slew',
+                          getattr(_sat, 'last_slew_angle', float('inf')))
+                # Use post-step off-nadir geometry:
+                try:
+                    r_sat  = np.asarray(_sat.dynamics.r_BN_N, dtype=float).ravel()
+                    r_evt  = np.asarray(_target.r_LP_P, dtype=float).ravel()
+                    to_evt = r_evt - r_sat
+                    d      = float(np.linalg.norm(to_evt))
+                    if d > 1.0:
+                        nadir = -r_sat / float(np.linalg.norm(r_sat))
+                        cos_a = float(np.clip(np.dot(nadir, to_evt / d), -1.0, 1.0))
+                        _offnadir_rad = math.acos(cos_a)
+                    else:
+                        _offnadir_rad = math.pi
+                except Exception:
+                    _offnadir_rad = math.pi
+                # Gate on off-nadir ≤ 45°, not pre-slew angle:
 
+                _fired  = getattr(_sat, '_dyn_reward_given', False)
                 _already_done = _target.imaged if _target else False
+
+                logger.debug(
+                    f"[DYN-CHECK] action={action}  slot={_slot}  "
+                    f"target={'None' if _target is None else _target.name}  "
+                    f"l_slot={_l_slot}  slew_deg={math.degrees(_slew):.1f}  "
+                    f"fired={_fired}  already_done={_already_done}  "
+                    f"t_now={float(_sat.simulator.sim_time):.0f}  "
+                    f"t_exp={getattr(_target,'expiration_time',0):.0f}"
+                )
                 if (_target is not None
                         and isinstance(_target, DynamicEvent)
                         and _l_slot == _slot
                         and _slew <= MAX_OFFNADIR_RAD
                         and not _fired
-                        and not _already_done):
+                        and not _already_done
+                        and _target.expiration_time > float(_sat.simulator.sim_time)):
 
                     _sat._dyn_reward_given = True
                     _cloud  = float(_target.cloud_cover)
@@ -576,16 +700,24 @@ class DynamicObsWrapper(gym.Wrapper):
                     # Urgency: newer events pay more
                     try:
                         _now        = float(_sat.simulator.sim_time)
-                        _remaining  = max(0.0, float(_target.expiration_time) - _now)
                         _total_dur  = max(1.0, float(_target.expiration_time)
                                               - float(_target.appearance_time))
-                        _urgency    = 1.0 + 0.5 * (1.0 - _remaining / _total_dur)
+                        _remaining  = max(0.0, float(_target.expiration_time) - _now)
+                        _elapsed    = max(0.0, _now - float(_target.appearance_time))
+                        # Guard: if elapsed > total_dur something is wrong, clamp
+                        _frac_elapsed = min(1.0, _elapsed / _total_dur)
+                        _urgency    = 1.0 + 0.5 * _frac_elapsed
+                        logger.debug(
+                            f"Urgency: elapsed={_elapsed:.0f}s  total={_total_dur:.0f}s  "
+                            f"frac={_frac_elapsed:.2f}  urgency={_urgency:.2f}"
+                        )
                     except Exception:
                         _urgency = 1.0
 
                     if _cloud < CLOUD_THRESH:
                         # [FIX-3] DYN_MULTIPLIER was missing; [FIX-4] add slew cost
-                        _slew_energy = calculate_slew_energy_wh(_slew)
+                        _slew_mult   = getattr(_sat, '_slew_energy_multiplier', 1.0)
+                        _slew_energy = calculate_slew_energy_wh(_slew, _slew_mult)
                         _dyn_r = (DYN_MULTIPLIER * _prio * (1.0 - _cloud) * _urgency
                                  - SLEW_ENERGY_ALPHA * _slew_energy)
                         _sat._metrics['n_cloud_free'] += 1
@@ -611,7 +743,15 @@ class DynamicObsWrapper(gym.Wrapper):
                     # sync counter to info dict at each step
                     info.setdefault('episode_metrics', {})['n_dyn_imaged'] = _sat._metrics.get('n_dyn_imaged', 0)
 
-                    total_r += _dyn_r * smdp_discount
+                    soc = getattr(_sat, 'battery_charge_fraction', 1.0)
+                    SOC_SAFETY = 0.3
+                    if soc < SOC_SAFETY:
+                        # Linearly scale down reward as battery depletes below safety threshold.
+                        # This connects the observable SOC feature to a reward signal.
+                        battery_penalty = max(0.0, 1.0 - soc / SOC_SAFETY)
+                        _dyn_r *= (1.0 - 0.3 * battery_penalty)  # max 30% reduction
+
+                    total_r += _dyn_r 
 
                     # Inside the DYN reward injection block, after total_r += _dyn_r * smdp_discount:
                     try:
@@ -628,6 +768,7 @@ class DynamicObsWrapper(gym.Wrapper):
                     except Exception:
                         pass
 
+                    
                     logger.debug(
                         f"DYN reward injected: r={_dyn_r:.3f}  "
                         f"cloud={_cloud:.2f}  urgency={_urgency:.2f}  "
@@ -644,20 +785,45 @@ class DynamicObsWrapper(gym.Wrapper):
             new_events = self._gen.step(now, dt)
             self._mgr.add_events(new_events)
             # [FIX-2] Missed-event penalty before purge (Li et al. IEEE TGRS 2023)
+            # Missed-event penalty — only for cloud-free events the agent could have imaged.
+            # Cloudy events are not imageable so no penalty. Cap total penalty per step
+            # to prevent the baseline from dominating the reward signal at high event rates.
+          
+            _step_miss = 0.0
+            _MISS_PER_STEP_CAP = 1.0
+            _n_missed_cf = 0   # cloud-free misses this step
             for _exp_evt in list(self._mgr._events):
                 if not _exp_evt.imaged and _exp_evt.expiration_time <= now:
                     _cloud_e = float(_exp_evt.cloud_cover)
                     _prio_e  = float(_exp_evt.priority)
-                    _miss_p  = -0.5 * _prio_e * (1.0 - _cloud_e)
-                    total_r += _miss_p
-                    sat._metrics['total_reward'] += _miss_p
                     sat._metrics.setdefault('n_missed_events', 0)
                     sat._metrics['n_missed_events'] += 1
+                    if _cloud_e >= CLOUD_THRESH:
+                        logger.debug(f"[MISS] cloudy event expired (no penalty): {_exp_evt.name}  cloud={_cloud_e:.2f}")
+                        continue
+                    _pen = -0.5 * _prio_e * (1.0 - _cloud_e)
+                    _step_miss += _pen
+                    _n_missed_cf += 1
                     logger.debug(
-                        f"Missed event penalty: {_miss_p:.3f}  "
-                        f"event={_exp_evt.name}  cloud={_cloud_e:.2f}"
+                        f"[MISS] cloud-free event expired: {_exp_evt.name}  "
+                        f"cloud={_cloud_e:.2f}  prio={_prio_e:.2f}  pen={_pen:.3f}"
                     )
+            _miss_applied = max(-_MISS_PER_STEP_CAP, _step_miss)
+            if _miss_applied != 0.0:
+                logger.debug(
+                    f"[MISS] step penalty={_miss_applied:.3f}  "
+                    f"(raw={_step_miss:.3f}, n_cf_missed={_n_missed_cf})"
+                )
+            total_r += _miss_applied
+            sat._metrics['total_reward'] += _miss_applied
             self._mgr.purge_expired(now)
+            _active_now = [e for e in self._mgr._events if not e.imaged and e.expiration_time > now]
+            logger.debug(
+                f"[EVENTS] t={now:.0f}s  "
+                f"new_spawned={len(new_events)}  active={len(_active_now)}  "
+                f"total_detected={self._mgr._metrics['n_detected']}  "
+                f"total_imaged={self._mgr._metrics['n_imaged']}"
+            )
             self._prev_time = now
             sat._metrics['n_dyn_detected'] = self._mgr._metrics['n_detected']
         except Exception as exc:
@@ -720,7 +886,15 @@ class DynamicObsWrapper(gym.Wrapper):
         return np.concatenate([base_obs.astype(np.float32), dyn_arr, [tau_norm]],dtype=np.float32)
 
     # ---- convenience properties ---------------------------------------------
+    
+    def set_event_rate(self, rate: float):
+        """Update the event generator rate (called by EventRateRampCallback)."""
+        try:
+            self._gen.rate = float(rate)
+        except Exception:
+            pass
 
+    
     @property
     def event_manager(self) -> EventManager:
         return self._mgr
@@ -844,6 +1018,8 @@ if __name__ == '__main__':
         if term or trunc:
             break
 
+        
+
     env.close()
     print('\nSanity check passed.')
 
@@ -853,7 +1029,7 @@ import numpy as _np_dyn, math as _math_dyn
 from dynamic_event import DYN_MULTIPLIER as _DYN_MULT
 
 _DYN_MAX_OFFNADIR_DEG = 45.0   # must match MAX_OFFNADIR_RAD in dynamic_event.py
-_DYN_CLOUD_THRESH     = 0.9    # max cloud cover for successful imaging
+_DYN_CLOUD_THRESH     = CLOUD_THRESH    # max cloud cover for successful imaging
 
 
 def _dyn_imaging_check(sat, info: dict) -> float:
@@ -862,6 +1038,8 @@ def _dyn_imaging_check(sat, info: dict) -> float:
     Returns extra reward if satellite is geometrically pointing at locked DYN event.
     Also increments episode_metrics['n_dyn_imaged'].
     """
+    if getattr(sat, '_locked_dyn_event', None) is None:
+        return 0.0
     locked_ev = getattr(sat, '_locked_dyn_event', None)
     if locked_ev is None:
         return 0.0

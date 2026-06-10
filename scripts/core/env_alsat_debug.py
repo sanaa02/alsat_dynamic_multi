@@ -163,9 +163,19 @@ def calculate_slew_time(slew_angle_rad: float) -> float:
     return 2.0 * math.sqrt(slew_angle_rad / SLEW_ALPHA_MAX)
 
 
-def calculate_slew_energy_wh(slew_angle_rad: float) -> float:
-    """Reaction-wheel energy cost in Wh."""
-    return SLEW_PEAK_W * calculate_slew_time(slew_angle_rad) / 3600.0
+def calculate_slew_energy_wh(
+    slew_angle_rad: float,
+    slew_multiplier: float = 1.0,
+) -> float:
+    """Reaction-wheel energy cost in Wh, scaled by per-episode multiplier.
+
+    Args:
+        slew_angle_rad:  absolute slew angle in radians.
+        slew_multiplier: per-episode randomization factor from
+                         DomainRandomizationWrapper (default 1.0 = nominal).
+                         Pass satellite._slew_energy_multiplier to activate DR.
+    """
+    return SLEW_PEAK_W * slew_multiplier * calculate_slew_time(slew_angle_rad) / 3600.0
 
 
 # ============================================================================

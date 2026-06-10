@@ -344,7 +344,7 @@ def train(args: argparse.Namespace) -> None:
         gamma         = 0.99,
         gae_lambda    = 0.95,
         clip_range    = 0.2,
-        ent_coef      = 0.02,   # slightly higher entropy to explore dynamic actions
+        ent_coef      = 0.03,   # slightly higher entropy to explore dynamic actions
         vf_coef       = 0.5,
         max_grad_norm = 0.5,
         policy_kwargs = dict(net_arch=dict(pi=[256, 256], vf=[256, 256])),

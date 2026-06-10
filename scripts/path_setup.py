@@ -29,7 +29,7 @@ try:
     _here = _os.path.dirname(_os.path.abspath(__file__))
     if _here not in _sys.path:
         _sys.path.insert(0, _here)
-    import bsk_patches as _bsk_patches
-    _bsk_patches.apply_all()
+    # import bsk_patches as _bsk_patches
+    # _bsk_patches.apply_all()
 except Exception as _e:
     _lg.getLogger(__name__).warning(f"bsk_patches not available: {_e}")
