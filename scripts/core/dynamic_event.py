@@ -46,8 +46,8 @@ LON_MAX_DEG = 12.0
 EARTH_R_M = 6.3781e6
 
 # ── Event lifecycle defaults ──────────────────────────────────────────────────
-EVENT_DURATION_MIN_S  = 3600.0      # 1 h minimum active period
-EVENT_DURATION_MAX_S  = 14400.0     # 4 h maximum active period
+EVENT_DURATION_MIN_S  = 14400.0      # 1 h minimum active period
+EVENT_DURATION_MAX_S  = 43200.0     # 4 h maximum active period
 DYNAMIC_BONUS         = 1.5         # Extra reward beyond priority*(1-cloud)
 DYN_MULTIPLIER        = 2.0
 MAX_ACTIVE_EVENTS     = 5           # Internal queue depth

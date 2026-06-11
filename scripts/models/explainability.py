@@ -327,28 +327,36 @@ class PolicyExplainer:
 
     _eps = 5e-2   # class-level constant — add this line BEFORE _finite_diff as a class attribute
     
-    def _finite_diff(self, x):
+    def _finite_diff(self, x: np.ndarray) -> np.ndarray:
+        """
+        Finite-difference feature attribution for the policy log-prob.
+        Returns array of shape (obs_dim,).
+        """
         pol    = self.model.policy
         device = next(pol.parameters()).device
         eps    = self._eps
-        t0   = torch.FloatTensor(x.reshape(1, -1)).to(device)
+        x      = x.reshape(1, -1)
+
         with torch.no_grad():
+            t0   = torch.FloatTensor(x).to(device)
             dist = pol.get_distribution(t0)
-            # Use log-prob of the most likely action as the attribution target
-            probs = dist.distribution.probs.squeeze(0)
+            probs       = dist.distribution.probs.squeeze(0)
             best_action = probs.argmax().unsqueeze(0)
-            v0 = dist.log_prob(best_action).item()
+            v0 = float(dist.log_prob(best_action))   # Python float — no .item() needed
+
         dim  = x.shape[1]
-        attr = np.zeros(dim)
+        attr = np.zeros(dim, dtype=np.float32)
+
         with torch.no_grad():
             for i in range(dim):
-                xi        = x.copy(); xi[0, i] += eps
-                ti        = torch.FloatTensor(xi).to(device)
+                xi = x.copy()
+                xi[0, i] += eps
+                ti      = torch.FloatTensor(xi).to(device)
                 dist_i  = pol.get_distribution(ti)
                 probs_i = dist_i.distribution.probs.squeeze(0)
-                vi      = dist_i.log_prob(probs_i.argmax().unsqueeze(0)).item()
-                attr[i] = (vi - v0) / self._eps
-            attr[i] = (vi.item() - v0) / eps
+                vi      = float(dist_i.log_prob(probs_i.argmax().unsqueeze(0)))
+                attr[i] = (vi - v0) / eps
+
         return attr
 
     def top_features(self, obs: np.ndarray, k: int = 10) -> List[tuple]:

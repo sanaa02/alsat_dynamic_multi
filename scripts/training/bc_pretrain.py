@@ -150,13 +150,26 @@ def behavioral_cloning(model, obs_array, act_array,
 
     # Cap drift at 20% of non-drift count — keeps it as "do nothing" signal
     # without letting it dominate. Remove entirely only if < 50 samples.
+    rng_bc        = np.random.default_rng(42)
     non_drift_idx = np.where(act_array != drift_act)[0]
     drift_idx     = np.where(act_array == drift_act)[0]
-    max_drift     = max(50, len(non_drift_idx) // 4)
+    n_dyn_slots   = 3                          # actions a20, a21, a22
+    dyn_start_act = drift_act - n_dyn_slots    # = 20  (first DYN action)
+    static_idx    = np.where(act_array < dyn_start_act)[0]
+    # Cap drift to ~5% of static count
+    max_drift     = max(50, len(static_idx) // 20)
     if len(drift_idx) > max_drift:
-        rng_bc    = np.random.default_rng(42)
         drift_idx = rng_bc.choice(drift_idx, max_drift, replace=False)
-    keep     = np.sort(np.concatenate([non_drift_idx, drift_idx]))
+    # Cap each DYN slot to static average — fixes DYN dominance (was 71%)
+    max_per_dyn   = max(50, len(static_idx) // n_dyn_slots)
+    dyn_keep = []
+    for _da in range(dyn_start_act, drift_act):
+        _di = np.where(act_array == _da)[0]
+        if len(_di) > max_per_dyn:
+            _di = rng_bc.choice(_di, max_per_dyn, replace=False)
+        dyn_keep.append(_di)
+    keep = np.sort(np.concatenate([static_idx] + dyn_keep + [drift_idx]))
+    
     obs_bc   = obs_array[keep]
     acts_bc  = act_array[keep]
     n_kept   = len(obs_bc)

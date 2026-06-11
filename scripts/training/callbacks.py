@@ -214,7 +214,14 @@ class AutoCheckpointCallback(BaseCallback):
 
     def _on_step(self) -> bool:
         for info in self.locals.get("infos", []):
-            ep_info = info.get("episode") or info.get("episode_metrics")
+            # Use Monitor's info["episode"] (set only at terminal step).
+            # Fallback: episode_metrics with "total_reward" key — also only
+            # present at termination (mid-episode writes only set "n_dyn_imaged").
+            ep_info = info.get("episode")
+            if ep_info is None:
+                ep_m = info.get("episode_metrics", {})
+                if "total_reward" in ep_m:
+                    ep_info = ep_m
             if ep_info is None:
                 continue
             r = float(ep_info.get("r", ep_info.get("total_reward", 0.0)))

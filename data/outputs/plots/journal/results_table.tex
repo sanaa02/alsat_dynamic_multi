@@ -1,0 +1,24 @@
+\begin{table}[ht]
+\centering
+\caption{ALSAT-EO-1 Phase 3: Policy comparison (mean $\pm$ std over 10 episodes). \textbf{Bold} = best per column.}
+\label{tab:policy_comparison}
+\small
+\begin{tabular}{l l r@{\,$\pm$\,}l r r r}
+\toprule
+Scenario & Policy & \multicolumn{2}{c}{Reward} & CF\% & DYN suc\% & DYN imaged \\
+\midrule
+No events & Greedy-Scout & \textbf{+7.64} & 6.94 & 60\% & \textbf{0.0}\% & \textbf{0.0} \\
+ & Greedy-Ignore & \textbf{+7.64} & 6.94 & 60\% & \textbf{0.0}\% & \textbf{0.0} \\
+ & \textbf{RL-PPO (ours)} & +6.30 & 6.81 & 50\% & \textbf{0.0}\% & \textbf{0.0} \\
+\addlinespace
+Sparse (0.5/hr) & Greedy-Scout & \textbf{+4.50} & 6.97 & 80\% & 4.2\% & 0.8 \\
+ & Greedy-Ignore & +2.82 & 7.17 & 60\% & 0.0\% & 0.0 \\
+ & \textbf{RL-PPO (ours)} & +4.47 & 7.03 & 90\% & 12.0\% & \textbf{2.3} \\
+\addlinespace
+Dense (2.0/hr) & Greedy-Scout & \textbf{+3.48} & 6.79 & 100\% & 3.5\% & 1.0 \\
+ & Greedy-Ignore & +0.29 & 7.38 & 60\% & 0.0\% & 0.0 \\
+ & \textbf{RL-PPO (ours)} & +2.59 & 7.13 & 89\% & 9.2\% & \textbf{2.7} \\
+\addlinespace
+\bottomrule
+\end{tabular}
+\end{table}

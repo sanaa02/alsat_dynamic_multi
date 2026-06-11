@@ -122,6 +122,7 @@ def _patch_dyn_event_locking() -> bool:
                 sat._locked_dyn_slot  = -1
                 sat._locked_dyn_event = None
                 sat._dyn_img_fired    = False
+                sat._min_dyn_slew     = float('inf')
                 return _orig(self, action, prev_action_key)
             slot         = action - n_static
             locked_slot  = getattr(sat, "_locked_dyn_slot",  -1)
@@ -246,6 +247,63 @@ def _patch_force_dyn_imaging() -> bool:
         if _found:
             logger.info(f"[bsk_patches] P5 OK (deep scan): patched {_found} classes")
             return True
+                # Last-resort: walk ALL loaded modules for any class with this method
+        import sys as _sys, types as _types
+        _found2 = 0
+        for _mname, _mod in list(_sys.modules.items()):
+            if not isinstance(_mod, _types.ModuleType): continue
+            if 'bsk_rl' not in _mname and 'satellite' not in _mname: continue
+            for _cname in dir(_mod):
+                try:
+                    _cls = getattr(_mod, _cname, None)
+                    if not isinstance(_cls, type): continue
+                    if not hasattr(_cls, "was_image_taken_since_last_check"): continue
+                    if id(_cls) in _patched_classes: continue
+                    _orig3 = _cls.was_image_taken_since_last_check
+                    def _dyn3(self, _o=_orig3, _m=_MAXON):
+                        if getattr(self, "current_action_is_dynamic", False):
+                            slew = getattr(self, "_min_dyn_slew",
+                                   getattr(self, "last_slew_angle", float("inf")))
+                            if slew <= _m and not getattr(self, "_dyn_img_fired", False):
+                                self._dyn_img_fired = True
+                                return True
+                            if slew <= _m:
+                                return False
+                        return _o(self)
+                    _cls.was_image_taken_since_last_check = _dyn3
+                    _patched_classes.add(id(_cls))
+                    _found2 += 1
+                    logger.info(f"[bsk_patches] P5 OK (deep scan): {_mname}.{_cname}")
+                except Exception:
+                    pass
+        if _found2:
+            return True
+        # ── Final fallback: patch AlsatSatellite directly from env_alsat_debug ──
+        try:
+            import sys as _sys
+            for _d in ["scripts/core", "scripts"]:
+                if _d not in _sys.path:
+                    _sys.path.insert(0, _d)
+            from env_alsat_debug import AlsatSatellite
+            if (id(AlsatSatellite) not in _patched_classes
+                    and hasattr(AlsatSatellite, "was_image_taken_since_last_check")):
+                _orig_alsat = AlsatSatellite.was_image_taken_since_last_check
+                def _dyn_alsat(self, _o=_orig_alsat, _m=_MAXON):
+                    if getattr(self, "current_action_is_dynamic", False):
+                        slew = getattr(self, "_min_dyn_slew",
+                               getattr(self, "last_slew_angle", float("inf")))
+                        if slew <= _m and not getattr(self, "_dyn_img_fired", False):
+                            self._dyn_img_fired = True
+                            return True
+                        if slew <= _m:
+                            return False
+                    return _o(self)
+                AlsatSatellite.was_image_taken_since_last_check = _dyn_alsat
+                _patched_classes.add(id(AlsatSatellite))
+                logger.info("[bsk_patches] P5 OK (AlsatSatellite direct): 1 class")
+                return True
+        except Exception as _pe:
+            logger.warning(f"[bsk_patches] P5: AlsatSatellite direct patch failed: {_pe}")
         logger.warning("[bsk_patches] P5 SKIP: was_image_taken_since_last_check not found anywhere")
         return False
     except Exception as e:

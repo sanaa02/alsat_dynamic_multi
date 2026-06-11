@@ -104,6 +104,21 @@ TIME_NORM_S       = ORBITAL_PERIOD_S
 # [DECAY] urgency decay time-constant (1 hour)
 EVENT_DECAY_TAU_S = 3600.0      # 1-hour exponential time constant
 
+
+_MAX_OFFNADIR = math.radians(45.0)
+_orig_check = AlsatSatellite.was_image_taken_since_last_check
+def _patched_check(self, _o=_orig_check, _m=_MAX_OFFNADIR):
+    if getattr(self, 'current_action_is_dynamic', False):
+        slew = getattr(self, '_min_dyn_slew',
+               getattr(self, 'last_slew_angle', float('inf')))
+        if slew <= _m and not getattr(self, '_dyn_img_fired', False):
+            self._dyn_img_fired = True
+            return True
+        if slew <= _m:
+            return False  # already fired this action
+    return _o(self)
+AlsatSatellite.was_image_taken_since_last_check = _patched_check
+
 # =============================================================================
 #  Keplerian TTA wrapper (with binary fallback)
 # =============================================================================
@@ -269,6 +284,8 @@ class DynamicImageTargetAction(ImageTargetAction):
 
         slew = _slew_safe(self.satellite, event)
         self.satellite.last_slew_angle = float(slew)
+        if slew < getattr(self.satellite, '_min_dyn_slew', float('inf')):
+            self.satellite._min_dyn_slew = slew
 
         # [SAFE] optional safety monitor veto
         monitor = getattr(self.satellite, '_safety_monitor', None)
@@ -635,6 +652,11 @@ class DynamicObsWrapper(gym.Wrapper):
                     _sat._dyn_reward_given = True
                     _sat._locked_dyn_event = None
                     _sat._locked_dyn_slot  = None
+                    # FIX: _dyn_imaging_check writes to info only.
+                    # SingleSatelliteEnv overwrites info with dict(sat._metrics) at
+                    # episode end → n_dyn_imaged stays 0 → dyn_suc=0% always.
+                    _sat._metrics['n_dyn_imaged'] = (
+                        _sat._metrics.get('n_dyn_imaged', 0) + 1)
         except Exception:
             pass
 
@@ -656,22 +678,8 @@ class DynamicObsWrapper(gym.Wrapper):
                 # Use P4's locked event (survives compare_log_states reset)
                 _target = getattr(_sat, '_locked_dyn_event', None)
                 _l_slot = getattr(_sat, '_locked_dyn_slot',  -1)
-                _slew   = getattr(_sat, '_min_dyn_slew',
-                          getattr(_sat, 'last_slew_angle', float('inf')))
-                # Use post-step off-nadir geometry:
-                try:
-                    r_sat  = np.asarray(_sat.dynamics.r_BN_N, dtype=float).ravel()
-                    r_evt  = np.asarray(_target.r_LP_P, dtype=float).ravel()
-                    to_evt = r_evt - r_sat
-                    d      = float(np.linalg.norm(to_evt))
-                    if d > 1.0:
-                        nadir = -r_sat / float(np.linalg.norm(r_sat))
-                        cos_a = float(np.clip(np.dot(nadir, to_evt / d), -1.0, 1.0))
-                        _offnadir_rad = math.acos(cos_a)
-                    else:
-                        _offnadir_rad = math.pi
-                except Exception:
-                    _offnadir_rad = math.pi
+                
+                _offnadir_rad = _slew_safe(_sat, _target) if _target is not None else math.pi
                 # Gate on off-nadir ≤ 45°, not pre-slew angle:
 
                 _fired  = getattr(_sat, '_dyn_reward_given', False)
@@ -680,7 +688,7 @@ class DynamicObsWrapper(gym.Wrapper):
                 logger.debug(
                     f"[DYN-CHECK] action={action}  slot={_slot}  "
                     f"target={'None' if _target is None else _target.name}  "
-                    f"l_slot={_l_slot}  slew_deg={math.degrees(_slew):.1f}  "
+                    f"l_slot={_l_slot}  slew_deg={math.degrees(_offnadir_rad):.1f}  "
                     f"fired={_fired}  already_done={_already_done}  "
                     f"t_now={float(_sat.simulator.sim_time):.0f}  "
                     f"t_exp={getattr(_target,'expiration_time',0):.0f}"
@@ -688,7 +696,7 @@ class DynamicObsWrapper(gym.Wrapper):
                 if (_target is not None
                         and isinstance(_target, DynamicEvent)
                         and _l_slot == _slot
-                        and _slew <= MAX_OFFNADIR_RAD
+                        and _offnadir_rad <= MAX_OFFNADIR_RAD
                         and not _fired
                         and not _already_done
                         and _target.expiration_time > float(_sat.simulator.sim_time)):
@@ -717,7 +725,7 @@ class DynamicObsWrapper(gym.Wrapper):
                     if _cloud < CLOUD_THRESH:
                         # [FIX-3] DYN_MULTIPLIER was missing; [FIX-4] add slew cost
                         _slew_mult   = getattr(_sat, '_slew_energy_multiplier', 1.0)
-                        _slew_energy = calculate_slew_energy_wh(_slew, _slew_mult)
+                        _slew_energy = calculate_slew_energy_wh(_offnadir_rad, _slew_mult)
                         _dyn_r = (DYN_MULTIPLIER * _prio * (1.0 - _cloud) * _urgency
                                  - SLEW_ENERGY_ALPHA * _slew_energy)
                         _sat._metrics['n_cloud_free'] += 1
@@ -728,7 +736,9 @@ class DynamicObsWrapper(gym.Wrapper):
                     # Update metrics
                     _sat._metrics['n_imaged']      += 1
                     _sat._metrics['total_reward']  += _dyn_r
-                    _sat._metrics['total_slew_angle_deg'] += math.degrees(_slew)
+                    _sat._metrics['total_slew_angle_deg'] += math.degrees(_offnadir_rad)
+
+
 
                     # Increment event manager imaged counter
                     _evt_mgr = getattr(_sat, '_event_manager', None)
@@ -886,15 +896,7 @@ class DynamicObsWrapper(gym.Wrapper):
         return np.concatenate([base_obs.astype(np.float32), dyn_arr, [tau_norm]],dtype=np.float32)
 
     # ---- convenience properties ---------------------------------------------
-    
-    def set_event_rate(self, rate: float):
-        """Update the event generator rate (called by EventRateRampCallback)."""
-        try:
-            self._gen.rate = float(rate)
-        except Exception:
-            pass
 
-    
     @property
     def event_manager(self) -> EventManager:
         return self._mgr
@@ -902,7 +904,6 @@ class DynamicObsWrapper(gym.Wrapper):
     @property
     def event_generator(self) -> EventGenerator:
         return self._gen
-
 
 # =============================================================================
 #  Factory

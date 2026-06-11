@@ -357,7 +357,7 @@ def stage_ppo(model_init, args, cfg):
     print("\n" + "="*60
           + f"\n  Stage 3 -- SMDP-PPO  cfg={cfg.value}  obs={obs_dim(cfg)}\n"
           + "="*60)
-    steps_per_ep = int(args.duration / SCHED_STEP_S)
+    steps_per_ep = max(1, int(args.duration / SCHED_STEP_S * 2 // 3))  # 72 × 2/3 = 48
     total_steps  = args.episodes * steps_per_ep
     n_envs       = max(1, args.n_envs)
     start_rate   = min(1.0, args.event_rate)   # ramp from 1.0 → target rate

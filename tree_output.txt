@@ -1,76 +1,265 @@
-scripts
-├── all_files.py
-├── bsk_patches.py
+.
+├── all_python_files.txt
+├── cloud_cnn_test_comparison.png
 ├── config
 │   ├── cloud_reality
 │   │   └── algeria_real_clouds.json
 │   └── targets
 │       ├── algeria_20_targets.json
 │       └── algeria_targets.json
-├── core
-│   ├── cloud_cache.py
-│   ├── dynamic_event.py
-│   ├── env_alsat_debug.py
-│   ├── env_alsat_dynamic.py
-│   ├── env_alsat_scalable.py
-│   ├── env_dynamic_factory.py
-│   ├── env_multi_satellite.py
-│   ├── real_vision_cloud_model.py
-│   ├── reward_shaping.py
-│   ├── scout_provider.py
-│   ├── smdp_dynamic.py
-│   └── tta_cache.py
 ├── data
+│   ├── demos.npz
 │   └── outputs
-│       └── plots
-│           ├── dynamic_eval_comparison.png
-│           └── phase3_dynamic_training.png
-├── debug_dyn_suc.py
-├── evaluation
-│   ├── baselines_dynamic.py
-│   ├── eval_dynamic.py
-│   ├── eval_smdp_explain.py
-│   ├── server.py
-│   ├── test.py
-│   └── viz_episode.py
-├── install_paths.py
+│       ├── plots
+│       │   ├── dynamic_eval_comparison.png
+│       │   ├── journal
+│       │   │   ├── decision_timeline.png
+│       │   │   ├── dyn_focused.png
+│       │   │   ├── feature_importance.png
+│       │   │   ├── policy_comparison.png
+│       │   │   └── results_table.tex
+│       │   └── phase2_training.png
+│       └── results
+│           └── dynamic_eval_results.json
+├── logs
 ├── models
-│   ├── attention_policy.py
-│   ├── cloud_cnn.pt
-│   ├── cloud_cnn.py
-│   ├── explainability.py
-│   ├── extract_modis_patches.py
-│   ├── modis_real_data.py
-│   ├── ppo_checkpoint_500.zip
-│   ├── ppo_dynamic_final.zip
-│   └── test_cnn_cloud.py
-├── monitor.py
-├── path_setup.py
-├── plots
-│   └── make_plots.py
+│   ├── checkpoints
+│   ├── checkpoints_fixed_seed42
+│   ├── checkpoints_seed42
+│   ├── checkpoints_seed456
+│   ├── checkpoints_v4_seed42
+│   ├── checkpoints_v5_seed42
+│   ├── cloud_cnn_real_int8.pt
+│   ├── cloud_cnn_real_int8.ts
+│   └── cloud_cnn_real.pt
+├── README.md
+├── requirements.txt
 ├── results
-│   ├── phase3_dynamic_training_log.json
-│   ├── phase3_scenario_eval.json
-│   └── training_autosave_42.json
-├── tests
-│   └── test_reward.py
-├── training
-│   ├── ablation_runner.py
-│   ├── bc_diagnose.py
-│   ├── bc_pretrain.py
-│   ├── callbacks.py
-│   ├── curriculum.py
-│   ├── repro.py
-│   ├── train_multi_sat.py
-│   ├── train_ppo_dynamic.py
-│   ├── train_ppo_smdp_full_fixed.py
-│   └── train_ppo_smdp_full.py
-├── view_modis.py
-└── wrappers
-    ├── action_mask_wrapper.py
-    ├── domain_randomization_wrapper.py
-    ├── env_alsat_dynamic_patch.py
-    ├── env_alsat_dynamic_tta_patch.py
-    └── safety_monitor.py
+│   ├── ablation
+│   │   ├── ablation_table.csv
+│   │   ├── attention_policy
+│   │   │   ├── seed_123
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   └── checkpoints
+│   │   │   ├── seed_42
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   ├── checkpoints
+│   │   │   │   │   └── checkpoint_meta.json
+│   │   │   │   └── eval_metrics.json
+│   │   │   └── seed_456
+│   │   │       ├── ablation_config.json
+│   │   │       └── checkpoints
+│   │   │           └── checkpoint_meta.json
+│   │   ├── circular_cnn
+│   │   │   ├── seed_123
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   ├── checkpoints
+│   │   │   │   │   └── checkpoint_meta.json
+│   │   │   │   └── eval_metrics.json
+│   │   │   ├── seed_42
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   ├── checkpoints
+│   │   │   │   │   └── checkpoint_meta.json
+│   │   │   │   └── eval_metrics.json
+│   │   │   └── seed_456
+│   │   │       ├── ablation_config.json
+│   │   │       └── checkpoints
+│   │   │           └── checkpoint_meta.json
+│   │   ├── full_system
+│   │   │   ├── seed_123
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   └── checkpoints
+│   │   │   │       └── checkpoint_meta.json
+│   │   │   ├── seed_42
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   ├── checkpoints
+│   │   │   │   │   └── checkpoint_meta.json
+│   │   │   │   └── eval_metrics.json
+│   │   │   └── seed_456
+│   │   │       ├── ablation_config.json
+│   │   │       └── checkpoints
+│   │   │           └── checkpoint_meta.json
+│   │   ├── gaussian_cloud
+│   │   │   ├── seed_123
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   ├── checkpoints
+│   │   │   │   │   └── checkpoint_meta.json
+│   │   │   │   └── eval_metrics.json
+│   │   │   ├── seed_42
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   └── checkpoints
+│   │   │   │       └── checkpoint_meta.json
+│   │   │   └── seed_456
+│   │   │       ├── ablation_config.json
+│   │   │       └── checkpoints
+│   │   │           └── checkpoint_meta.json
+│   │   ├── no_bc
+│   │   │   ├── seed_123
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   ├── checkpoints
+│   │   │   │   │   └── checkpoint_meta.json
+│   │   │   │   └── eval_metrics.json
+│   │   │   ├── seed_42
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   └── checkpoints
+│   │   │   │       └── checkpoint_meta.json
+│   │   │   └── seed_456
+│   │   │       ├── ablation_config.json
+│   │   │       └── checkpoints
+│   │   │           └── checkpoint_meta.json
+│   │   ├── no_curriculum
+│   │   │   ├── seed_123
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   ├── checkpoints
+│   │   │   │   │   └── checkpoint_meta.json
+│   │   │   │   └── eval_metrics.json
+│   │   │   ├── seed_42
+│   │   │   │   ├── ablation_config.json
+│   │   │   │   └── checkpoints
+│   │   │   │       └── checkpoint_meta.json
+│   │   │   └── seed_456
+│   │   │       ├── ablation_config.json
+│   │   │       ├── checkpoints
+│   │   │       │   └── checkpoint_meta.json
+│   │   │       └── eval_metrics.json
+│   │   └── no_smdp
+│   │       ├── seed_123
+│   │       │   ├── ablation_config.json
+│   │       │   ├── checkpoints
+│   │       │   │   └── checkpoint_meta.json
+│   │       │   └── eval_metrics.json
+│   │       ├── seed_42
+│   │       │   ├── ablation_config.json
+│   │       │   └── checkpoints
+│   │       │       └── checkpoint_meta.json
+│   │       └── seed_456
+│   │           ├── ablation_config.json
+│   │           ├── checkpoints
+│   │           │   └── checkpoint_meta.json
+│   │           └── eval_metrics.json
+│   ├── ablation_20260601_215730.log
+│   ├── bc_diagnosis.json
+│   ├── debug_dyn_suc.json
+│   ├── explain
+│   ├── explainability_seed456
+│   │   ├── decisions.json
+│   │   ├── decision_timeline.png
+│   │   ├── feature_importance.png
+│   │   └── shap_summary.txt
+│   ├── phase3_fixed_log.json
+│   ├── phase3_full_log.json
+│   ├── phase3_v4_log.json
+│   ├── phase3_v5_log.json
+│   ├── training_20260601_221514.log
+│   ├── training_live.json
+│   └── training_log.json
+├── scripts
+│   ├── all_files.py
+│   ├── bsk_patches.py
+│   ├── config
+│   │   ├── cloud_reality
+│   │   │   └── algeria_real_clouds.json
+│   │   └── targets
+│   │       ├── algeria_20_targets.json
+│   │       └── algeria_targets.json
+│   ├── core
+│   │   ├── cloud_cache.py
+│   │   ├── dynamic_event.py
+│   │   ├── env_alsat_debug.py
+│   │   ├── env_alsat_dynamic.py
+│   │   ├── env_alsat_scalable.py
+│   │   ├── env_dynamic_factory.py
+│   │   ├── env_multi_satellite.py
+│   │   ├── __pycache__
+│   │   ├── real_vision_cloud_model.py
+│   │   ├── reward_shaping.py
+│   │   ├── scout_provider.py
+│   │   ├── smdp_dynamic.py
+│   │   └── tta_cache.py
+│   ├── data
+│   │   └── outputs
+│   │       └── plots
+│   │           ├── dynamic_eval_comparison.png
+│   │           └── phase3_dynamic_training.png
+│   ├── debug_dyn_suc.py
+│   ├── evaluation
+│   │   ├── baselines_dynamic.py
+│   │   ├── eval_dynamic.py
+│   │   ├── eval_smdp_explain.py
+│   │   ├── __pycache__
+│   │   ├── server.py
+│   │   ├── test.py
+│   │   └── viz_episode.py
+│   ├── install_paths.py
+│   ├── models
+│   │   ├── attention_policy.py
+│   │   ├── cloud_cnn.pt
+│   │   ├── cloud_cnn.py
+│   │   ├── explainability.py
+│   │   ├── extract_modis_patches.py
+│   │   ├── modis_real_data.py
+│   │   ├── __pycache__
+│   │   └── test_cnn_cloud.py
+│   ├── monitor.py
+│   ├── path_setup.py
+│   ├── plots
+│   │   ├── journal_figures.py
+│   │   └── make_plots.py
+│   ├── __pycache__
+│   ├── results
+│   │   ├── phase3_dynamic_training_log.json
+│   │   ├── phase3_scenario_eval.json
+│   │   └── training_autosave_42.json
+│   ├── tests
+│   │   └── test_reward.py
+│   ├── training
+│   │   ├── ablation_runner.py
+│   │   ├── bc_diagnose.py
+│   │   ├── bc_pretrain.py
+│   │   ├── callbacks.py
+│   │   ├── curriculum.py
+│   │   ├── dyn_diagnose.py
+│   │   ├── __pycache__
+│   │   ├── repro.py
+│   │   ├── train_multi_sat.py
+│   │   ├── train_ppo_dynamic.py
+│   │   ├── train_ppo_smdp_full_fixed.py
+│   │   └── train_ppo_smdp_full.py
+│   ├── view_modis.py
+│   └── wrappers
+│       ├── action_mask_wrapper.py
+│       ├── domain_randomization_wrapper.py
+│       ├── env_alsat_dynamic_patch.py
+│       ├── env_alsat_dynamic_tta_patch.py
+│       ├── __pycache__
+│       └── safety_monitor.py
+├── texts
+│   ├── all_python_files.txt
+│   ├── answer.txt
+│   ├── critical_questions.txt
+│   ├── dyn_diagnose.txt
+│   ├── fixes.txt
+│   ├── heavy_logs.txt
+│   ├── last-logs.txt
+│   ├── logs1.log
+│   ├── logs2.log
+│   ├── logs2.txt
+│   ├── logs3.txt
+│   ├── logs4.txt
+│   ├── logs.log
+│   ├── logss2.log
+│   ├── logs.txt
+│   ├── outline.txt
+│   ├── report.txt
+│   ├── review.txt
+│   ├── train_debug.log
+│   ├── training_clean.log
+│   ├── training_debug1.txt
+│   ├── training_debug.log
+│   ├── training_debug.txt
+│   └── training_half.txt
+├── train_debug.log
+├── training_debug.log
+└── tree_output.txt
 
-21 directories, 91 files
+92 directories, 171 files

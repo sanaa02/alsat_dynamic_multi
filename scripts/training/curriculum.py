@@ -42,10 +42,10 @@ class CurriculumPhase:
 # ]
 
 PHASES: List[CurriculumPhase] = [
-    CurriculumPhase("static_clear",    0.0, True,  3.5, 50),   # achievable
-    CurriculumPhase("static_clouds",   0.0, False, 2.5, 75),   # achievable
-    CurriculumPhase("dynamic_sparse",  0.5, False, 3.0, 100),  # achievable
-    CurriculumPhase("dynamic_dense",   2.0, False, None, 250),
+    CurriculumPhase("static_clear",    0.0, True,  3.5, 40),
+    CurriculumPhase("static_clouds",   0.0, False, 2.5, 40),
+    CurriculumPhase("dynamic_sparse",  0.5, False, 3.0, 50),
+    CurriculumPhase("dynamic_dense",   2.0, False, None, 100),
 ]
 
 class ClearSkyWrapper(gym.ObservationWrapper):
